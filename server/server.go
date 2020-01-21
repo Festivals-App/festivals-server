@@ -109,6 +109,8 @@ func (s *Server) setRouters() {
 	s.Router.Get("/events/{objectID}/artist", s.handleRequest(handler.GetEventArtist))
 	s.Router.Get("/events/{objectID}/location", s.handleRequest(handler.GetEventLocation))
 
+	s.Router.Get("/tags/{objectID}/festivals", s.handleRequest(handler.GetTagFestivals))
+
 	// POST requests
 	s.Router.Post("/festivals", s.handleRequest(handler.CreateFestival))
 	s.Router.Post("/artists", s.handleRequest(handler.CreateArtist))

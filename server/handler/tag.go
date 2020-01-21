@@ -67,6 +67,34 @@ func GetTag(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	respondJSON(w, http.StatusOK, fetchedObjects)
 }
 
+func GetTagFestivals(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+
+	objectID := chi.URLParam(r, "objectID")
+	rows, err := database.Resource(db, "tag", objectID, "festival")
+	// check if an error occurred
+	if err != nil {
+		respondError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+	// no rows and no error indicate a successful query but an empty result
+	if rows == nil {
+		respondJSON(w, http.StatusOK, []model.Festival{})
+	}
+	fetchedObjects := []model.Festival{}
+	// iterate over the rows an create
+	for rows.Next() {
+		// scan the link
+		obj, err := model.FestivalsScan(rows)
+		if err != nil {
+			respondError(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+		// add object result slice
+		fetchedObjects = append(fetchedObjects, obj)
+	}
+	respondJSON(w, http.StatusOK, fetchedObjects)
+}
+
 // POST functions
 
 func CreateTag(db *sql.DB, w http.ResponseWriter, r *http.Request) {

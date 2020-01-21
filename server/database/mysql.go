@@ -33,6 +33,8 @@ func Resource(db *sql.DB, object string, objectID string, resource string) (*sql
 		query = "SELECT * FROM " + resource + "s WHERE " + resource + "_id IN (SELECT `associated_" + resource + "` FROM events WHERE event_id=?)"
 	} else if resource == "event" {
 		query = "SELECT * FROM events WHERE `associated_" + object + "`=?"
+	} else if object == "tag" {
+		query = "SELECT * FROM " + resource + "s WHERE " + resource + "_id IN (SELECT `associated_" + resource + "` FROM `map_" + resource + "_" + object + "` WHERE `associated_" + object + "`=?)"
 	} else {
 		query = "SELECT * FROM " + resource + "s WHERE " + resource + "_id IN (SELECT `associated_" + resource + "` FROM `map_" + object + "_" + resource + "` WHERE `associated_" + object + "`=?)"
 	}
