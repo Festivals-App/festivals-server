@@ -160,7 +160,7 @@ func CreateLocation(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 		respondError(w, http.StatusBadRequest, readBodyErr.Error())
 		return
 	}
-	var objectToCreate model.Artist
+	var objectToCreate model.Location
 	unmarshalErr := json.Unmarshal(body, &objectToCreate)
 	if unmarshalErr != nil {
 		respondError(w, http.StatusBadRequest, unmarshalErr.Error())
@@ -246,7 +246,7 @@ func UpdateLocation(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 		respondError(w, http.StatusBadRequest, readBodyErr.Error())
 		return
 	}
-	var objectToUpdate model.Artist
+	var objectToUpdate model.Location
 	unmarshalErr := json.Unmarshal(body, &objectToUpdate)
 	if unmarshalErr != nil {
 		respondError(w, http.StatusBadRequest, unmarshalErr.Error())
