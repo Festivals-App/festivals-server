@@ -62,15 +62,15 @@ func EventsScan(rs *sql.Rows) (Event, error) {
 }
 
 type Image struct {
-	ID      int    `json:"event_id"`
-	Version string `json:"event_version"`
+	ID      int    `json:"image_id"`
+	Hash    string `json:"image_hash" db:"image_hash"`
 	Comment string `json:"image_comment" db:"image_comment"`
-	Data    []byte `json:"image_data" db:"image_data"`
+	Ref     string `json:"image_ref" db:"image_ref"`
 }
 
 func ImagesScan(rs *sql.Rows) (Image, error) {
 	var i Image
-	return i, rs.Scan(&i.ID, &i.Version, &i.Comment, &i.Data)
+	return i, rs.Scan(&i.ID, &i.Hash, &i.Comment, &i.Ref)
 }
 
 type Link struct {
