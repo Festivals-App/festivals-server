@@ -8,11 +8,20 @@ import (
 	"github.com/go-chi/chi"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 )
 
 // GET functions
 
 func GetFestivals(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+
+	// get query values if the exist
+	values := r.URL.Query()
+	if len(values) != 0 {
+
+		SearchFestivals(values, db, w, r)
+		return
+	}
 
 	rows, err := database.Select(db, "festival", "")
 	// check if an error occurred
@@ -37,6 +46,37 @@ func GetFestivals(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 		fetchedObjects = append(fetchedObjects, obj)
 	}
 	respondJSON(w, http.StatusOK, fetchedObjects)
+}
+
+func SearchFestivals(parameters url.Values, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+
+	// get values
+	name := parameters.Get("name")
+
+	rows, err := database.Search(db, "festival", name)
+	// check if an error occurred
+	if err != nil {
+		respondError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+	// no rows and no error indicate a successful query but an empty result
+	if rows == nil {
+		respondJSON(w, http.StatusOK, []model.Festival{})
+	}
+	fetchedObjects := []model.Festival{}
+	// iterate over the rows an create
+	for rows.Next() {
+		// scan the link
+		obj, err := model.FestivalsScan(rows)
+		if err != nil {
+			respondError(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+		// add object result slice
+		fetchedObjects = append(fetchedObjects, obj)
+	}
+	respondJSON(w, http.StatusOK, fetchedObjects)
+
 }
 
 func GetFestival(db *sql.DB, w http.ResponseWriter, r *http.Request) {

@@ -25,6 +25,17 @@ func Select(db *sql.DB, table string, objectID string) (*sql.Rows, error) {
 	return ExecuteRowQuery(db, query, vars)
 }
 
+func Search(db *sql.DB, table string, name string) (*sql.Rows, error) {
+
+	var query string
+	var vars []interface{}
+	// prepare select query
+	query = "SELECT * FROM " + table + "s WHERE " + table + "_name LIKE CONCAT('%', ?, '%')"
+	vars = []interface{}{name}
+	// execute query
+	return ExecuteRowQuery(db, query, vars)
+}
+
 func Resource(db *sql.DB, object string, objectID string, resource string) (*sql.Rows, error) {
 
 	var query string
