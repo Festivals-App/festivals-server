@@ -70,11 +70,7 @@ func GetFestival(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 func GetFestivalEvents(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	objectID := chi.URLParam(r, "objectID")
-	// prepare query
-	query := "SELECT * FROM events WHERE associated_festival=?"
-	vars := []interface{}{objectID}
-	// execute query
-	rows, err := database.ExecuteRowQuery(db, query, vars)
+	rows, err := database.Resource(db, "festival", objectID, "event")
 	// check if an error occurred
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, err.Error())
