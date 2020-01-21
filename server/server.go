@@ -88,6 +88,8 @@ func (s *Server) setRouters() {
 	s.Router.Get("/tags/{objectID}", s.handleRequest(handler.GetTag))
 
 	s.Router.Get("/festivals/{objectID}/events", s.handleRequest(handler.GetFestivalEvents))
+	s.Router.Get("/artists/{objectID}/events", s.handleRequest(handler.GetArtistEvents))
+	s.Router.Get("/locations/{objectID}/events", s.handleRequest(handler.GetLocationEvents))
 
 	s.Router.Get("/festivals/{objectID}/image", s.handleRequest(handler.GetFestivalImage))
 	s.Router.Get("/artists/{objectID}/image", s.handleRequest(handler.GetArtistImage))
