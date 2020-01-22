@@ -1,3 +1,5 @@
+USE eventus_api_database;
+
 -- Insert link
 INSERT INTO `links`(`link_url`, `link_service`)
         VALUES ("https://www.google.com", 1);
@@ -26,9 +28,9 @@ INSERT INTO `images`(`image_hash`, `image_comment`, `image_ref`)
 
 -- Inser festival
 INSERT INTO  `festivals`(`festival_is_valid`, `festival_name`,  `festival_start`, `festival_end`,  `festival_description`,  `festival_price`)
-        VALUES (0, "Stemmwede (2020)", "100", "200", "Das Stemweder Open Air Festival ist eines der ältesten Umsonst-und-Draußen-Festivals in Deutschland, das seit 1976 jährlich in der ostwestfälischen Gemeinde Stemwede im Kreis Minden-Lübbecke stattfindet.", "Umsonst-und-Draußen");
+        VALUES (false, "Stemmwede (2020)", "100", "200", "Das Stemweder Open Air Festival ist eines der ältesten Umsonst-und-Draußen-Festivals in Deutschland, das seit 1976 jährlich in der ostwestfälischen Gemeinde Stemwede im Kreis Minden-Lübbecke stattfindet.", "Umsonst-und-Draußen");
 INSERT INTO  `festivals`(`festival_is_valid`, `festival_name`,  `festival_start`, `festival_end`,  `festival_description`,  `festival_price`)
-VALUES (0, "Krach am Bach (2020)", "300", "400", "Krach am Bach ist ein deutsches jährliches Benefiz-Musikfestival in Beelen im Kreis Warendorf in Nordrhein-Westfalen. Es wird von einem 1994 gegründeten Verein organisiert. Ursprünglich zugunsten einer Freundin organisiert, gehen die Spendengelder inzwischen an verschiedene gemeinnützige Organisationen.", "VVK 45 €");
+VALUES (false, "Krach am Bach (2020)", "300", "400", "Krach am Bach ist ein deutsches jährliches Benefiz-Musikfestival in Beelen im Kreis Warendorf in Nordrhein-Westfalen. Es wird von einem 1994 gegründeten Verein organisiert. Ursprünglich zugunsten einer Freundin organisiert, gehen die Spendengelder inzwischen an verschiedene gemeinnützige Organisationen.", "VVK 45 €");
 
 -- Insert artist            
 INSERT INTO `artists`(`artist_name`, `artist_description`)
@@ -43,26 +45,29 @@ INSERT INTO `locations`(`location_name`, `location_description`, `location_acces
         VALUES ("Zukunft am Ostkreuz", "Indie-Filme, alternative Kultur und hausgebrautes Bier im kreativ umgestalteten DDR-Lagerhaus mit Garten.", 1, 1);
 
    -- Insert event         
-INSERT INTO `events`(`associated_festival`, `associated_artist`, `associated_location`, `event_name`, `event_description`, `event_start`, `event_end`)
-	    VALUES (1, 1, 1, "Weihnachtsoratorium", "Oratorium von Johann Sebastian Bach", "110", "190");
-INSERT INTO `events`(`associated_festival`, `associated_artist`, `associated_location`, `event_name`, `event_description`, `event_start`, `event_end`)
-        VALUES (2, 2, 2, "", "", "310", "390");
+INSERT INTO `events`(`event_name`, `event_description`, `event_start`, `event_end`)
+	    VALUES ("Weihnachtsoratorium", "Oratorium von Johann Sebastian Bach", "110", "190");
+INSERT INTO `events`(`event_name`, `event_description`, `event_start`, `event_end`)
+        VALUES ("", "", "310", "390");
 
 
 -- Insert mapping tables
 INSERT INTO `map_artist_image`(`associated_artist`, `associated_image`) VALUES (1,1);
-INSERT INTO `map_artist_link`(`associated_artist`, `associated_link`) VALUES (1,1);
-INSERT INTO `map_artist_tag`(`associated_artist`, `associated_tag`) VALUES (1,1);
+INSERT INTO `map_artist_link`(`associated_artist`, `associated_link`)   VALUES (1,1);
+INSERT INTO `map_artist_tag`(`associated_artist`, `associated_tag`)     VALUES (1,1);
 
 INSERT INTO `map_festival_image`(`associated_festival`, `associated_image`) VALUES (1,1);
-INSERT INTO `map_festival_link`(`associated_festival`, `associated_link`) VALUES (1,1);
+INSERT INTO `map_festival_link`(`associated_festival`, `associated_link`)   VALUES (1,1);
 INSERT INTO `map_festival_place`(`associated_festival`, `associated_place`) VALUES (1,1);
-INSERT INTO `map_festival_tag`(`associated_festival`, `associated_tag`) VALUES (1,1);
+INSERT INTO `map_festival_tag`(`associated_festival`, `associated_tag`)     VALUES (1,1);
 
 INSERT INTO `map_location_image`(`associated_location`, `associated_image`) VALUES (1,1);
-INSERT INTO `map_location_link`(`associated_location`, `associated_link`) VALUES (1,1);
+INSERT INTO `map_location_link`(`associated_location`, `associated_link`)   VALUES (1,1);
 INSERT INTO `map_location_place`(`associated_location`, `associated_place`) VALUES (1,1);
 
+INSERT INTO `map_event_festival`(`associated_event`, `associated_festival`) VALUES (1,1);
+INSERT INTO `map_event_artist`(`associated_event`, `associated_artist`)     VALUES (1,1);
+INSERT INTO `map_event_location`(`associated_event`, `associated_location`) VALUES (1,1);
 
 
 

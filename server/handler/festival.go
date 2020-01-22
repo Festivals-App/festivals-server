@@ -268,16 +268,12 @@ func CreateFestival(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	}
 	rows, err := database.Insert(db, "festival", objectToCreate)
 	// check if an error occurred
-	if err != nil {
+	if err != nil || rows == nil {
 		respondError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
-	// no rows and no error indicate a successful query but an empty result
-	if rows == nil {
-		respondJSON(w, http.StatusOK, []model.Festival{})
-	}
 	fetchedObjects := []model.Festival{}
-	// iterate over the rows an create
+	// iterate over the rows
 	for rows.Next() {
 		// scan the link
 		obj, err := model.FestivalsScan(rows)

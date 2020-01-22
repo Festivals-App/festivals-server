@@ -27,11 +27,10 @@ func Select(db *sql.DB, table string, objectID string) (*sql.Rows, error) {
 
 func Search(db *sql.DB, table string, name string) (*sql.Rows, error) {
 
-	var query string
-	var vars []interface{}
 	// prepare select query
-	query = "SELECT * FROM " + table + "s WHERE " + table + "_name LIKE CONCAT('%', ?, '%')"
-	vars = []interface{}{name}
+	query := "SELECT * FROM " + table + "s WHERE " + table + "_name LIKE CONCAT('%', ?, '%')"
+	vars := []interface{}{name}
+
 	// execute query
 	return ExecuteRowQuery(db, query, vars)
 }
@@ -40,11 +39,7 @@ func Resource(db *sql.DB, object string, objectID string, resource string) (*sql
 
 	var query string
 	// prepare query
-	if object == "event" {
-		query = "SELECT * FROM " + resource + "s WHERE " + resource + "_id IN (SELECT `associated_" + resource + "` FROM events WHERE event_id=?)"
-	} else if resource == "event" {
-		query = "SELECT * FROM events WHERE `associated_" + object + "`=?"
-	} else if object == "tag" {
+	if resource == "event" || object == "tag" {
 		query = "SELECT * FROM " + resource + "s WHERE " + resource + "_id IN (SELECT `associated_" + resource + "` FROM `map_" + resource + "_" + object + "` WHERE `associated_" + object + "`=?)"
 	} else {
 		query = "SELECT * FROM " + resource + "s WHERE " + resource + "_id IN (SELECT `associated_" + resource + "` FROM `map_" + object + "_" + resource + "` WHERE `associated_" + object + "`=?)"
@@ -217,7 +212,10 @@ func ExecuteQuery(db *sql.DB, query string, args []interface{}) (sql.Result, err
 		return nil, err
 	}
 
-	stmt.Close()
+	err = stmt.Close()
+	if err != nil {
+		return nil, err
+	}
 
 	return result, nil
 }

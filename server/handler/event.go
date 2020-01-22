@@ -166,10 +166,6 @@ func CreateEvent(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 		respondError(w, http.StatusBadRequest, unmarshalErr.Error())
 		return
 	}
-	if objectToCreate.Festival == 0 {
-		respondError(w, http.StatusBadRequest, "You need to provide an associated festival.")
-		return
-	}
 	rows, err := database.Insert(db, "event", objectToCreate)
 	// check if an error occurred
 	if err != nil {

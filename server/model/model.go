@@ -51,14 +51,11 @@ type Event struct {
 	Description string `json:"event_description" db:"event_description"`
 	Start       int    `json:"event_start" db:"event_start"`
 	End         int    `json:"event_end" db:"event_end"`
-	Festival    int    `json:"associated_festival" db:"associated_festival"`
-	Artist      int    `json:"associated_artist" db:"associated_artist"`
-	Location    int    `json:"associated_location" db:"associated_location"`
 }
 
 func EventsScan(rs *sql.Rows) (Event, error) {
 	var e Event
-	return e, rs.Scan(&e.ID, &e.Version, &e.Name, &e.Description, &e.Start, &e.End, &e.Festival, &e.Artist, &e.Location)
+	return e, rs.Scan(&e.ID, &e.Version, &e.Name, &e.Description, &e.Start, &e.End)
 }
 
 type Image struct {
