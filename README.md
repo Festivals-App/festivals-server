@@ -18,7 +18,7 @@ A simple RESTful API with Go using go-chi/chi and go-sql-driver/mysql.
 go get github.com/Phisto/eventusserver
 ```
 
-Before running the API server, you should set the database config with your values on config.go
+Before running the API server, you should set the database config with your values in config/config.go
 
 ```
 func GetConfig() *Config {
@@ -36,8 +36,9 @@ func GetConfig() *Config {
 
 # Build and Run
 ```bash
-go build
-./server
+cd $GOPATH/src/github.com/Phisto/eventusserver
+go build main.go
+./main
 
 # API Endpoint : http://localhost:8080
 ```
@@ -45,15 +46,15 @@ go build
 ## Structure
 ```
 ├── server
-│   ├── server.go               // server logic
+│   ├── server.go               // Server logic
 │   │     
-│   ├── database                // Database logic
-│   │   ├── CreateDatabase.sql  // Script to create the databse
-│   │   ├── InsertTestData.sql  // Script to insert some test data
+│   ├── database               
+│   │   ├── CreateDatabase.sql  // Script to create the database
+│   │   ├── InsertTestData.sql  // Script to insert some test data.
 │   │   ├── mysql.go            // Basic mysql queries (SELECT, INSERT, etc.)
 │   │   └── querytools.go       // Some tools to create mysql query statements
 │   │
-│   ├── handler                 // API handlers
+│   ├── handler                
 │   │   ├── common.go           // Common response functions
 │   │   ├── festival.go         // APIs for the Festival model
 │   │   ├── artist.go           // APIs for the Artist model
@@ -65,112 +66,483 @@ go build
 │   │   └── tag.go              // APIs for the Tag model
 │   │
 │   └── model
-│       └── model.go            // The data models
+│       └── model.go            // The object models
 │
 ├── config
-│   └── config.go               // DB Configuration
+│   └── config.go               // Server configuration
 │
 └── main.go               
 ```
 
 
-## Eventus API
+## Eventus API Documentation
 
-#### /festivals
-* `GET`     : Get all festivals
-* `POST`    : Create a new festival
+By providing API documentation for all Eventus services...
 
-#### /festivals/{objectID}
-* `GET`     : Get a festival
-* `PATCH`   : Update a festival
-* `DELETE`  : Delete a festival
+### Response
 
-#### /festivals/{objectID}/{image|links|place|tags}
-* `GET`     : Get the given associated objects
+Requests that are handled gracefully by the server will always return a top level object  
+with at least either the`data`or`error`field. The`data`field will always contain an array.  
+If the request returns any objects they will be in that array,
+```
+{
+    "data": [
+        {OBJECT},
+        {OBJECT},
+        {OBJECT}
+    ]
+}
+```
+otherwise an empty array is returned.
+```
+{
+    "data": []
+}
+```
+If the request specified to include relationships the objects are contained in the`included`field.  
+**Included relationships will only work if only one object is returned by the request.**
+```
+{
+    "data": [
+        {OBJECT}
+    ],
+    "included": {
+        "relationship-1": [
+            {OBJECT},
+            {OBJECT},    
+            {OBJECT}
+        ],
+        "relationship-2": [
+            {OBJECT}
+        ]     
+    }
+}
+```
 
-#### /festivals/{objectID}/{image|links|place|tags}/{resourceID}
-* `POST`     : Associates the object with the given ID with the festival with the given ID
 
-#### /artists
-* `GET`     : Get all artists
-* `POST`    : Create a new artist
 
-#### /artists/{objectID}
-* `GET`     : Get an artist
-* `PATCH`   : Update an artist
-* `DELETE`  : Delete an artist
+The `error` field will always contain a string with the error message.
+```
+{
+    "error": "An error occured"
+}
+```
+------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------
 
-#### /artists/{objectID}/{image|links|place|tags}
-* `GET`     : Get the given associated objects
+## Festival Objects
+A simple object that represents a festival.
 
-#### /artists/{objectID}/{image|links|tags}/{resourceID}
-* `POST`     : Associates the object with the given ID with the artist with the given ID
+```
+{
+    "festival_id":              integer,
+    "festival_version":         string,
+    "festival_is_valid":        boolean,
+    "festival_name":            string,
+    "festival_start":           integer,
+    "festival_end":             integer,
+    "festival_description":     string
+}
+```
+------------------------------------------------------------------------------------
+#### GET `/festivals`
 
-#### /locations
-* `GET`     : Get all locations
-* `POST`    : Create a new location
+Get all festivals.
+    
+ * Query Parameter:
+        
+      `name`: Filter result by name  
+      `ids` : Filter result by IDs
 
-#### /locations/{objectID}
-* `GET`     : Get a location
-* `PATCH`   : Update a location
-* `DELETE`  : Delete a location
+ * Examples:
+        
+      `GET https://localhost:8080/festivals`  
+      `GET https://localhost:8080/festivals?name=Stemmwe`  
+      `GET https://localhost:8080/festivals?ids=1,8,56`
+        
+ * Returns 
+        
+      * Returns the festivals 
+      * Codes `200`/`40x`/`50x`
+      * `data` or `error` field
 
-#### /locations/{objectID}/{image|links|place}
-* `GET`     : Get the given associated objects
+------------------------------------------------------------------------------------
+#### POST `/festivals`
 
-#### /locations/{objectID}/{image|links|place}/{resourceID}
-* `POST`    : Associates the object with the given ID with the location with the given ID
+Create a new festival
+    
+* Examples:
+            
+    `POST https://localhost:8080/festivals`  
+    `BODY: {OBJECT}`
+    
+* Returns 
 
-#### /events
-* `GET`     : Get all events
-* `POST`    : Create a new event
+    * Returns the create festival on success.
+    * Codes `201`/`40x`/`50x`
+    * `data` or `error` field
 
-#### /events/{objectID}
-* `GET`     : Get an event
-* `PATCH`   : Update an event
-* `DELETE`  : Delete an event
+------------------------------------------------------------------------------------
+#### GET `/festivals/{objectID}`
 
-#### /events/{objectID}/{artist|location|festival}
-* `GET`     : Get the given associated objects
+Get the festival with the given `objectID`.
 
-#### /events/{objectID}/{artist|location}/{resourceID}
-* `POST`    : Associates the object with the given ID with the event with the given ID
+* Query Parameter:
+    
+    `include`: Include relationships {`image`|`links`|`place`|`tags`|`events`}  
+        
+            Note: You need to specify the relationship not the associated object type.
 
-#### /images
-* `GET`     : Get all images
-* `POST`    : Create a new image
+ * Examples:
+      
+    `GET https://localhost:8080/festivals/1`  
+    `GET https://localhost:8080/festivals/1?include=links,place`
+      
+ * Returns 
+ 
+     * Returns the festival on success.
+     * Codes `201`/`40x`/`50x`
+     * `data` or `error` field
 
-#### /images/{objectID}
-* `GET`     : Get an image
-* `PATCH`   : Update an image
-* `DELETE`  : Delete an image
+------------------------------------------------------------------------------------
+#### PATCH `/festivals/{objectID}`
 
-#### /links
-* `GET`     : Get all links
-* `POST`    : Create a new link
+Update the festival with the given `objectID`.
 
-#### /links/{objectID}
-* `GET`     : Get a link
-* `PATCH`   : Update a link
-* `DELETE`  : Delete a link
+ * Examples:
+      
+    `PATCH https://localhost:8080/festivals/1`  
+    BODY: `{OBJECT}`
 
-#### /places
-* `GET`     : Get all places
-* `POST`    : Create a new place
+ * Returns 
+ 
+     * Returns the updated festival on success.
+     * Codes `201`/`40x`/`50x`
+     * `data` or `error` field
 
-#### /places/{objectID}
-* `GET`     : Get a place
-* `PATCH`   : Update a place
-* `DELETE`  : Delete a place
+------------------------------------------------------------------------------------
+#### DELETE `/festivals/{objectID}`
 
-#### /tags
-* `GET`     : Get all tags
-* `POST`    : Create a new tag
+Delete the festival with the given `objectID`.
+ 
+ * Examples:
+       
+    `DELETE https://localhost:8080/festivals/1`
+    
+ * Returns 
+ 
+     * Returns no object.
+     * Codes `204`/`40x`/`50x`
+     * `data` or `error` field  
+ 
+ ------------------------------------------------------------------------------------
+#### GET `/festivals/{objectID}/{image|links|place|tags|events}`
 
-#### /tags/{objectID}
+Get the objects that are described by the`{relationship}`.
+
+ * Examples:
+      
+    `GET https://localhost:8080/festivals/1/image`  
+            
+             Note: You need to specify the relationship not the associated object type.
+             
+ * Returns 
+ 
+     * Returns the objects described by the relationship
+     * Codes `20x`/`40x`/`50x`
+     * `data` or `error` field  
+     
+------------------------------------------------------------------------------------
+#### POST `/festivals/{objectID}/{image|links|place|tags}/{resourceID}`
+
+Adds the object with the given`{resourceID}`to the relationship for the festival with the given`{objectID}`.
+
+ * Examples:
+ 
+    `POST https://localhost:8080/festivals/1/image/1`   
+            note: You need to specify the relationship not the associated object type.
+
+ * Returns 
+ 
+     * Returns no object.
+     * Codes `200`/`40x`/`50x`
+     * `data` or `error` field 
+
+------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------
+
+## Artist Objects
+A simple object that represents an artist.
+
+```
+{
+    "artist_id":            integer,
+    "artist_version":       string,
+    "artist_name":          string,
+    "artist_description":   string
+}
+```
+
+#### GET `/artists`
+
+Get all artists
+
+#### POST `/artists`
+
+Create a new artist
+
+#### GET `/artists/{objectID}`
+
+Get an artist
+
+#### PATCH `/artists/{objectID}`
+
+Update an artist
+
+#### DELETE `/artists/{objectID}`
+
+Delete an artist
+
+#### GET `/artists/{objectID}/{image|links|place|tags}`
+
+Get the given associated objects
+
+#### POST `/artists/{objectID}/{image|links|tags}/{resourceID}`
+
+Associates the object with the given ID with the artist with the given ID
+
+------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------
+
+## Location Objects
+A simple object that represents a location.
+
+```
+{
+    "location_id":              integer,
+    "location_version":         string,
+    "location_name":            string,
+    "location_description":     string,
+    "location_accessible":      boolean,
+    "location_openair":         boolean
+}
+```
+
+#### GET `/locations`
+
+Get all locations
+
+#### POST `/locations`
+
+Create a new location
+
+#### GET `/locations/{objectID}`
+
+Get a location
+
+#### PATCH `/locations/{objectID}`
+
+Update a location
+
+#### DELETE `/locations/{objectID}`
+
+Delete a location
+
+#### GET `/locations/{objectID}/{image|links|place}`
+
+Get the given associated objects
+
+#### POST `/locations/{objectID}/{image|links|place}/{resourceID}`
+
+Associates the object with the given ID with the location with the given ID
+
+------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------
+
+## Event Objects
+A simple object that represents an event.
+
+```
+{
+    "event_id":             integer,
+    "event_version":        string,
+    "event_name":           string,
+    "event_description":    string,
+    "event_start":          integer,
+    "event_end":            integer
+}
+```
+
+#### GET `/events`
+
+Get all events
+
+#### POST `/events`
+
+Create a new event
+
+#### GET `/events/{objectID}`
+
+Get an event
+
+#### PATCH `/events/{objectID}`
+
+Update an event
+
+#### DELETE `/events/{objectID}`
+
+Delete an event
+
+#### GET `/events/{objectID}/{artist|location|festival}`
+
+Get the given associated objects
+
+#### POST `/events/{objectID}/{artist|location}/{resourceID}`
+
+Associates the object with the given ID with the event with the given ID
+
+------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------
+
+## Image Objects
+A simple object that represents an image.
+
+```
+{
+    "image_id":         integer,
+    "image_hash":       string,
+    "image_comment":    string,
+    "image_ref":        string
+}
+```
+
+#### GET `/images`
+
+Get all images
+
+#### POST `/images`
+
+Create a new image
+
+#### GET `/images/{objectID}`
+
+Get an image
+
+#### PATCH `/images/{objectID}`
+
+Update an image
+
+#### DELETE `/images/{objectID}`
+
+Delete an image
+
+------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------
+
+## Link Objects
+A simple object that represents a link.
+
+```
+{
+    "link_id":      integer,
+    "link_version": string,
+    "link_url":     string,
+    "link_service": integer
+}
+```
+
+#### GET `/links`
+
+Get all links
+
+#### GET `/links`
+
+Create a new link
+
+#### GET `/links/{objectID}`
+
+Get a link
+
+#### PATCH `/links/{objectID}`
+
+Update a link
+
+#### DELETE `/links/{objectID}`
+
+Delete a link
+
+------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------
+
+## Place Objects
+A simple object that represents a place.
+
+```
+{
+    "place_id":                 integer,
+    "place_version":            string,
+    "place_street":             string,
+    "place_zip":                string,
+    "place_town":               string,
+    "place_street_addition":    string,
+    "place_country":            string,
+    "place_lat":                float32.
+    "place_lon":                float32,
+    "place_description":        string
+}
+```
+
+#### GET `/places`
+
+Get all places
+
+#### POST `/places`
+
+Create a new place
+
+#### GET `/places/{objectID}`
+
+Get a place
+
+#### PATCH `/places/{objectID}`
+
+Update a place
+
+#### PATCH `/places/{objectID}`
+
+Delete a place
+
+------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------
+
+## Image Objects
+A simple object that represents a tag.
+
+```
+{
+    "tag_id":   integer,
+    "tag_name": string
+}
+```
+
+#### GET `/tags`
+
+Get all tags
+
+#### POST `/tags`
+
+Create a new tag
+
+#### GET `/tags/{objectID}`
 * `GET`     : Get a tag
-* `PATCH`   : Update a tag
-* `DELETE`  : Delete a tag
+
+#### PATCH `/tags/{objectID}`
+
+Update a tag
+
+#### DELETE `/tags/{objectID}`
+
+Delete a tag
 
 ## Todo
 
