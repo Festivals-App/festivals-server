@@ -35,8 +35,7 @@ UNIQUE 	    KEY `name` (`festival_name`),
 			KEY `is_valid` (`festival_is_valid`)
  
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='The festival table represents a festival and its core properties.';
- 
- 
+
 -- Create the artist table
 CREATE TABLE `artists` (
 
@@ -49,7 +48,6 @@ PRIMARY 	KEY (`artist_id`),
             KEY `name` (`artist_name`)
     
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='The artist table represents an artist and its core properties.';
-
 
 -- Create the location table
 CREATE TABLE `locations` (
@@ -66,7 +64,6 @@ PRIMARY 	KEY (`location_id`),
  
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='The location table represents a location and its core properties.';
 
-
 -- Create the event table
 CREATE TABLE `events` (
 
@@ -81,7 +78,6 @@ PRIMARY 	KEY (`event_id`)
  
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='The event table represents an event and its core properties.';
 
-
 -- Create the link table
 CREATE TABLE `links` (
 
@@ -94,7 +90,6 @@ CREATE TABLE `links` (
 PRIMARY 	KEY (`link_id`)
 
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='The link table represents a link and its core properties.';
-
 
 -- Create the place table
 CREATE TABLE `places` (
@@ -116,7 +111,6 @@ PRIMARY 	KEY (`place_id`),
 
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='The place table represents a place and its core properties.';
 
-
 -- Create the tag table
 CREATE TABLE `tags` (
 
@@ -127,7 +121,6 @@ PRIMARY 	KEY (`tag_id`),
 UNIQUE	    KEY `name` (`tag_name`)
 
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='The tag table represents a tag and its core properties.';
-
 
 -- Create the image table
 CREATE TABLE `images` (
@@ -142,12 +135,26 @@ UNIQUE	    KEY `ref` (`image_ref`)
 
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='The image table represents an image and its core properties.';
 
-
 /**
 
 Create the mapping tables to associate entities
 
 */
+
+-- Create the table to map events to festivals
+CREATE TABLE `map_festival_event` (
+
+    `map_id` 				int unsigned 		NOT NULL AUTO_INCREMENT		COMMENT 'The id of the map entry.',
+    `associated_festival` 	int unsigned 		NOT NULL					COMMENT 'The id of the mapped festival.',
+    `associated_event` 	    int unsigned 		NOT NULL					COMMENT 'The id of the mapped event.',
+
+PRIMARY 	KEY (`map_id`),
+-- An event should only be mapped to one festival at a time.
+UNIQUE      KEY (`associated_event`),
+FOREIGN 	KEY (`associated_event`) 		REFERENCES events (event_id) 		ON DELETE CASCADE 	ON UPDATE CASCADE,
+FOREIGN 	KEY (`associated_festival`) 	REFERENCES festivals (festival_id) 	ON DELETE CASCADE 	ON UPDATE CASCADE
+
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='The table maps festivals to events.';
 
 -- Create the table to map images to festivals
 CREATE TABLE `map_festival_image` (
@@ -281,21 +288,6 @@ FOREIGN 	KEY (`associated_location`)		REFERENCES locations (location_id)	ON DELE
 FOREIGN 	KEY (`associated_place`) 		REFERENCES places (place_id) 		ON DELETE CASCADE 	ON UPDATE CASCADE
 
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='The table maps places to locations.';
-
--- Create the table to map festivals to events
-CREATE TABLE `map_event_festival` (
-
-    `map_id` 				int unsigned 		NOT NULL AUTO_INCREMENT		COMMENT 'The id of the map entry.',
-    `associated_event` 	    int unsigned 		NOT NULL					COMMENT 'The id of the mapped event.',
-    `associated_festival` 	int unsigned 		NOT NULL					COMMENT 'The id of the mapped festival.',
-
-PRIMARY 	KEY (`map_id`),
--- An event should only be mapped to an festival once.
-UNIQUE      KEY (`associated_event`),
-FOREIGN 	KEY (`associated_event`) 		REFERENCES events (event_id) 		ON DELETE CASCADE 	ON UPDATE CASCADE,
-FOREIGN 	KEY (`associated_festival`) 	REFERENCES festivals (festival_id) 	ON DELETE CASCADE 	ON UPDATE CASCADE
-
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='The table maps festivals to events.';
 
 -- Create the table to map artists to events
 CREATE TABLE `map_event_artist` (

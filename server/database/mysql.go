@@ -39,7 +39,7 @@ func Resource(db *sql.DB, object string, objectID string, resource string) (*sql
 
 	var query string
 	// prepare query
-	if resource == "event" || object == "tag" {
+	if object == "tag" {
 		query = "SELECT * FROM " + resource + "s WHERE " + resource + "_id IN (SELECT `associated_" + resource + "` FROM `map_" + resource + "_" + object + "` WHERE `associated_" + object + "`=?)"
 	} else {
 		query = "SELECT * FROM " + resource + "s WHERE " + resource + "_id IN (SELECT `associated_" + resource + "` FROM `map_" + object + "_" + resource + "` WHERE `associated_" + object + "`=?)"
@@ -52,42 +52,19 @@ func Resource(db *sql.DB, object string, objectID string, resource string) (*sql
 
 func SetResource(db *sql.DB, table string, objectID string, resource string, resourceID string) error {
 
-	if table == "event" {
-
-		// prepare query
-		query := "UPDATE `events` SET `associated_" + resource + "`=? WHERE `event_id`=?"
-		vars := []interface{}{resourceID, objectID}
-		// execute query
-		result, err := ExecuteQuery(db, query, vars)
-		if err != nil {
-			return err
-		}
-		// check number of affected rows
-		numOfAffectedRows, err := result.RowsAffected()
-		if err != nil {
-			return err
-		}
-		// we only delete one row per request
-		if numOfAffectedRows != 1 {
-			return errors.New("No rows where affected.")
-		}
-		return nil
-	} else {
-
-		// prepare query
-		query := "INSERT INTO `map_" + table + "_" + resource + "` ( `associated_" + table + "` , `associated_" + resource + "` ) VALUES (?,?)"
-		vars := []interface{}{objectID, resourceID}
-		// execute query
-		result, err := ExecuteQuery(db, query, vars)
-		if err != nil {
-			return err
-		}
-		_, err = result.LastInsertId()
-		if err != nil {
-			return err
-		}
-		return nil
+	// prepare query
+	query := "INSERT INTO `map_" + table + "_" + resource + "` ( `associated_" + table + "` , `associated_" + resource + "` ) VALUES (?,?)"
+	vars := []interface{}{objectID, resourceID}
+	// execute query
+	result, err := ExecuteQuery(db, query, vars)
+	if err != nil {
+		return err
 	}
+	_, err = result.LastInsertId()
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func Insert(db *sql.DB, table string, object interface{}) (*sql.Rows, error) {
@@ -153,38 +130,6 @@ func Delete(db *sql.DB, table string, objectID string) error {
 	}
 	return nil
 }
-
-/*
-func associatedImage(objectName string, objectID string) (*sql.Rows, error) {
-
-	queryString := "SELECT * FROM images WHERE image_id IN (SELECT `associated_image` FROM `map_" + objectName + "_image` WHERE `associated_" + objectName + "`=" + objectID + ")"
-	return GetDB().Query(queryString)
-}
-
-func associatedLinks(objectName string, objectID string) (*sql.Rows, error) {
-
-	queryString := "SELECT * FROM links WHERE link_id IN (SELECT `associated_link` FROM `map_" + objectName + "_link` WHERE `associated_" + objectName + "`=" + objectID + ")"
-	return GetDB().Query(queryString)
-}
-
-func associatedPlace(objectName string, objectID string) (*sql.Rows, error) {
-
-	queryString := "SELECT * FROM places WHERE place_id IN (SELECT `associated_place` FROM `map_" + objectName + "_place` WHERE `associated_" + objectName + "`=" + objectID + ")"
-	return GetDB().Query(queryString)
-}
-
-func associatedTags(objectName string, objectID string) (*sql.Rows, error) {
-
-	queryString := "SELECT * FROM tags WHERE tag_id IN (SELECT `associated_tag` FROM `map_" + objectName + "_tag` WHERE `associated_" + objectName + "`=" + objectID + ")"
-	return GetDB().Query(queryString)
-}
-
-func associatedEvents(objectName string, objectID string) (*sql.Rows, error) {
-
-	queryString := "SELECT * FROM events WHERE associated_" + objectName + "=" + objectID
-	return GetDB().Query(queryString)
-}
-*/
 
 // Execute a query that returns rows
 func ExecuteRowQuery(db *sql.DB, query string, args []interface{}) (*sql.Rows, error) {

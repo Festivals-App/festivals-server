@@ -15,10 +15,9 @@ import (
 
 func GetFestivals(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
-	// get query values if the exist
+	// get query values if they exist
 	values := r.URL.Query()
 	if len(values) != 0 {
-
 		SearchFestivals(values, db, w, r)
 		return
 	}
