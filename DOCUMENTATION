@@ -1,5 +1,20 @@
 ## Eventus API Documentation
 
+### Requests
+
+The Eventus API supports the HTTP `GET`, `POST`, `PATCH` and `DELETE` methodes.
+
+#### Query Parameter
+
+* `name`  
+    The name parameter expects a simple string. `name=^[A-Za-z0-9_.]+$`
+
+* `ids`  
+    The ids parameter expects numbers seperated by a comma. `ids=1,2,37`
+
+* `include`  
+    The include parameter expects the name(s) of the relationship you want the response to include. `include=rel1,rel2,rel3`
+
 ### Response
 
 Requests that are handled gracefully by the server will always return a top level object  
@@ -39,9 +54,6 @@ If the request specified to include relationships the objects are contained in t
     }
 }
 ```
-
-
-
 The `error` field will always contain a string with the error message.
 ```
 {
@@ -54,25 +66,25 @@ The `error` field will always contain a string with the error message.
 * GET, POST             `/festivals`
 * GET, PATCH, DELETE    `/festivals/{objectID}`
 * GET                   `/festivals/{objectID}/{image|links|place|tags|events}`
-* POST                  `/festivals/{objectID}/{image|links|place|tags|events}/{resourceID}`
+* POST, DELETE          `/festivals/{objectID}/{image|links|place|tags|events}/{resourceID}`
 
 [Artists](#artist-objects)
 * GET, POST             `/artists`
 * GET, PATCH, DELETE    `/artists/{objectID}`
 * GET                   `/artists/{objectID}/{image|links|tags}`
-* POST                  `/artists/{objectID}/{image|links|tags}/{resourceID}`
+* POST, DELETE          `/artists/{objectID}/{image|links|tags}/{resourceID}`
 
 [Locations](#location-objects)
 * GET, POST             `/locations`
 * GET, PATCH, DELETE    `/locations/{objectID}`
 * GET                   `/locations/{objectID}/{image|links|place}`
-* POST                  `/locations/{objectID}/{image|links|place}/{resourceID}`
+* POST, DELETE          `/locations/{objectID}/{image|links|place}/{resourceID}`
 
 [Events](#event-objects)
 * GET, POST             `/events`
 * GET, PATCH, DELETE    `/events/{objectID}`
 * GET                   `/events/{objectID}/{artist|location}`
-* POST                  `/events/{objectID}/{artist|location}/{resourceID}`
+* POST, DELETE          `/events/{objectID}/{artist|location}/{resourceID}`
 
 [Images](#image-objects)
 * GET, POST             `/images`
@@ -216,6 +228,20 @@ Adds the object with the given`{resourceID}`to the relationship for the festival
      * Codes `200`/`40x`/`50x`
      * `data` or `error` field 
 
+------------------------------------------------------------------------------------
+#### DELETE `/festivals/{objectID}/{image|links|place|tags|events}/{resourceID}`
+
+Removes the object with the given`{resourceID}`from the relationship for the festival with the given`{objectID}`.
+
+ * Examples:  
+    `DELETE https://localhost:8080/festivals/1/image/1`   
+    
+            note: You need to specify the relationship not the associated object type.
+
+ * Returns 
+     * Returns no object.
+     * Codes `200`/`40x`/`50x`
+     * `data` or `error` field 
 
 ------------------------------------------------------------------------------------
 ## Artist Objects
@@ -339,6 +365,20 @@ Adds the object with the given`{resourceID}`to the relationship for the artist w
      * Codes `200`/`40x`/`50x`
      * `data` or `error` field
 
+------------------------------------------------------------------------------------
+#### DELETE `/artists/{objectID}/{image|links|tags}/{resourceID}`
+
+Removes the object with the given`{resourceID}`from the relationship for the artist with the given`{objectID}`.
+
+ * Examples:  
+    `DELETE https://localhost:8080/artists/1/image/1`   
+    
+            note: You need to specify the relationship not the associated object type.
+
+ * Returns 
+     * Returns no object.
+     * Codes `200`/`40x`/`50x`
+     * `data` or `error` field
 
 ------------------------------------------------------------------------------------
 ## Location Objects
@@ -464,6 +504,20 @@ Adds the object with the given`{resourceID}`to the relationship for the location
      * Codes `200`/`40x`/`50x`
      * `data` or `error` field
 
+------------------------------------------------------------------------------------
+#### DELETE `/locations/{objectID}/{image|links|place}/{resourceID}`
+
+Removes the object with the given`{resourceID}`from the relationship for the location with the given`{objectID}`.
+
+ * Examples:  
+    `DELETE https://localhost:8080/locations/1/image/1`   
+    
+            note: You need to specify the relationship not the associated object type.
+
+ * Returns 
+     * Returns no object.
+     * Codes `200`/`40x`/`50x`
+     * `data` or `error` field
 
 ------------------------------------------------------------------------------------
 ## Event Objects
@@ -587,6 +641,20 @@ Adds the object with the given`{resourceID}`to the relationship for the event wi
      * Codes `200`/`40x`/`50x`
      * `data` or `error` field
 
+------------------------------------------------------------------------------------
+#### DELETE `/events/{objectID}/{artist|location}/{resourceID}`
+
+Removes the object with the given`{resourceID}`from the relationship for the event with the given`{objectID}`.
+
+ * Examples:  
+    `DELETE https://localhost:8080/events/1/artist/1`   
+    
+            note: You need to specify the relationship not the associated object type.
+
+ * Returns 
+     * Returns no object.
+     * Codes `200`/`40x`/`50x`
+     * `data` or `error` field
 
 ------------------------------------------------------------------------------------
 ## Image Objects

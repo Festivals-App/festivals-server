@@ -1,11 +1,11 @@
 --
--- Create the eventus API database
+-- Create the Eventus API database
 -- 	
 -- You can choose the database name as you want, just make sure
--- to match the name where you use it to connect to the database .
+-- to match the name when you use it to connect to the database .
 
 -- First create the database
-CREATE DATABASE `eventus_api_database`;
+CREATE DATABASE IF NOT EXISTS `eventus_api_database`;
 
 -- Create the tables in the newly created database
 USE eventus_api_database;
@@ -18,7 +18,7 @@ Create the basic entities
 */
 
 -- Create the festival table
-CREATE TABLE `festivals` (
+CREATE TABLE IF NOT EXISTS `festivals` (
 
 	`festival_id` 			    int unsigned 	    NOT NULL AUTO_INCREMENT 		COMMENT 'The id of the festival.',
 	`festival_version` 		    timestamp 			NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() 	COMMENT 'The version of the festival.',
@@ -37,7 +37,7 @@ UNIQUE 	    KEY `name` (`festival_name`),
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='The festival table represents a festival and its core properties.';
 
 -- Create the artist table
-CREATE TABLE `artists` (
+CREATE TABLE IF NOT EXISTS `artists` (
 
 	`artist_id` 			    int unsigned 	    NOT NULL AUTO_INCREMENT 		COMMENT 'The id of the artist.',
 	`artist_version` 		    timestamp 			NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() 	COMMENT 'The version of the artist.',
@@ -50,7 +50,7 @@ PRIMARY 	KEY (`artist_id`),
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='The artist table represents an artist and its core properties.';
 
 -- Create the location table
-CREATE TABLE `locations` (
+CREATE TABLE IF NOT EXISTS `locations` (
 
 	`location_id` 			    int unsigned 	    NOT NULL AUTO_INCREMENT 		COMMENT 'The id of the location.',
 	`location_version` 		    timestamp 			NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() 	COMMENT 'The version of the location.',
@@ -65,7 +65,7 @@ PRIMARY 	KEY (`location_id`),
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='The location table represents a location and its core properties.';
 
 -- Create the event table
-CREATE TABLE `events` (
+CREATE TABLE IF NOT EXISTS `events` (
 
 	`event_id` 				    int unsigned 	    NOT NULL AUTO_INCREMENT 		COMMENT 'The id of the event.',
 	`event_version` 		    timestamp 			NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() 	COMMENT 'The version of the event.',
@@ -79,7 +79,7 @@ PRIMARY 	KEY (`event_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='The event table represents an event and its core properties.';
 
 -- Create the link table
-CREATE TABLE `links` (
+CREATE TABLE IF NOT EXISTS `links` (
 
 	 `link_id` 				    int unsigned	    NOT NULL AUTO_INCREMENT 		COMMENT 'The id of the link.',
 	 `link_version` 		    timestamp 			NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() 	COMMENT 'The version of the link.',
@@ -92,7 +92,7 @@ PRIMARY 	KEY (`link_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='The link table represents a link and its core properties.';
 
 -- Create the place table
-CREATE TABLE `places` (
+CREATE TABLE IF NOT EXISTS `places` (
 
 	 `place_id` 				int unsigned 	    NOT NULL AUTO_INCREMENT 		COMMENT 'The id of the place.',
 	 `place_version` 			timestamp 			NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() 	COMMENT 'The version of the place.',
@@ -112,7 +112,7 @@ PRIMARY 	KEY (`place_id`),
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='The place table represents a place and its core properties.';
 
 -- Create the tag table
-CREATE TABLE `tags` (
+CREATE TABLE IF NOT EXISTS `tags` (
 
 	 `tag_id` 				    int unsigned 		NOT NULL AUTO_INCREMENT 		COMMENT 'The id of the tag.',
 	 `tag_name` 			    varchar(255)        NOT NULL						COMMENT 'The name of the tag.',
@@ -123,15 +123,14 @@ UNIQUE	    KEY `name` (`tag_name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='The tag table represents a tag and its core properties.';
 
 -- Create the image table
-CREATE TABLE `images` (
+CREATE TABLE IF NOT EXISTS `images` (
 
 	 `image_id` 		        int unsigned 		    NOT NULL AUTO_INCREMENT 	COMMENT 'The id of the image.',
 	 `image_hash` 		        char(32) 				NOT NULL					COMMENT 'The hash of the image.',
 	 `image_comment` 	        char(255) 				NOT NULL DEFAULT ''			COMMENT 'The comment of the image.',
 	 `image_ref` 		        varchar(2083) 			NOT NULL DEFAULT ''			COMMENT 'The referer link of the image.',
 
-PRIMARY 	KEY (`image_id`),
-UNIQUE	    KEY `ref` (`image_ref`)
+PRIMARY 	KEY (`image_id`)
 
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='The image table represents an image and its core properties.';
 
@@ -142,7 +141,7 @@ Create the mapping tables to associate entities
 */
 
 -- Create the table to map events to festivals
-CREATE TABLE `map_festival_event` (
+CREATE TABLE IF NOT EXISTS `map_festival_event` (
 
     `map_id` 				int unsigned 		NOT NULL AUTO_INCREMENT		COMMENT 'The id of the map entry.',
     `associated_festival` 	int unsigned 		NOT NULL					COMMENT 'The id of the mapped festival.',
@@ -157,7 +156,7 @@ FOREIGN 	KEY (`associated_festival`) 	REFERENCES festivals (festival_id) 	ON DEL
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='The table maps festivals to events.';
 
 -- Create the table to map images to festivals
-CREATE TABLE `map_festival_image` (
+CREATE TABLE IF NOT EXISTS `map_festival_image` (
 
 	 `map_id` 				int unsigned 		NOT NULL AUTO_INCREMENT		COMMENT 'The id of the map entry.',
 	 `associated_festival` 	int unsigned 		NOT NULL					COMMENT 'The id of the mapped festival.',
@@ -170,7 +169,7 @@ FOREIGN 	KEY (`associated_image`) 		REFERENCES images (image_id) 		ON DELETE CAS
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='The table maps images to festivals.';
 
 -- Create the table to map links to festivals
-CREATE TABLE `map_festival_link` (
+CREATE TABLE IF NOT EXISTS `map_festival_link` (
 
 	 `map_id` 				    int unsigned 		    NOT NULL AUTO_INCREMENT		COMMENT 'The id of the map entry.',
      `associated_festival` 	    int unsigned 		    NOT NULL					COMMENT 'The id of the mapped festival.',
@@ -184,7 +183,7 @@ FOREIGN 	KEY (`associated_link`) 		REFERENCES links (link_id) 			ON DELETE CASCA
 
 
 -- Create the table to map places to festivals
-CREATE TABLE `map_festival_place` (
+CREATE TABLE IF NOT EXISTS `map_festival_place` (
 
 	 `map_id` 				    int unsigned 		    NOT NULL AUTO_INCREMENT		COMMENT 'The id of the map entry.',
 	 `associated_festival` 	    int unsigned 		    NOT NULL					COMMENT 'The id of the mapped festival.',
@@ -198,7 +197,7 @@ FOREIGN 	KEY (`associated_place`) 		REFERENCES places (place_id) 		ON DELETE CAS
 
 
 -- Create the table to map tags to festivals
-CREATE TABLE `map_festival_tag` (
+CREATE TABLE IF NOT EXISTS `map_festival_tag` (
 
 	 `map_id` 				    int unsigned 		    NOT NULL AUTO_INCREMENT		COMMENT 'The id of the map entry.',
      `associated_festival` 	    int unsigned 		    NOT NULL					COMMENT 'The id of the mapped festival.',
@@ -211,7 +210,7 @@ FOREIGN 	KEY (`associated_tag`) 			REFERENCES tags (tag_id) 			ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='The table maps tags to festivals.';
 
 -- Create the table to map images to artists
-CREATE TABLE `map_artist_image` (
+CREATE TABLE IF NOT EXISTS `map_artist_image` (
 
 	`map_id` 				int unsigned 		NOT NULL AUTO_INCREMENT 	COMMENT 'The id of the map entry.',
 	`associated_artist` 	int unsigned 		NOT NULL 					COMMENT 'The id of the mapped artist.',
@@ -224,7 +223,7 @@ FOREIGN 	KEY (`associated_image`) 	REFERENCES images (image_id) 	ON DELETE CASCA
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='The table maps images to artists.';
 
 -- Create the table to map links to artists
-CREATE TABLE `map_artist_link` (
+CREATE TABLE IF NOT EXISTS `map_artist_link` (
 
 	 `map_id` 				    int unsigned 		    NOT NULL AUTO_INCREMENT		COMMENT 'The id of the map entry.',
      `associated_artist` 	    int unsigned 		    NOT NULL					COMMENT 'The id of the mapped artist.',
@@ -238,7 +237,7 @@ FOREIGN 	KEY (`associated_link`) 		REFERENCES links (link_id) 		ON DELETE CASCAD
 
 
 -- Create the table to map tags to artists
-CREATE TABLE `map_artist_tag` (
+CREATE TABLE IF NOT EXISTS `map_artist_tag` (
 
 	 `map_id` 				    int unsigned		    NOT NULL AUTO_INCREMENT		COMMENT 'The id of the map entry.',
 	 `associated_artist` 	    int unsigned 		    NOT NULL					COMMENT 'The id of the mapped artist.',
@@ -251,7 +250,7 @@ FOREIGN 	KEY (`associated_tag`) 			REFERENCES tags (tag_id) 			ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='The table maps tags to artists.';
 
 -- Create the table to map images to locations
-CREATE TABLE `map_location_image` (
+CREATE TABLE IF NOT EXISTS `map_location_image` (
 
 	 `map_id` 				int unsigned 		NOT NULL AUTO_INCREMENT		COMMENT 'The id of the map entry.',
 	 `associated_location` 	int unsigned 		NOT NULL					COMMENT 'The id of the mapped location.',
@@ -264,7 +263,7 @@ FOREIGN 	KEY (`associated_image`) 		REFERENCES images (image_id) 		ON DELETE CAS
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='The table maps images to locations.';
 
 -- Create the table to map links to locations
-CREATE TABLE `map_location_link` (
+CREATE TABLE IF NOT EXISTS `map_location_link` (
 
 	 `map_id` 				    int unsigned 		    NOT NULL AUTO_INCREMENT		COMMENT 'The id of the map entry.',
      `associated_location` 	    int unsigned 		    NOT NULL					COMMENT 'The id of the mapped location.',
@@ -277,7 +276,7 @@ FOREIGN 	KEY (`associated_link`) 		REFERENCES links (link_id) 			ON DELETE CASCA
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='The table maps links to locations.';
 
 -- Create the table to map places to locations
-CREATE TABLE `map_location_place` (
+CREATE TABLE IF NOT EXISTS `map_location_place` (
 
 	 `map_id` 				    int unsigned 		    NOT NULL AUTO_INCREMENT		COMMENT 'The id of the map entry.',
 	 `associated_location` 	    int unsigned		    NOT NULL					COMMENT 'The id of the mapped location.',
@@ -290,7 +289,7 @@ FOREIGN 	KEY (`associated_place`) 		REFERENCES places (place_id) 		ON DELETE CAS
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='The table maps places to locations.';
 
 -- Create the table to map artists to events
-CREATE TABLE `map_event_artist` (
+CREATE TABLE IF NOT EXISTS `map_event_artist` (
 
     `map_id` 				int unsigned 		NOT NULL AUTO_INCREMENT		COMMENT 'The id of the map entry.',
     `associated_event` 	    int unsigned 		NOT NULL					COMMENT 'The id of the mapped event.',
@@ -303,7 +302,7 @@ FOREIGN 	KEY (`associated_artist`) 	    REFERENCES artists (artist_id) 	    ON D
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='The table maps artists to events.';
 
 -- Create the table to map locations to events
-CREATE TABLE `map_event_location` (
+CREATE TABLE IF NOT EXISTS `map_event_location` (
 
     `map_id` 				int unsigned 		NOT NULL AUTO_INCREMENT		COMMENT 'The id of the map entry.',
     `associated_event` 	    int unsigned 		NOT NULL					COMMENT 'The id of the mapped event.',

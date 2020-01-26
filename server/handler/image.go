@@ -14,7 +14,7 @@ import (
 
 func GetImages(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
-	rows, err := database.Select(db, "image", "")
+	rows, err := database.Select(db, "image", []string{})
 	// check if an error occurred
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, err.Error())
@@ -42,7 +42,7 @@ func GetImages(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 func GetImage(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	objectID := chi.URLParam(r, "objectID")
-	rows, err := database.Select(db, "image", objectID)
+	rows, err := database.Select(db, "image", []string{objectID})
 	// check if an error occurred
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, err.Error())

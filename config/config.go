@@ -1,7 +1,8 @@
 package config
 
 type Config struct {
-	DB *DBConfig
+	DB       *DBConfig
+	ReadOnly bool
 }
 
 type DBConfig struct {
@@ -25,5 +26,6 @@ func GetConfig() *Config {
 			Name:     "eventus_api_database",
 			Charset:  "utf8",
 		},
+		ReadOnly: false,
 	}
 }

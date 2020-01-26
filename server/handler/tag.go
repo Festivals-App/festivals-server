@@ -14,7 +14,7 @@ import (
 
 func GetTags(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
-	rows, err := database.Select(db, "tag", "")
+	rows, err := database.Select(db, "tag", []string{})
 	// check if an error occurred
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, err.Error())
@@ -42,7 +42,7 @@ func GetTags(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 func GetTag(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	objectID := chi.URLParam(r, "objectID")
-	rows, err := database.Select(db, "tag", objectID)
+	rows, err := database.Select(db, "tag", []string{objectID})
 	// check if an error occurred
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, err.Error())

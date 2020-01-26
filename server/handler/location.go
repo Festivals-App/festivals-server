@@ -14,7 +14,60 @@ import (
 
 func GetLocations(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
-	rows, err := database.Select(db, "location", "")
+	idValues := []string{}
+	// get query values if they exist
+	values := r.URL.Query()
+	if len(values) != 0 {
+
+		// search with name
+		name := values.Get("name")
+		if name != "" {
+			SearchLocations(name, db, w)
+			return
+		}
+		// filter by ids
+		ids := values.Get("ids")
+		if ids != "" {
+			var err error
+			idValues, err = IDsFromString(ids)
+			if err != nil {
+				respondError(w, http.StatusBadRequest, err.Error())
+				return
+			}
+		} else {
+			respondError(w, http.StatusBadRequest, "Provided unknown query value")
+			return
+		}
+	}
+
+	rows, err := database.Select(db, "location", idValues)
+	// check if an error occurred
+	if err != nil {
+		respondError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+	// no rows and no error indicate a successful query but an empty result
+	if rows == nil {
+		respondJSON(w, http.StatusOK, []model.Location{})
+	}
+	fetchedObjects := []model.Location{}
+	// iterate over the rows an create
+	for rows.Next() {
+		// scan the link
+		obj, err := model.LocationsScan(rows)
+		if err != nil {
+			respondError(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+		// add object result slice
+		fetchedObjects = append(fetchedObjects, obj)
+	}
+	respondJSON(w, http.StatusOK, fetchedObjects)
+}
+
+func SearchLocations(name string, db *sql.DB, w http.ResponseWriter) {
+
+	rows, err := database.Search(db, "location", name)
 	// check if an error occurred
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, err.Error())
@@ -42,7 +95,7 @@ func GetLocations(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 func GetLocation(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	objectID := chi.URLParam(r, "objectID")
-	rows, err := database.Select(db, "location", objectID)
+	rows, err := database.Select(db, "location", []string{objectID})
 	// check if an error occurred
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, err.Error())
@@ -57,34 +110,6 @@ func GetLocation(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	for rows.Next() {
 		// scan the link
 		obj, err := model.LocationsScan(rows)
-		if err != nil {
-			respondError(w, http.StatusInternalServerError, err.Error())
-			return
-		}
-		// add object result slice
-		fetchedObjects = append(fetchedObjects, obj)
-	}
-	respondJSON(w, http.StatusOK, fetchedObjects)
-}
-
-func GetLocationEvents(db *sql.DB, w http.ResponseWriter, r *http.Request) {
-
-	objectID := chi.URLParam(r, "objectID")
-	rows, err := database.Resource(db, "location", objectID, "event")
-	// check if an error occurred
-	if err != nil {
-		respondError(w, http.StatusInternalServerError, err.Error())
-		return
-	}
-	// no rows and no error indicate a successful query but an empty result
-	if rows == nil {
-		respondJSON(w, http.StatusOK, []model.Event{})
-	}
-	fetchedObjects := []model.Event{}
-	// iterate over the rows an create
-	for rows.Next() {
-		// scan the link
-		obj, err := model.EventsScan(rows)
 		if err != nil {
 			respondError(w, http.StatusInternalServerError, err.Error())
 			return
@@ -256,6 +281,48 @@ func SetPlaceForLocation(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	objectID := chi.URLParam(r, "objectID")
 	resourceID := chi.URLParam(r, "resourceID")
 	err := database.SetResource(db, "location", objectID, "place", resourceID)
+	// check if an error occurred
+	if err != nil {
+		respondError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	respondJSON(w, http.StatusOK, []interface{}{})
+}
+
+func RemoveImageForLocation(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+
+	objectID := chi.URLParam(r, "objectID")
+	resourceID := chi.URLParam(r, "resourceID")
+	err := database.RemoveResource(db, "location", objectID, "image", resourceID)
+	// check if an error occurred
+	if err != nil {
+		respondError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	respondJSON(w, http.StatusOK, []interface{}{})
+}
+
+func RemoveLinkForLocation(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+
+	objectID := chi.URLParam(r, "objectID")
+	resourceID := chi.URLParam(r, "resourceID")
+	err := database.RemoveResource(db, "location", objectID, "link", resourceID)
+	// check if an error occurred
+	if err != nil {
+		respondError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	respondJSON(w, http.StatusOK, []interface{}{})
+}
+
+func RemovePlaceForLocation(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+
+	objectID := chi.URLParam(r, "objectID")
+	resourceID := chi.URLParam(r, "resourceID")
+	err := database.RemoveResource(db, "location", objectID, "place", resourceID)
 	// check if an error occurred
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, err.Error())

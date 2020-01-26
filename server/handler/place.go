@@ -14,7 +14,7 @@ import (
 
 func GetPlaces(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
-	rows, err := database.Select(db, "place", "")
+	rows, err := database.Select(db, "place", []string{})
 	// check if an error occurred
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, err.Error())
@@ -42,7 +42,7 @@ func GetPlaces(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 func GetPlace(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	objectID := chi.URLParam(r, "objectID")
-	rows, err := database.Select(db, "place", objectID)
+	rows, err := database.Select(db, "place", []string{objectID})
 	// check if an error occurred
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, err.Error())

@@ -14,7 +14,7 @@ import (
 
 func GetLinks(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
-	rows, err := database.Select(db, "link", "")
+	rows, err := database.Select(db, "link", []string{})
 	// check if an error occurred
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, err.Error())
@@ -42,7 +42,7 @@ func GetLinks(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 func GetLink(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	objectID := chi.URLParam(r, "objectID")
-	rows, err := database.Select(db, "link", objectID)
+	rows, err := database.Select(db, "link", []string{objectID})
 	// check if an error occurred
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, err.Error())

@@ -3,6 +3,7 @@ package handler
 import (
 	"encoding/json"
 	"net/http"
+	"strings"
 )
 
 // respondJSON makes the response with payload as json format
@@ -32,4 +33,9 @@ func respondError(w http.ResponseWriter, code int, message string) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(code)
 	w.Write([]byte(response))
+}
+
+func IDsFromString(ids string) ([]string, error) {
+
+	return strings.Split(ids, ","), nil
 }

@@ -49,6 +49,18 @@ func DBPlaceholder(object interface{}) string {
 	panic(fmt.Errorf("DBFields requires a struct, found: %s", v.Kind().String()))
 }
 
+func DBPlaceholderForIDs(ids []string) string {
+
+	placeholderString := ""
+	for i := 0; i < len(ids); i++ {
+		placeholderString = placeholderString + "?"
+		if i != len(ids)-1 {
+			placeholderString = placeholderString + ","
+		}
+	}
+	return placeholderString
+}
+
 // DBValues reflects on a struct and returns the values of fields which have a `db` tag.
 func DBValues(object interface{}) []interface{} {
 
@@ -89,4 +101,13 @@ func DBKeyValuePairs(object interface{}) string {
 	}
 
 	panic(fmt.Errorf("DBFields requires a struct, found: %s", v.Kind().String()))
+}
+
+func InterfaceFromStringArray(strings []string) []interface{} {
+
+	b := make([]interface{}, len(strings))
+	for i := range strings {
+		b[i] = strings[i]
+	}
+	return b
 }

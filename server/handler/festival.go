@@ -8,21 +8,39 @@ import (
 	"github.com/go-chi/chi"
 	"io/ioutil"
 	"net/http"
-	"net/url"
 )
 
 // GET functions
 
 func GetFestivals(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
+	idValues := []string{}
 	// get query values if they exist
 	values := r.URL.Query()
 	if len(values) != 0 {
-		SearchFestivals(values, db, w, r)
-		return
+
+		// search with name
+		name := values.Get("name")
+		if name != "" {
+			SearchFestivals(name, db, w)
+			return
+		}
+		// filter by ids
+		ids := values.Get("ids")
+		if ids != "" {
+			var err error
+			idValues, err = IDsFromString(ids)
+			if err != nil {
+				respondError(w, http.StatusBadRequest, err.Error())
+				return
+			}
+		} else {
+			respondError(w, http.StatusBadRequest, "Provided unknown query value")
+			return
+		}
 	}
 
-	rows, err := database.Select(db, "festival", "")
+	rows, err := database.Select(db, "festival", idValues)
 	// check if an error occurred
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, err.Error())
@@ -47,10 +65,7 @@ func GetFestivals(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	respondJSON(w, http.StatusOK, fetchedObjects)
 }
 
-func SearchFestivals(parameters url.Values, db *sql.DB, w http.ResponseWriter, r *http.Request) {
-
-	// get values
-	name := parameters.Get("name")
+func SearchFestivals(name string, db *sql.DB, w http.ResponseWriter) {
 
 	rows, err := database.Search(db, "festival", name)
 	// check if an error occurred
@@ -75,13 +90,12 @@ func SearchFestivals(parameters url.Values, db *sql.DB, w http.ResponseWriter, r
 		fetchedObjects = append(fetchedObjects, obj)
 	}
 	respondJSON(w, http.StatusOK, fetchedObjects)
-
 }
 
 func GetFestival(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	objectID := chi.URLParam(r, "objectID")
-	rows, err := database.Select(db, "festival", objectID)
+	rows, err := database.Select(db, "festival", []string{objectID})
 	// check if an error occurred
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, err.Error())
@@ -286,6 +300,20 @@ func CreateFestival(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	respondJSON(w, http.StatusOK, fetchedObjects)
 }
 
+func SetEventForFestival(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+
+	objectID := chi.URLParam(r, "objectID")
+	resourceID := chi.URLParam(r, "resourceID")
+	err := database.SetResource(db, "festival", objectID, "event", resourceID)
+	// check if an error occurred
+	if err != nil {
+		respondError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	respondJSON(w, http.StatusOK, []interface{}{})
+}
+
 func SetImageForFestival(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	objectID := chi.URLParam(r, "objectID")
@@ -333,6 +361,62 @@ func SetTagForFestival(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	objectID := chi.URLParam(r, "objectID")
 	resourceID := chi.URLParam(r, "resourceID")
 	err := database.SetResource(db, "festival", objectID, "tag", resourceID)
+	// check if an error occurred
+	if err != nil {
+		respondError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	respondJSON(w, http.StatusOK, []interface{}{})
+}
+
+func RemoveImageForFestival(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+
+	objectID := chi.URLParam(r, "objectID")
+	resourceID := chi.URLParam(r, "resourceID")
+	err := database.RemoveResource(db, "festival", objectID, "image", resourceID)
+	// check if an error occurred
+	if err != nil {
+		respondError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	respondJSON(w, http.StatusOK, []interface{}{})
+}
+
+func RemoveLinkForFestival(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+
+	objectID := chi.URLParam(r, "objectID")
+	resourceID := chi.URLParam(r, "resourceID")
+	err := database.RemoveResource(db, "festival", objectID, "link", resourceID)
+	// check if an error occurred
+	if err != nil {
+		respondError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	respondJSON(w, http.StatusOK, []interface{}{})
+}
+
+func RemovePlaceForFestival(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+
+	objectID := chi.URLParam(r, "objectID")
+	resourceID := chi.URLParam(r, "resourceID")
+	err := database.RemoveResource(db, "festival", objectID, "place", resourceID)
+	// check if an error occurred
+	if err != nil {
+		respondError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	respondJSON(w, http.StatusOK, []interface{}{})
+}
+
+func RemoveTagForFestival(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+
+	objectID := chi.URLParam(r, "objectID")
+	resourceID := chi.URLParam(r, "resourceID")
+	err := database.RemoveResource(db, "festival", objectID, "tag", resourceID)
 	// check if an error occurred
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, err.Error())
@@ -400,162 +484,3 @@ func DeleteFestival(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	}
 	respondJSON(w, http.StatusNoContent, []model.Festival{})
 }
-
-/*
-func GetFestivalImage(w http.ResponseWriter, r *http.Request) {
-
-	objectID := chi.URLParam(r, "objectID")
-	rows, err := associatedImage("festival", objectID)
-	if err != nil && err != sql.ErrNoRows {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	var errors []model.Error
-	var fetchedObjects []Image
-
-	for rows.Next() {
-		image, err := ImagesScan(rows)
-		if err != nil {
-			if err != sql.ErrNoRows {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
-				return
-			} else {
-				fetchErr := Error{Code: 404, Detail: err.Error()}
-				errors = append(errors, fetchErr)
-			}
-		}
-
-		fetchedObjects = append(fetchedObjects, image)
-	}
-
-	RESPONSE(w, r, errors, fetchedObjects, nil)
-}
-
-func GetFestivalLinks(w http.ResponseWriter, r *http.Request) {
-
-
-	objectID := chi.URLParam(r, "objectID")
-	rows, err := associatedLinks("festival", objectID)
-	if err != nil && err != sql.ErrNoRows {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	var errors []model.Error
-	var fetchedObjects []Link
-
-	for rows.Next() {
-
-		// for each row, scan the result into our festival composite object
-		link, err := LinksScan(rows)
-		if err != nil {
-			if err != sql.ErrNoRows {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
-				return
-			} else {
-				fetchErr := Error{Code: 404, Detail: err.Error()}
-				errors = append(errors, fetchErr)
-			}
-		}
-
-		fetchedObjects = append(fetchedObjects, link)
-	}
-
-	RESPONSE(w, r, errors, fetchedObjects, nil)
-}
-
-func GetFestivalPlace(w http.ResponseWriter, r *http.Request) {
-
-	objectID := chi.URLParam(r, "objectID")
-	rows, err := associatedPlace("festival", objectID)
-	if err != nil && err != sql.ErrNoRows {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	var errors []model.Error
-	var fetchedObjects []Place
-
-	for rows.Next() {
-
-		place, err := PlacesScan(rows)
-		if err != nil {
-			if err != sql.ErrNoRows {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
-				return
-			} else {
-				fetchErr := Error{Code: 404, Detail: err.Error()}
-				errors = append(errors, fetchErr)
-			}
-		}
-
-		fetchedObjects = append(fetchedObjects, place)
-	}
-
-	RESPONSE(w, r, errors, fetchedObjects, nil)
-}
-
-func GetFestivalTags(w http.ResponseWriter, r *http.Request) {
-
-	objectID := chi.URLParam(r, "objectID")
-	rows, err := associatedTags("festival", objectID)
-	if err != nil && err != sql.ErrNoRows {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	var errors []model.Error
-	var fetchedObjects []Tag
-
-	for rows.Next() {
-
-		// for each row, scan the result into our festival composite object
-		tag, err := TagsScan(rows)
-		if err != nil {
-			if err != sql.ErrNoRows {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
-				return
-			} else {
-				fetchErr := Error{Code: 404, Detail: err.Error()}
-				errors = append(errors, fetchErr)
-			}
-		}
-
-		fetchedObjects = append(fetchedObjects, tag)
-	}
-
-	RESPONSE(w, r, errors, fetchedObjects, nil)
-}
-
-func GetFestivalEvents(w http.ResponseWriter, r *http.Request) {
-
-	objectID := chi.URLParam(r, "objectID")
-	rows, err := associatedEvents("festival", objectID)
-	if err != nil {
-		panic(err.Error()) // proper error handling instead of panic in your app
-	}
-
-	var errors []model.Error
-	var fetchedObjects []Event
-
-	for rows.Next() {
-
-		// for each row, scan the result into our festival composite object
-		event, err := EventsScan(rows)
-		if err != nil {
-			if err != sql.ErrNoRows {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
-				return
-			} else {
-				fetchErr := Error{Code: 404, Detail: err.Error()}
-				errors = append(errors, fetchErr)
-			}
-		}
-
-		fetchedObjects = append(fetchedObjects, event)
-	}
-
-	RESPONSE(w, r, errors, fetchedObjects, nil)
-}
-*/
