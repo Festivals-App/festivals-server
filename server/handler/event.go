@@ -14,7 +14,7 @@ import (
 
 func GetEvents(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
-	idValues := []string{}
+	var idValues []string
 	// get query values if they exist
 	values := r.URL.Query()
 	if len(values) != 0 {
@@ -50,7 +50,7 @@ func GetEvents(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	if rows == nil {
 		respondJSON(w, http.StatusOK, []model.Event{})
 	}
-	fetchedObjects := []model.Event{}
+	var fetchedObjects []model.Event
 	// iterate over the rows an create
 	for rows.Next() {
 		// scan the link
@@ -77,7 +77,7 @@ func SearchEvents(name string, db *sql.DB, w http.ResponseWriter) {
 	if rows == nil {
 		respondJSON(w, http.StatusOK, []model.Event{})
 	}
-	fetchedObjects := []model.Event{}
+	var fetchedObjects []model.Event
 	// iterate over the rows an create
 	for rows.Next() {
 		// scan the link
@@ -105,7 +105,7 @@ func GetEvent(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	if rows == nil {
 		respondJSON(w, http.StatusOK, []model.Event{})
 	}
-	fetchedObjects := []model.Event{}
+	var fetchedObjects []model.Event
 	// iterate over the rows an create
 	for rows.Next() {
 		// scan the link
@@ -133,7 +133,7 @@ func GetEventFestival(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	if rows == nil {
 		respondJSON(w, http.StatusOK, []model.Festival{})
 	}
-	fetchedObjects := []model.Festival{}
+	var fetchedObjects []model.Festival
 	// iterate over the rows an create
 	for rows.Next() {
 		// scan the link
@@ -161,7 +161,7 @@ func GetEventArtist(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	if rows == nil {
 		respondJSON(w, http.StatusOK, []model.Artist{})
 	}
-	fetchedObjects := []model.Artist{}
+	var fetchedObjects []model.Artist
 	// iterate over the rows an create
 	for rows.Next() {
 		// scan the link
@@ -189,7 +189,7 @@ func GetEventLocation(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	if rows == nil {
 		respondJSON(w, http.StatusOK, []model.Location{})
 	}
-	fetchedObjects := []model.Location{}
+	var fetchedObjects []model.Location
 	// iterate over the rows an create
 	for rows.Next() {
 		// scan the link
@@ -229,7 +229,7 @@ func CreateEvent(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	if rows == nil {
 		respondJSON(w, http.StatusOK, []model.Event{})
 	}
-	fetchedObjects := []model.Event{}
+	var fetchedObjects []model.Event
 	// iterate over the rows an create
 	for rows.Next() {
 		// scan the link
@@ -328,7 +328,7 @@ func UpdateEvent(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	if rows == nil {
 		respondJSON(w, http.StatusOK, []model.Event{})
 	}
-	fetchedObjects := []model.Event{}
+	var fetchedObjects []model.Event
 	// iterate over the rows an create
 	for rows.Next() {
 		// scan the link

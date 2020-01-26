@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"strings"
 )
@@ -13,12 +14,18 @@ func respondJSON(w http.ResponseWriter, status int, payload interface{}) {
 	response, err := json.Marshal(resultMap)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		_, err = w.Write([]byte(err.Error()))
+		if err != nil {
+			log.Panic(err.Error())
+		}
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(status)
-	w.Write([]byte(response))
+	_, err = w.Write(response)
+	if err != nil {
+		log.Panic(err.Error())
+	}
 }
 
 // respondError makes the error response with payload as json format
@@ -27,12 +34,18 @@ func respondError(w http.ResponseWriter, code int, message string) {
 	response, err := json.Marshal(resultMap)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		_, err = w.Write([]byte(err.Error()))
+		if err != nil {
+			log.Panic(err.Error())
+		}
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(code)
-	w.Write([]byte(response))
+	_, err = w.Write(response)
+	if err != nil {
+		log.Panic(err.Error())
+	}
 }
 
 func IDsFromString(ids string) ([]string, error) {

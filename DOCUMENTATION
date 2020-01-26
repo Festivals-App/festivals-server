@@ -2,7 +2,7 @@
 
 ### Requests
 
-The Eventus API supports the HTTP `GET`, `POST`, `PATCH` and `DELETE` methodes.
+The Eventus API supports the HTTP `GET`, `POST`, `PATCH` and `DELETE` methods.
 
 #### Query Parameter
 
@@ -10,7 +10,7 @@ The Eventus API supports the HTTP `GET`, `POST`, `PATCH` and `DELETE` methodes.
     The name parameter expects a simple string. `name=^[A-Za-z0-9_.]+$`
 
 * `ids`  
-    The ids parameter expects numbers seperated by a comma. `ids=1,2,37`
+    The ids parameter expects numbers separated by a comma. `ids=1,2,37`
 
 * `include`  
     The include parameter expects the name(s) of the relationship you want the response to include. `include=rel1,rel2,rel3`

@@ -14,7 +14,30 @@ import (
 
 func GetTags(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
-	rows, err := database.Select(db, "tag", []string{})
+	var idValues []string
+	// get query values if they exist
+	values := r.URL.Query()
+	if len(values) != 0 {
+
+		// filter by ids
+		ids := values.Get("ids")
+		if ids != "" {
+			var err error
+			idValues, err = IDsFromString(ids)
+			if err != nil {
+				respondError(w, http.StatusBadRequest, err.Error())
+				return
+			}
+		} else {
+			respondError(w, http.StatusBadRequest, "get tags: provided unknown query value")
+			return
+		}
+	}
+	if idValues == nil {
+		idValues = []string{}
+	}
+
+	rows, err := database.Select(db, "tag", idValues)
 	// check if an error occurred
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, err.Error())
@@ -24,7 +47,7 @@ func GetTags(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	if rows == nil {
 		respondJSON(w, http.StatusOK, []model.Tag{})
 	}
-	fetchedObjects := []model.Tag{}
+	var fetchedObjects []model.Tag
 	// iterate over the rows an create
 	for rows.Next() {
 		// scan the link
@@ -52,7 +75,7 @@ func GetTag(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	if rows == nil {
 		respondJSON(w, http.StatusOK, []model.Tag{})
 	}
-	fetchedObjects := []model.Tag{}
+	var fetchedObjects []model.Tag
 	// iterate over the rows an create
 	for rows.Next() {
 		// scan the link
@@ -80,7 +103,7 @@ func GetTagFestivals(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	if rows == nil {
 		respondJSON(w, http.StatusOK, []model.Festival{})
 	}
-	fetchedObjects := []model.Festival{}
+	var fetchedObjects []model.Festival
 	// iterate over the rows an create
 	for rows.Next() {
 		// scan the link
@@ -120,7 +143,7 @@ func CreateTag(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	if rows == nil {
 		respondJSON(w, http.StatusOK, []model.Tag{})
 	}
-	fetchedObjects := []model.Tag{}
+	var fetchedObjects []model.Tag
 	// iterate over the rows an create
 	for rows.Next() {
 		// scan the link
@@ -161,7 +184,7 @@ func UpdateTag(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	if rows == nil {
 		respondJSON(w, http.StatusOK, []model.Tag{})
 	}
-	fetchedObjects := []model.Tag{}
+	var fetchedObjects []model.Tag
 	// iterate over the rows an create
 	for rows.Next() {
 		// scan the link

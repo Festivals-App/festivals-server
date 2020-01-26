@@ -14,7 +14,7 @@ func DBFields(object interface{}) string {
 	if v.Kind() == reflect.Ptr {
 		v = v.Elem()
 	}
-	fields := []string{}
+	var fields []string
 	if v.Kind() == reflect.Struct {
 		for i := 0; i < v.NumField(); i++ {
 			field := v.Type().Field(i).Tag.Get("db")
@@ -35,7 +35,7 @@ func DBPlaceholder(object interface{}) string {
 	if v.Kind() == reflect.Ptr {
 		v = v.Elem()
 	}
-	fields := []string{}
+	var fields []string
 	if v.Kind() == reflect.Struct {
 		for i := 0; i < v.NumField(); i++ {
 			field := v.Type().Field(i).Tag.Get("db")
@@ -89,7 +89,7 @@ func DBKeyValuePairs(object interface{}) string {
 	if v.Kind() == reflect.Ptr {
 		v = v.Elem()
 	}
-	fields := []string{}
+	var fields []string
 	if v.Kind() == reflect.Struct {
 		for i := 0; i < v.NumField(); i++ {
 			field := v.Type().Field(i).Tag.Get("db")

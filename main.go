@@ -9,7 +9,7 @@ func main() {
 
 	conf := config.GetConfig()
 
-	server := &server.Server{}
-	server.Initialize(conf)
-	server.Run(":8080")
+	serverInstance := &server.Server{}
+	serverInstance.Initialize(conf)
+	serverInstance.Run(":8080")
 }

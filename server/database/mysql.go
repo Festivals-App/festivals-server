@@ -135,7 +135,7 @@ func RemoveResource(db *sql.DB, object string, objectID string, resource string,
 		}
 		// we only delete one row per request
 		if numOfAffectedRows != 1 {
-			return errors.New("No rows where affected.")
+			return errors.New("remove resource: no rows where affected")
 		}
 		return nil
 	} else {
@@ -155,12 +155,12 @@ func Insert(db *sql.DB, table string, object interface{}) (*sql.Rows, error) {
 		return nil, err
 	}
 
-	instertID, err := result.LastInsertId()
+	insertID, err := result.LastInsertId()
 	if err != nil {
 		return nil, err
 	}
 
-	objectID := strconv.FormatInt(instertID, 10)
+	objectID := strconv.FormatInt(insertID, 10)
 
 	return Select(db, table, []string{objectID})
 }
@@ -199,7 +199,7 @@ func Delete(db *sql.DB, table string, objectID string) error {
 	}
 	// we only delete one row per request
 	if numOfAffectedRows != 1 {
-		return errors.New("No rows where affected.")
+		return errors.New("remove resource: no rows where affected")
 	}
 	return nil
 }

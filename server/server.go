@@ -44,7 +44,7 @@ func (s *Server) Initialize(config *config.Config) {
 }
 
 func (s *Server) setMiddleware() {
-	// tell the ruter which middleware to use
+	// tell the router which middleware to use
 	s.Router.Use(
 		// used to log the request to the console | development
 		middleware.Logger,

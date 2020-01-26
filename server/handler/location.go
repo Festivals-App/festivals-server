@@ -14,7 +14,7 @@ import (
 
 func GetLocations(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
-	idValues := []string{}
+	var idValues []string
 	// get query values if they exist
 	values := r.URL.Query()
 	if len(values) != 0 {
@@ -50,7 +50,7 @@ func GetLocations(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	if rows == nil {
 		respondJSON(w, http.StatusOK, []model.Location{})
 	}
-	fetchedObjects := []model.Location{}
+	var fetchedObjects []model.Location
 	// iterate over the rows an create
 	for rows.Next() {
 		// scan the link
@@ -77,7 +77,7 @@ func SearchLocations(name string, db *sql.DB, w http.ResponseWriter) {
 	if rows == nil {
 		respondJSON(w, http.StatusOK, []model.Location{})
 	}
-	fetchedObjects := []model.Location{}
+	var fetchedObjects []model.Location
 	// iterate over the rows an create
 	for rows.Next() {
 		// scan the link
@@ -105,7 +105,7 @@ func GetLocation(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	if rows == nil {
 		respondJSON(w, http.StatusOK, []model.Location{})
 	}
-	fetchedObjects := []model.Location{}
+	var fetchedObjects []model.Location
 	// iterate over the rows an create
 	for rows.Next() {
 		// scan the link
@@ -133,7 +133,7 @@ func GetLocationImage(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	if rows == nil {
 		respondJSON(w, http.StatusOK, []model.Image{})
 	}
-	fetchedObjects := []model.Image{}
+	var fetchedObjects []model.Image
 	// iterate over the rows an create
 	for rows.Next() {
 		// scan the link
@@ -161,7 +161,7 @@ func GetLocationLinks(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	if rows == nil {
 		respondJSON(w, http.StatusOK, []model.Link{})
 	}
-	fetchedObjects := []model.Link{}
+	var fetchedObjects []model.Link
 	// iterate over the rows an create
 	for rows.Next() {
 		// scan the link
@@ -189,7 +189,7 @@ func GetLocationPlace(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	if rows == nil {
 		respondJSON(w, http.StatusOK, []model.Place{})
 	}
-	fetchedObjects := []model.Place{}
+	var fetchedObjects []model.Place
 	// iterate over the rows an create
 	for rows.Next() {
 		// scan the link
@@ -233,7 +233,7 @@ func CreateLocation(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	if rows == nil {
 		respondJSON(w, http.StatusOK, []model.Location{})
 	}
-	fetchedObjects := []model.Location{}
+	var fetchedObjects []model.Location
 	// iterate over the rows an create
 	for rows.Next() {
 		// scan the link
@@ -362,7 +362,7 @@ func UpdateLocation(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	if rows == nil {
 		respondJSON(w, http.StatusOK, []model.Location{})
 	}
-	fetchedObjects := []model.Location{}
+	var fetchedObjects []model.Location
 	// iterate over the rows an create
 	for rows.Next() {
 		// scan the link

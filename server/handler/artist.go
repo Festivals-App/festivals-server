@@ -14,7 +14,7 @@ import (
 
 func GetArtists(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
-	idValues := []string{}
+	var idValues []string
 	// get query values if they exist
 	values := r.URL.Query()
 	if len(values) != 0 {
@@ -40,6 +40,9 @@ func GetArtists(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	if idValues == nil {
+		idValues = []string{}
+	}
 	rows, err := database.Select(db, "artist", idValues)
 	// check if an error occurred
 	if err != nil {
@@ -50,7 +53,7 @@ func GetArtists(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	if rows == nil {
 		respondJSON(w, http.StatusOK, []model.Artist{})
 	}
-	fetchedObjects := []model.Artist{}
+	var fetchedObjects []model.Artist
 	// iterate over the rows an create
 	for rows.Next() {
 		// scan the link
@@ -77,7 +80,7 @@ func SearchArtists(name string, db *sql.DB, w http.ResponseWriter) {
 	if rows == nil {
 		respondJSON(w, http.StatusOK, []model.Artist{})
 	}
-	fetchedObjects := []model.Artist{}
+	var fetchedObjects []model.Artist
 	// iterate over the rows an create
 	for rows.Next() {
 		// scan the link
@@ -105,7 +108,7 @@ func GetArtist(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	if rows == nil {
 		respondJSON(w, http.StatusOK, []model.Artist{})
 	}
-	fetchedObjects := []model.Artist{}
+	var fetchedObjects []model.Artist
 	// iterate over the rows an create
 	for rows.Next() {
 		// scan the link
@@ -133,7 +136,7 @@ func GetArtistImage(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	if rows == nil {
 		respondJSON(w, http.StatusOK, []model.Image{})
 	}
-	fetchedObjects := []model.Image{}
+	var fetchedObjects []model.Image
 	// iterate over the rows an create
 	for rows.Next() {
 		// scan the link
@@ -161,7 +164,7 @@ func GetArtistLinks(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	if rows == nil {
 		respondJSON(w, http.StatusOK, []model.Link{})
 	}
-	fetchedObjects := []model.Link{}
+	var fetchedObjects []model.Link
 	// iterate over the rows an create
 	for rows.Next() {
 		// scan the link
@@ -189,7 +192,7 @@ func GetArtistTags(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	if rows == nil {
 		respondJSON(w, http.StatusOK, []model.Tag{})
 	}
-	fetchedObjects := []model.Tag{}
+	var fetchedObjects []model.Tag
 	// iterate over the rows an create
 	for rows.Next() {
 		// scan the link
@@ -233,7 +236,7 @@ func CreateArtist(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	if rows == nil {
 		respondJSON(w, http.StatusOK, []model.Artist{})
 	}
-	fetchedObjects := []model.Artist{}
+	var fetchedObjects []model.Artist
 	// iterate over the rows an create
 	for rows.Next() {
 		// scan the link
@@ -361,7 +364,7 @@ func UpdateArtist(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	if rows == nil {
 		respondJSON(w, http.StatusOK, []model.Artist{})
 	}
-	fetchedObjects := []model.Artist{}
+	var fetchedObjects []model.Artist
 	// iterate over the rows an create
 	for rows.Next() {
 		// scan the link

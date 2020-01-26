@@ -14,7 +14,7 @@ import (
 
 func GetFestivals(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
-	idValues := []string{}
+	var idValues []string
 	// get query values if they exist
 	values := r.URL.Query()
 	if len(values) != 0 {
@@ -50,7 +50,7 @@ func GetFestivals(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	if rows == nil {
 		respondJSON(w, http.StatusOK, []model.Festival{})
 	}
-	fetchedObjects := []model.Festival{}
+	var fetchedObjects []model.Festival
 	// iterate over the rows an create
 	for rows.Next() {
 		// scan the link
@@ -77,7 +77,7 @@ func SearchFestivals(name string, db *sql.DB, w http.ResponseWriter) {
 	if rows == nil {
 		respondJSON(w, http.StatusOK, []model.Festival{})
 	}
-	fetchedObjects := []model.Festival{}
+	var fetchedObjects []model.Festival
 	// iterate over the rows an create
 	for rows.Next() {
 		// scan the link
@@ -105,7 +105,7 @@ func GetFestival(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	if rows == nil {
 		respondJSON(w, http.StatusOK, []model.Festival{})
 	}
-	fetchedObjects := []model.Festival{}
+	var fetchedObjects []model.Festival
 	// iterate over the rows an create
 	for rows.Next() {
 		// scan the link
@@ -133,7 +133,7 @@ func GetFestivalEvents(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	if rows == nil {
 		respondJSON(w, http.StatusOK, []model.Event{})
 	}
-	fetchedObjects := []model.Event{}
+	var fetchedObjects []model.Event
 	// iterate over the rows an create
 	for rows.Next() {
 		// scan the link
@@ -161,7 +161,7 @@ func GetFestivalImage(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	if rows == nil {
 		respondJSON(w, http.StatusOK, []model.Image{})
 	}
-	fetchedObjects := []model.Image{}
+	var fetchedObjects []model.Image
 	// iterate over the rows an create
 	for rows.Next() {
 		// scan the link
@@ -189,7 +189,7 @@ func GetFestivalLinks(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	if rows == nil {
 		respondJSON(w, http.StatusOK, []model.Link{})
 	}
-	fetchedObjects := []model.Link{}
+	var fetchedObjects []model.Link
 	// iterate over the rows an create
 	for rows.Next() {
 		// scan the link
@@ -217,7 +217,7 @@ func GetFestivalPlace(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	if rows == nil {
 		respondJSON(w, http.StatusOK, []model.Place{})
 	}
-	fetchedObjects := []model.Place{}
+	var fetchedObjects []model.Place
 	// iterate over the rows an create
 	for rows.Next() {
 		// scan the link
@@ -245,7 +245,7 @@ func GetFestivalTags(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	if rows == nil {
 		respondJSON(w, http.StatusOK, []model.Tag{})
 	}
-	fetchedObjects := []model.Tag{}
+	var fetchedObjects []model.Tag
 	// iterate over the rows an create
 	for rows.Next() {
 		// scan the link
@@ -281,11 +281,15 @@ func CreateFestival(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	}
 	rows, err := database.Insert(db, "festival", objectToCreate)
 	// check if an error occurred
-	if err != nil || rows == nil {
+	if err != nil {
 		respondError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
-	fetchedObjects := []model.Festival{}
+	if rows == nil {
+		respondError(w, http.StatusInternalServerError, "create festival: failed to insert into database")
+		return
+	}
+	var fetchedObjects []model.Festival
 	// iterate over the rows
 	for rows.Next() {
 		// scan the link
@@ -456,7 +460,7 @@ func UpdateFestival(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	if rows == nil {
 		respondJSON(w, http.StatusOK, []model.Festival{})
 	}
-	fetchedObjects := []model.Festival{}
+	var fetchedObjects []model.Festival
 	// iterate over the rows an create
 	for rows.Next() {
 		// scan the link

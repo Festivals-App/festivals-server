@@ -14,7 +14,30 @@ import (
 
 func GetLinks(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
-	rows, err := database.Select(db, "link", []string{})
+	var idValues []string
+	// get query values if they exist
+	values := r.URL.Query()
+	if len(values) != 0 {
+
+		// filter by ids
+		ids := values.Get("ids")
+		if ids != "" {
+			var err error
+			idValues, err = IDsFromString(ids)
+			if err != nil {
+				respondError(w, http.StatusBadRequest, err.Error())
+				return
+			}
+		} else {
+			respondError(w, http.StatusBadRequest, "get links: provided unknown query value")
+			return
+		}
+	}
+	if idValues == nil {
+		idValues = []string{}
+	}
+
+	rows, err := database.Select(db, "link", idValues)
 	// check if an error occurred
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, err.Error())
@@ -24,7 +47,7 @@ func GetLinks(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	if rows == nil {
 		respondJSON(w, http.StatusOK, []model.Link{})
 	}
-	fetchedObjects := []model.Link{}
+	var fetchedObjects []model.Link
 	// iterate over the rows an create
 	for rows.Next() {
 		// scan the link
@@ -52,7 +75,7 @@ func GetLink(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	if rows == nil {
 		respondJSON(w, http.StatusOK, []model.Link{})
 	}
-	fetchedObjects := []model.Link{}
+	var fetchedObjects []model.Link
 	// iterate over the rows an create
 	for rows.Next() {
 		// scan the link
@@ -92,7 +115,7 @@ func CreateLink(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	if rows == nil {
 		respondJSON(w, http.StatusOK, []model.Link{})
 	}
-	fetchedObjects := []model.Link{}
+	var fetchedObjects []model.Link
 	// iterate over the rows an create
 	for rows.Next() {
 		// scan the link
@@ -133,7 +156,7 @@ func UpdateLink(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	if rows == nil {
 		respondJSON(w, http.StatusOK, []model.Link{})
 	}
-	fetchedObjects := []model.Link{}
+	var fetchedObjects []model.Link
 	// iterate over the rows an create
 	for rows.Next() {
 		// scan the link
