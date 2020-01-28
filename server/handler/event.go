@@ -117,91 +117,105 @@ func GetEvent(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 		// add object result slice
 		fetchedObjects = append(fetchedObjects, obj)
 	}
-	respondJSON(w, http.StatusOK, fetchedObjects)
+
+	values := r.URL.Query()
+	if len(values) != 0 {
+
+		// get relationships to include
+		includeQuery := values.Get("include")
+		if includeQuery != "" {
+			var err error
+			stringVals, err := RelationshipsFromString(includeQuery)
+			if err != nil {
+				respondError(w, http.StatusBadRequest, err.Error())
+				return
+			}
+
+			var includedRels []interface{}
+			for _, value := range stringVals {
+				if value == "artist" {
+					images, err := GetAssociatedArtist(db, "event", objectID)
+					// check if an error occurred
+					if err != nil {
+						respondError(w, http.StatusBadRequest, err.Error())
+						return
+					}
+					resultMap := map[string]interface{}{value: images}
+					includedRels = append(includedRels, resultMap)
+				} else if value == "location" {
+					links, err := GetAssociatedLocation(db, "event", objectID)
+					// check if an error occurred
+					if err != nil {
+						respondError(w, http.StatusBadRequest, err.Error())
+						return
+					}
+					resultMap := map[string]interface{}{value: links}
+					includedRels = append(includedRels, resultMap)
+				} else if value == "festival" {
+					links, err := GetAssociatedFestival(db, "event", objectID)
+					// check if an error occurred
+					if err != nil {
+						respondError(w, http.StatusBadRequest, err.Error())
+						return
+					}
+					resultMap := map[string]interface{}{value: links}
+					includedRels = append(includedRels, resultMap)
+				} else {
+					respondError(w, http.StatusBadRequest, "get event: provided unknown relationship")
+					return
+				}
+			}
+
+			if len(includedRels) == 0 {
+				respondError(w, http.StatusBadRequest, "get event: provided unknown relationship")
+				return
+			}
+
+			respondJSONWithIncludes(w, http.StatusOK, fetchedObjects, includedRels)
+			return
+		} else {
+			respondError(w, http.StatusBadRequest, "get event: provided unknown query value")
+			return
+		}
+	} else {
+		respondJSON(w, http.StatusOK, fetchedObjects)
+	}
 }
 
 func GetEventFestival(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	objectID := chi.URLParam(r, "objectID")
-	rows, err := database.Resource(db, "event", objectID, "festival")
+	images, err := GetAssociatedFestival(db, "event", objectID)
 	// check if an error occurred
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
-	// no rows and no error indicate a successful query but an empty result
-	if rows == nil {
-		respondJSON(w, http.StatusOK, []model.Festival{})
-	}
-	var fetchedObjects []model.Festival
-	// iterate over the rows an create
-	for rows.Next() {
-		// scan the link
-		obj, err := model.FestivalsScan(rows)
-		if err != nil {
-			respondError(w, http.StatusInternalServerError, err.Error())
-			return
-		}
-		// add object result slice
-		fetchedObjects = append(fetchedObjects, obj)
-	}
-	respondJSON(w, http.StatusOK, fetchedObjects)
+	respondJSON(w, http.StatusOK, images)
 }
 
 func GetEventArtist(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	objectID := chi.URLParam(r, "objectID")
-	rows, err := database.Resource(db, "event", objectID, "artist")
+	artist, err := GetAssociatedArtist(db, "event", objectID)
 	// check if an error occurred
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
-	// no rows and no error indicate a successful query but an empty result
-	if rows == nil {
-		respondJSON(w, http.StatusOK, []model.Artist{})
-	}
-	var fetchedObjects []model.Artist
-	// iterate over the rows an create
-	for rows.Next() {
-		// scan the link
-		obj, err := model.ArtistsScan(rows)
-		if err != nil {
-			respondError(w, http.StatusInternalServerError, err.Error())
-			return
-		}
-		// add object result slice
-		fetchedObjects = append(fetchedObjects, obj)
-	}
-	respondJSON(w, http.StatusOK, fetchedObjects)
+	respondJSON(w, http.StatusOK, artist)
 }
 
 func GetEventLocation(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	objectID := chi.URLParam(r, "objectID")
-	rows, err := database.Resource(db, "event", objectID, "location")
+	location, err := GetAssociatedLocation(db, "event", objectID)
 	// check if an error occurred
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
-	// no rows and no error indicate a successful query but an empty result
-	if rows == nil {
-		respondJSON(w, http.StatusOK, []model.Location{})
-	}
-	var fetchedObjects []model.Location
-	// iterate over the rows an create
-	for rows.Next() {
-		// scan the link
-		obj, err := model.LocationsScan(rows)
-		if err != nil {
-			respondError(w, http.StatusInternalServerError, err.Error())
-			return
-		}
-		// add object result slice
-		fetchedObjects = append(fetchedObjects, obj)
-	}
-	respondJSON(w, http.StatusOK, fetchedObjects)
+	respondJSON(w, http.StatusOK, location)
 }
 
 // POST functions

@@ -34,7 +34,7 @@ func GetConfig() *Config {
 }
 ```
 
-# Build and Run
+## Build and Run
 ```bash
 cd $GOPATH/src/github.com/Phisto/eventusserver
 go build main.go
@@ -42,6 +42,11 @@ go build main.go
 
 # API Endpoint : http://localhost:8080
 ```
+
+## Setup development
+
+Install homebrew: https://brew.sh/index_de
+Setup local mysql enviroment: https://tableplus.com/blog/2018/11/how-to-download-mysql-mac.html
 
 ## Structure
 ```

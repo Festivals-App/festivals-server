@@ -46,7 +46,7 @@ func Resource(db *sql.DB, object string, objectID string, resource string) (*sql
 
 	var query string
 	// prepare query
-	if object == "tag" {
+	if object == "tag" || resource == "festival" {
 		query = "SELECT * FROM " + resource + "s WHERE " + resource + "_id IN (SELECT `associated_" + resource + "` FROM `map_" + resource + "_" + object + "` WHERE `associated_" + object + "`=?);"
 	} else {
 		query = "SELECT * FROM " + resource + "s WHERE " + resource + "_id IN (SELECT `associated_" + resource + "` FROM `map_" + object + "_" + resource + "` WHERE `associated_" + object + "`=?);"

@@ -70,7 +70,7 @@ The `error` field will always contain a string with the error message.
 ## Available API calls
 
 [Festivals](#festival-objects)
-* GET, POST             `/festivals`
+* GET, POST             `/festivals` optional name,ids
 * GET, PATCH, DELETE    `/festivals/{objectID}`
 * GET                   `/festivals/{objectID}/{image|links|place|tags|events}`
 * POST, DELETE          `/festivals/{objectID}/{image|links|place|tags|events}/{resourceID}`

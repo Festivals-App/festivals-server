@@ -120,7 +120,69 @@ func GetArtist(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 		// add object result slice
 		fetchedObjects = append(fetchedObjects, obj)
 	}
-	respondJSON(w, http.StatusOK, fetchedObjects)
+
+	values := r.URL.Query()
+	if len(values) != 0 {
+
+		// get relationships to include
+		includeQuery := values.Get("include")
+		if includeQuery != "" {
+			var err error
+			stringVals, err := RelationshipsFromString(includeQuery)
+			if err != nil {
+				respondError(w, http.StatusBadRequest, err.Error())
+				return
+			}
+
+			var includedRels []interface{}
+			for _, value := range stringVals {
+				if value == "image" {
+					images, err := GetAssociatedImage(db, "artist", objectID)
+					// check if an error occurred
+					if err != nil {
+						respondError(w, http.StatusBadRequest, err.Error())
+						return
+					}
+					resultMap := map[string]interface{}{value: images}
+					includedRels = append(includedRels, resultMap)
+				} else if value == "links" {
+					links, err := GetAssociatedLinks(db, "artist", objectID)
+					// check if an error occurred
+					if err != nil {
+						respondError(w, http.StatusBadRequest, err.Error())
+						return
+					}
+					resultMap := map[string]interface{}{value: links}
+					includedRels = append(includedRels, resultMap)
+				} else if value == "tags" {
+					tags, err := GetAssociatedTags(db, "artist", objectID)
+					// check if an error occurred
+					if err != nil {
+						respondError(w, http.StatusBadRequest, err.Error())
+						return
+					}
+					resultMap := map[string]interface{}{value: tags}
+					includedRels = append(includedRels, resultMap)
+				} else {
+					respondError(w, http.StatusBadRequest, "get festival: provided unknown relationship")
+					return
+				}
+			}
+
+			if len(includedRels) == 0 {
+				respondError(w, http.StatusBadRequest, "get festival: provided unknown relationship")
+				return
+			}
+
+			respondJSONWithIncludes(w, http.StatusOK, fetchedObjects, includedRels)
+			return
+		} else {
+			respondError(w, http.StatusBadRequest, "get festival: provided unknown query value")
+			return
+		}
+	} else {
+		respondJSON(w, http.StatusOK, fetchedObjects)
+	}
 }
 
 func GetArtistImage(db *sql.DB, w http.ResponseWriter, r *http.Request) {

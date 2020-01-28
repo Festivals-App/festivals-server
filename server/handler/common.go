@@ -223,3 +223,78 @@ func GetAssociatedTags(db *sql.DB, object string, objectID string) ([]model.Tag,
 	}
 	return fetchedObjects, nil
 }
+
+func GetAssociatedFestival(db *sql.DB, object string, objectID string) ([]model.Festival, error) {
+
+	rows, err := database.Resource(db, object, objectID, "festival")
+	// check if an error occurred
+	if err != nil {
+		return nil, err
+	}
+	// no rows and no error indicate a successful query but an empty result
+	if rows == nil {
+		return []model.Festival{}, nil
+	}
+	var fetchedObjects []model.Festival
+	// iterate over the rows an create
+	for rows.Next() {
+		// scan the link
+		obj, err := model.FestivalsScan(rows)
+		if err != nil {
+			return nil, err
+		}
+		// add object result slice
+		fetchedObjects = append(fetchedObjects, obj)
+	}
+	return fetchedObjects, nil
+}
+
+func GetAssociatedArtist(db *sql.DB, object string, objectID string) ([]model.Artist, error) {
+
+	rows, err := database.Resource(db, object, objectID, "artist")
+	// check if an error occurred
+	if err != nil {
+		return nil, err
+	}
+	// no rows and no error indicate a successful query but an empty result
+	if rows == nil {
+		return []model.Artist{}, nil
+	}
+	var fetchedObjects []model.Artist
+	// iterate over the rows an create
+	for rows.Next() {
+		// scan the link
+		obj, err := model.ArtistsScan(rows)
+		if err != nil {
+			return nil, err
+		}
+		// add object result slice
+		fetchedObjects = append(fetchedObjects, obj)
+	}
+	return fetchedObjects, nil
+}
+
+func GetAssociatedLocation(db *sql.DB, object string, objectID string) ([]model.Location, error) {
+
+	rows, err := database.Resource(db, object, objectID, "location")
+	// check if an error occurred
+	if err != nil {
+		return nil, err
+	}
+	// no rows and no error indicate a successful query but an empty result
+	if rows == nil {
+		return []model.Location{}, nil
+	}
+	var fetchedObjects []model.Location
+	// iterate over the rows an create
+	for rows.Next() {
+		// scan the link
+		obj, err := model.LocationsScan(rows)
+		if err != nil {
+			return nil, err
+		}
+		// add object result slice
+		fetchedObjects = append(fetchedObjects, obj)
+	}
+	return fetchedObjects, nil
+}
