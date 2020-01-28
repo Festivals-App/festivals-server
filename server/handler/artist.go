@@ -126,85 +126,37 @@ func GetArtist(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 func GetArtistImage(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	objectID := chi.URLParam(r, "objectID")
-	rows, err := database.Resource(db, "artist", objectID, "image")
+	images, err := GetAssociatedImage(db, "artist", objectID)
 	// check if an error occurred
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
-	// no rows and no error indicate a successful query but an empty result
-	if rows == nil {
-		respondJSON(w, http.StatusOK, []model.Image{})
-	}
-	var fetchedObjects []model.Image
-	// iterate over the rows an create
-	for rows.Next() {
-		// scan the link
-		obj, err := model.ImagesScan(rows)
-		if err != nil {
-			respondError(w, http.StatusInternalServerError, err.Error())
-			return
-		}
-		// add object result slice
-		fetchedObjects = append(fetchedObjects, obj)
-	}
-	respondJSON(w, http.StatusOK, fetchedObjects)
+	respondJSON(w, http.StatusOK, images)
 }
 
 func GetArtistLinks(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	objectID := chi.URLParam(r, "objectID")
-	rows, err := database.Resource(db, "artist", objectID, "link")
+	links, err := GetAssociatedLinks(db, "artist", objectID)
 	// check if an error occurred
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
-	// no rows and no error indicate a successful query but an empty result
-	if rows == nil {
-		respondJSON(w, http.StatusOK, []model.Link{})
-	}
-	var fetchedObjects []model.Link
-	// iterate over the rows an create
-	for rows.Next() {
-		// scan the link
-		obj, err := model.LinksScan(rows)
-		if err != nil {
-			respondError(w, http.StatusInternalServerError, err.Error())
-			return
-		}
-		// add object result slice
-		fetchedObjects = append(fetchedObjects, obj)
-	}
-	respondJSON(w, http.StatusOK, fetchedObjects)
+	respondJSON(w, http.StatusOK, links)
 }
 
 func GetArtistTags(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	objectID := chi.URLParam(r, "objectID")
-	rows, err := database.Resource(db, "artist", objectID, "tag")
+	tags, err := GetAssociatedTags(db, "artist", objectID)
 	// check if an error occurred
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
-	// no rows and no error indicate a successful query but an empty result
-	if rows == nil {
-		respondJSON(w, http.StatusOK, []model.Tag{})
-	}
-	var fetchedObjects []model.Tag
-	// iterate over the rows an create
-	for rows.Next() {
-		// scan the link
-		obj, err := model.TagsScan(rows)
-		if err != nil {
-			respondError(w, http.StatusInternalServerError, err.Error())
-			return
-		}
-		// add object result slice
-		fetchedObjects = append(fetchedObjects, obj)
-	}
-	respondJSON(w, http.StatusOK, fetchedObjects)
+	respondJSON(w, http.StatusOK, tags)
 }
 
 // POST functions

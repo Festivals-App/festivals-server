@@ -1,5 +1,11 @@
 ## Eventus API Documentation
 
+## Used Languages
+
+* Documentation: `Markdown`
+* Database: `SQL Query Scripts`
+* Server Application: `golang`
+
 ### Requests
 
 The Eventus API supports the HTTP `GET`, `POST`, `PATCH` and `DELETE` methods.
@@ -957,12 +963,14 @@ A simple object that represents a tag.
 #### GET `/tags`
 
 Get all tags.
-    
+
  * Query Parameter:  
+      `name`: Filter result by name  
       `ids` : Filter result by IDs
 
  * Examples:  
       `GET https://localhost:8080/tags`  
+      `GET https://localhost:8080/tags?name=rock`  
       `GET https://localhost:8080/tags?ids=1,8,56`
         
  * Returns

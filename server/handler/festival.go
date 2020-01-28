@@ -29,7 +29,7 @@ func GetFestivals(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 		ids := values.Get("ids")
 		if ids != "" {
 			var err error
-			idValues, err = IDsFromString(ids)
+			idValues, err = RelationshipsFromString(ids)
 			if err != nil {
 				respondError(w, http.StatusBadRequest, err.Error())
 				return
@@ -117,147 +117,147 @@ func GetFestival(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 		// add object result slice
 		fetchedObjects = append(fetchedObjects, obj)
 	}
-	respondJSON(w, http.StatusOK, fetchedObjects)
+
+	values := r.URL.Query()
+	if len(values) != 0 {
+
+		// get relationships to include
+		includeQuery := values.Get("include")
+		if includeQuery != "" {
+			var err error
+			stringVals, err := RelationshipsFromString(includeQuery)
+			if err != nil {
+				respondError(w, http.StatusBadRequest, err.Error())
+				return
+			}
+
+			var includedRels []interface{}
+			for _, value := range stringVals {
+				if value == "events" {
+					events, err := GetAssociatedEvents(db, "festival", objectID)
+					// check if an error occurred
+					if err != nil {
+						respondError(w, http.StatusBadRequest, err.Error())
+						return
+					}
+					resultMap := map[string]interface{}{value: events}
+					includedRels = append(includedRels, resultMap)
+				} else if value == "image" {
+					images, err := GetAssociatedImage(db, "festival", objectID)
+					// check if an error occurred
+					if err != nil {
+						respondError(w, http.StatusBadRequest, err.Error())
+						return
+					}
+					resultMap := map[string]interface{}{value: images}
+					includedRels = append(includedRels, resultMap)
+				} else if value == "links" {
+					links, err := GetAssociatedLinks(db, "festival", objectID)
+					// check if an error occurred
+					if err != nil {
+						respondError(w, http.StatusBadRequest, err.Error())
+						return
+					}
+					resultMap := map[string]interface{}{value: links}
+					includedRels = append(includedRels, resultMap)
+				} else if value == "place" {
+					places, err := GetAssociatedPlace(db, "festival", objectID)
+					// check if an error occurred
+					if err != nil {
+						respondError(w, http.StatusBadRequest, err.Error())
+						return
+					}
+					resultMap := map[string]interface{}{value: places}
+					includedRels = append(includedRels, resultMap)
+				} else if value == "tags" {
+					tags, err := GetAssociatedTags(db, "festival", objectID)
+					// check if an error occurred
+					if err != nil {
+						respondError(w, http.StatusBadRequest, err.Error())
+						return
+					}
+					resultMap := map[string]interface{}{value: tags}
+					includedRels = append(includedRels, resultMap)
+				} else {
+					respondError(w, http.StatusBadRequest, "get festival: provided unknown relationship")
+					return
+				}
+			}
+
+			if len(includedRels) == 0 {
+				respondError(w, http.StatusBadRequest, "get festival: provided unknown relationship")
+				return
+			}
+
+			respondJSONWithIncludes(w, http.StatusOK, fetchedObjects, includedRels)
+			return
+		} else {
+			respondError(w, http.StatusBadRequest, "get festival: provided unknown query value")
+			return
+		}
+	} else {
+		respondJSON(w, http.StatusOK, fetchedObjects)
+	}
 }
 
 func GetFestivalEvents(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	objectID := chi.URLParam(r, "objectID")
-	rows, err := database.Resource(db, "festival", objectID, "event")
+	events, err := GetAssociatedEvents(db, "festival", objectID)
 	// check if an error occurred
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
-	// no rows and no error indicate a successful query but an empty result
-	if rows == nil {
-		respondJSON(w, http.StatusOK, []model.Event{})
-	}
-	var fetchedObjects []model.Event
-	// iterate over the rows an create
-	for rows.Next() {
-		// scan the link
-		obj, err := model.EventsScan(rows)
-		if err != nil {
-			respondError(w, http.StatusInternalServerError, err.Error())
-			return
-		}
-		// add object result slice
-		fetchedObjects = append(fetchedObjects, obj)
-	}
-	respondJSON(w, http.StatusOK, fetchedObjects)
+	respondJSON(w, http.StatusOK, events)
 }
 
 func GetFestivalImage(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	objectID := chi.URLParam(r, "objectID")
-	rows, err := database.Resource(db, "festival", objectID, "image")
+	images, err := GetAssociatedImage(db, "festival", objectID)
 	// check if an error occurred
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
-	// no rows and no error indicate a successful query but an empty result
-	if rows == nil {
-		respondJSON(w, http.StatusOK, []model.Image{})
-	}
-	var fetchedObjects []model.Image
-	// iterate over the rows an create
-	for rows.Next() {
-		// scan the link
-		obj, err := model.ImagesScan(rows)
-		if err != nil {
-			respondError(w, http.StatusInternalServerError, err.Error())
-			return
-		}
-		// add object result slice
-		fetchedObjects = append(fetchedObjects, obj)
-	}
-	respondJSON(w, http.StatusOK, fetchedObjects)
+	respondJSON(w, http.StatusOK, images)
 }
 
 func GetFestivalLinks(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	objectID := chi.URLParam(r, "objectID")
-	rows, err := database.Resource(db, "festival", objectID, "link")
+	links, err := GetAssociatedLinks(db, "festival", objectID)
 	// check if an error occurred
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
-	// no rows and no error indicate a successful query but an empty result
-	if rows == nil {
-		respondJSON(w, http.StatusOK, []model.Link{})
-	}
-	var fetchedObjects []model.Link
-	// iterate over the rows an create
-	for rows.Next() {
-		// scan the link
-		obj, err := model.LinksScan(rows)
-		if err != nil {
-			respondError(w, http.StatusInternalServerError, err.Error())
-			return
-		}
-		// add object result slice
-		fetchedObjects = append(fetchedObjects, obj)
-	}
-	respondJSON(w, http.StatusOK, fetchedObjects)
+	respondJSON(w, http.StatusOK, links)
 }
 
 func GetFestivalPlace(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	objectID := chi.URLParam(r, "objectID")
-	rows, err := database.Resource(db, "festival", objectID, "place")
+	place, err := GetAssociatedPlace(db, "festival", objectID)
 	// check if an error occurred
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
-	// no rows and no error indicate a successful query but an empty result
-	if rows == nil {
-		respondJSON(w, http.StatusOK, []model.Place{})
-	}
-	var fetchedObjects []model.Place
-	// iterate over the rows an create
-	for rows.Next() {
-		// scan the link
-		obj, err := model.PlacesScan(rows)
-		if err != nil {
-			respondError(w, http.StatusInternalServerError, err.Error())
-			return
-		}
-		// add object result slice
-		fetchedObjects = append(fetchedObjects, obj)
-	}
-	respondJSON(w, http.StatusOK, fetchedObjects)
+	respondJSON(w, http.StatusOK, place)
 }
 
 func GetFestivalTags(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	objectID := chi.URLParam(r, "objectID")
-	rows, err := database.Resource(db, "festival", objectID, "tag")
+	tags, err := GetAssociatedTags(db, "festival", objectID)
 	// check if an error occurred
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
-	// no rows and no error indicate a successful query but an empty result
-	if rows == nil {
-		respondJSON(w, http.StatusOK, []model.Tag{})
-	}
-	var fetchedObjects []model.Tag
-	// iterate over the rows an create
-	for rows.Next() {
-		// scan the link
-		obj, err := model.TagsScan(rows)
-		if err != nil {
-			respondError(w, http.StatusInternalServerError, err.Error())
-			return
-		}
-		// add object result slice
-		fetchedObjects = append(fetchedObjects, obj)
-	}
-	respondJSON(w, http.StatusOK, fetchedObjects)
+	respondJSON(w, http.StatusOK, tags)
 }
 
 // POST functions

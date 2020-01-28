@@ -19,6 +19,12 @@ func GetTags(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	values := r.URL.Query()
 	if len(values) != 0 {
 
+		// search with name
+		name := values.Get("name")
+		if name != "" {
+			SearchTags(name, db, w)
+			return
+		}
 		// filter by ids
 		ids := values.Get("ids")
 		if ids != "" {
@@ -38,6 +44,33 @@ func GetTags(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	}
 
 	rows, err := database.Select(db, "tag", idValues)
+	// check if an error occurred
+	if err != nil {
+		respondError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+	// no rows and no error indicate a successful query but an empty result
+	if rows == nil {
+		respondJSON(w, http.StatusOK, []model.Tag{})
+	}
+	var fetchedObjects []model.Tag
+	// iterate over the rows an create
+	for rows.Next() {
+		// scan the link
+		obj, err := model.TagsScan(rows)
+		if err != nil {
+			respondError(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+		// add object result slice
+		fetchedObjects = append(fetchedObjects, obj)
+	}
+	respondJSON(w, http.StatusOK, fetchedObjects)
+}
+
+func SearchTags(name string, db *sql.DB, w http.ResponseWriter) {
+
+	rows, err := database.Search(db, "tag", name)
 	// check if an error occurred
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, err.Error())
@@ -210,5 +243,6 @@ func DeleteTag(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 		respondError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
+	// TODO StatusNoContent and sending body data is not very nice
 	respondJSON(w, http.StatusNoContent, []model.Tag{})
 }
