@@ -149,7 +149,6 @@ func Insert(db *sql.DB, table string, object interface{}) (*sql.Rows, error) {
 	placeholder := DBPlaceholder(object)
 	vars := DBValues(object)
 	query := "INSERT INTO " + table + "s(" + fields + ") VALUES (" + placeholder + ");"
-
 	result, err := ExecuteQuery(db, query, vars)
 	if err != nil {
 		return nil, err
@@ -171,8 +170,6 @@ func Update(db *sql.DB, table string, objectID string, object interface{}) (*sql
 	vars := DBValues(object)
 	vars = append(vars, objectID) // for *table*_id value
 	query := "UPDATE " + table + "s SET " + keyValuePairs + " WHERE `" + table + "_id`=?;"
-
-	log.Print(query)
 
 	_, err := ExecuteQuery(db, query, vars)
 	if err != nil {

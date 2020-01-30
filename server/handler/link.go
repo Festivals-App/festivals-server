@@ -7,6 +7,7 @@ import (
 	"github.com/Phisto/eventusserver/server/model"
 	"github.com/go-chi/chi"
 	"io/ioutil"
+	"log"
 	"net/http"
 )
 
@@ -168,6 +169,8 @@ func UpdateLink(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 		// add object result slice
 		fetchedObjects = append(fetchedObjects, obj)
 	}
+	log.Print(fetchedObjects)
+
 	respondJSON(w, http.StatusOK, fetchedObjects)
 }
 

@@ -85,7 +85,7 @@ CREATE TABLE IF NOT EXISTS `links` (
 	 `link_version` 		    timestamp 			NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() 	COMMENT 'The version of the link.',
 	 `link_url` 			    varchar(2083) 		NOT NULL 						COMMENT 'The url of the link.',
      -- defaults to unknown service type
-	 `link_service` 		    tinyint 		    NOT NULL DEFAULT '7' 			COMMENT 'The service type of the link.',
+	 `link_service` 		    smallint unsigned	NOT NULL DEFAULT '7' 			COMMENT 'The service type of the link.',
 
 PRIMARY 	KEY (`link_id`)
 
