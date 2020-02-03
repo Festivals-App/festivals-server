@@ -3,14 +3,15 @@ package model
 import "database/sql"
 
 type Festival struct {
-	ID          int    `json:"festival_id"`
-	Version     string `json:"festival_version"`
-	Valid       bool   `json:"festival_is_valid" db:"festival_is_valid"`
-	Name        string `json:"festival_name" db:"festival_name"`
-	Start       int    `json:"festival_start" db:"festival_start"`
-	End         int    `json:"festival_end" db:"festival_end"`
-	Description string `json:"festival_description" db:"festival_description"`
-	Price       string `json:"festival_price" db:"festival_price"`
+	ID          int         `json:"festival_id"`
+	Version     string      `json:"festival_version"`
+	Valid       bool        `json:"festival_is_valid" db:"festival_is_valid"`
+	Name        string      `json:"festival_name" db:"festival_name"`
+	Start       int         `json:"festival_start" db:"festival_start"`
+	End         int         `json:"festival_end" db:"festival_end"`
+	Description string      `json:"festival_description" db:"festival_description"`
+	Price       string      `json:"festival_price" db:"festival_price"`
+	Include     interface{} `json:"include,omitempty"`
 }
 
 func FestivalsScan(rs *sql.Rows) (Festival, error) {
@@ -19,10 +20,11 @@ func FestivalsScan(rs *sql.Rows) (Festival, error) {
 }
 
 type Artist struct {
-	ID          int    `json:"artist_id"`
-	Version     string `json:"artist_version"`
-	Name        string `json:"artist_name" db:"artist_name"`
-	Description string `json:"artist_description" db:"artist_description"`
+	ID          int         `json:"artist_id"`
+	Version     string      `json:"artist_version"`
+	Name        string      `json:"artist_name" db:"artist_name"`
+	Description string      `json:"artist_description" db:"artist_description"`
+	Include     interface{} `json:"include,omitempty"`
 }
 
 func ArtistsScan(rs *sql.Rows) (Artist, error) {
@@ -31,12 +33,13 @@ func ArtistsScan(rs *sql.Rows) (Artist, error) {
 }
 
 type Location struct {
-	ID          int    `json:"location_id"`
-	Version     string `json:"location_version"`
-	Name        string `json:"location_name" db:"location_name"`
-	Description string `json:"location_description" db:"location_description"`
-	Accessible  bool   `json:"location_accessible" db:"location_accessible"`
-	Openair     bool   `json:"location_openair" db:"location_openair"`
+	ID          int         `json:"location_id"`
+	Version     string      `json:"location_version"`
+	Name        string      `json:"location_name" db:"location_name"`
+	Description string      `json:"location_description" db:"location_description"`
+	Accessible  bool        `json:"location_accessible" db:"location_accessible"`
+	Openair     bool        `json:"location_openair" db:"location_openair"`
+	Include     interface{} `json:"include,omitempty"`
 }
 
 func LocationsScan(rs *sql.Rows) (Location, error) {
@@ -45,12 +48,13 @@ func LocationsScan(rs *sql.Rows) (Location, error) {
 }
 
 type Event struct {
-	ID          int    `json:"event_id"`
-	Version     string `json:"event_version"`
-	Name        string `json:"event_name" db:"event_name"`
-	Description string `json:"event_description" db:"event_description"`
-	Start       int    `json:"event_start" db:"event_start"`
-	End         int    `json:"event_end" db:"event_end"`
+	ID          int         `json:"event_id"`
+	Version     string      `json:"event_version"`
+	Name        string      `json:"event_name" db:"event_name"`
+	Description string      `json:"event_description" db:"event_description"`
+	Start       int         `json:"event_start" db:"event_start"`
+	End         int         `json:"event_end" db:"event_end"`
+	Include     interface{} `json:"include,omitempty"`
 }
 
 func EventsScan(rs *sql.Rows) (Event, error) {

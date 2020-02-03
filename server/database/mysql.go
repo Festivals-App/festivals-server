@@ -3,33 +3,25 @@ package database
 import (
 	"database/sql"
 	"errors"
-	"log"
-	"strconv"
 
 	_ "github.com/go-sql-driver/mysql"
 )
 
-func Select(db *sql.DB, table string, objectIDs []string) (*sql.Rows, error) {
+func Select(db *sql.DB, table string, objectIDs []int) (*sql.Rows, error) {
 
 	var query string
-	var vars []interface{}
+	var vars []int
 	// prepare select query
 	if len(objectIDs) == 0 {
 		query = "SELECT * FROM " + table + "s;"
-		vars = []interface{}{}
+		vars = []int{}
 	} else {
-
-		if len(objectIDs) == 1 {
-			query = "SELECT * FROM " + table + "s WHERE " + table + "_id=?;"
-			vars = []interface{}{objectIDs[0]}
-		} else {
-			placeholder := DBPlaceholderForIDs(objectIDs)
-			query = "SELECT * FROM " + table + "s WHERE " + table + "_id IN (" + placeholder + ");"
-			vars = InterfaceFromStringArray(objectIDs)
-		}
+		placeholder := DBPlaceholderForIDs(objectIDs)
+		query = "SELECT * FROM " + table + "s WHERE " + table + "_id IN (" + placeholder + ");"
+		vars = objectIDs
 	}
 	// execute query
-	return ExecuteRowQuery(db, query, vars)
+	return ExecuteRowQuery(db, query, InterfaceInt(vars))
 }
 
 func Search(db *sql.DB, table string, name string) (*sql.Rows, error) {
@@ -42,7 +34,7 @@ func Search(db *sql.DB, table string, name string) (*sql.Rows, error) {
 	return ExecuteRowQuery(db, query, vars)
 }
 
-func Resource(db *sql.DB, object string, objectID string, resource string) (*sql.Rows, error) {
+func Resource(db *sql.DB, object string, objectID int, resource string) (*sql.Rows, error) {
 
 	var query string
 	// prepare query
@@ -57,23 +49,15 @@ func Resource(db *sql.DB, object string, objectID string, resource string) (*sql
 	return ExecuteRowQuery(db, query, vars)
 }
 
-func SetResource(db *sql.DB, object string, objectID string, resource string, resourceID string) error {
+func SetResource(db *sql.DB, object string, objectID int, resource string, resourceID int) error {
 
 	query := "SELECT `map_id` from `map_" + object + "_" + resource + "` WHERE associated_" + object + " =? AND associated_" + resource + "=?;"
-
-	log.Print(query)
-
 	vars := []interface{}{objectID, resourceID}
-
-	log.Print(vars)
-
 	rows, err := ExecuteRowQuery(db, query, vars)
 	if err != nil {
 		return err
 	}
-
 	var mapID string
-	log.Print(rows)
 	for rows.Next() {
 		// scan the link
 		err = rows.Scan(&mapID)
@@ -104,9 +88,9 @@ func SetResource(db *sql.DB, object string, objectID string, resource string, re
 	}
 }
 
-func RemoveResource(db *sql.DB, object string, objectID string, resource string, resourceID string) error {
+func RemoveResource(db *sql.DB, object string, objectID int, resource string, resourceID int) error {
 	// select map id
-	query := "SELECT `map_id` from `map_" + object + "_" + resource + "` WHERE associated_" + object + " =? AND associated_" + resource + "=?;"
+	query := "SELECT `map_id` FROM `map_" + object + "_" + resource + "` WHERE associated_" + object + " =? AND associated_" + resource + "=?;"
 	vars := []interface{}{objectID, resourceID}
 	rows, err := ExecuteRowQuery(db, query, vars)
 	if err != nil {
@@ -159,12 +143,10 @@ func Insert(db *sql.DB, table string, object interface{}) (*sql.Rows, error) {
 		return nil, err
 	}
 
-	objectID := strconv.FormatInt(insertID, 10)
-
-	return Select(db, table, []string{objectID})
+	return Select(db, table, []int{int(insertID)})
 }
 
-func Update(db *sql.DB, table string, objectID string, object interface{}) (*sql.Rows, error) {
+func Update(db *sql.DB, table string, objectID int, object interface{}) (*sql.Rows, error) {
 
 	keyValuePairs := DBKeyValuePairs(object)
 	vars := DBValues(object)
@@ -176,10 +158,10 @@ func Update(db *sql.DB, table string, objectID string, object interface{}) (*sql
 		return nil, err
 	}
 
-	return Select(db, table, []string{objectID})
+	return Select(db, table, []int{objectID})
 }
 
-func Delete(db *sql.DB, table string, objectID string) error {
+func Delete(db *sql.DB, table string, objectID int) error {
 
 	// prepare select query
 	query := "DELETE FROM " + table + "s WHERE " + table + "_id=?"

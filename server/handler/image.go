@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"github.com/Phisto/eventusserver/server/database"
 	"github.com/Phisto/eventusserver/server/model"
-	"github.com/go-chi/chi"
 	"io/ioutil"
 	"net/http"
 )
@@ -14,80 +13,27 @@ import (
 
 func GetImages(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
-	var idValues []string
-	// get query values if they exist
-	values := r.URL.Query()
-	if len(values) != 0 {
-
-		// filter by ids
-		ids := values.Get("ids")
-		if ids != "" {
-			var err error
-			idValues, err = IDsFromString(ids)
-			if err != nil {
-				respondError(w, http.StatusBadRequest, err.Error())
-				return
-			}
-		} else {
-			respondError(w, http.StatusBadRequest, "get images: provided unknown query value")
-			return
-		}
-	}
-	if idValues == nil {
-		idValues = []string{}
-	}
-
-	rows, err := database.Select(db, "image", idValues)
-	// check if an error occurred
+	images, err := GetObjects(db, "image", nil, r.URL.Query())
 	if err != nil {
-		respondError(w, http.StatusInternalServerError, err.Error())
+		respondError(w, http.StatusBadRequest, err.Error())
 		return
 	}
-	// no rows and no error indicate a successful query but an empty result
-	if rows == nil {
-		respondJSON(w, http.StatusOK, []model.Image{})
-	}
-	var fetchedObjects []model.Image
-	// iterate over the rows an create
-	for rows.Next() {
-		// scan the link
-		obj, err := model.ImagesScan(rows)
-		if err != nil {
-			respondError(w, http.StatusInternalServerError, err.Error())
-			return
-		}
-		// add object result slice
-		fetchedObjects = append(fetchedObjects, obj)
-	}
-	respondJSON(w, http.StatusOK, fetchedObjects)
+	respondJSON(w, http.StatusOK, images)
 }
 
 func GetImage(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
-	objectID := chi.URLParam(r, "objectID")
-	rows, err := database.Select(db, "image", []string{objectID})
-	// check if an error occurred
+	objectID, err := ObjectID(r)
 	if err != nil {
-		respondError(w, http.StatusInternalServerError, err.Error())
+		respondError(w, http.StatusBadRequest, err.Error())
 		return
 	}
-	// no rows and no error indicate a successful query but an empty result
-	if rows == nil {
-		respondJSON(w, http.StatusOK, []model.Image{})
+	images, err := GetObject(db, "image", objectID, r.URL.Query())
+	if err != nil {
+		respondError(w, http.StatusBadRequest, err.Error())
+		return
 	}
-	var fetchedObjects []model.Image
-	// iterate over the rows an create
-	for rows.Next() {
-		// scan the link
-		obj, err := model.ImagesScan(rows)
-		if err != nil {
-			respondError(w, http.StatusInternalServerError, err.Error())
-			return
-		}
-		// add object result slice
-		fetchedObjects = append(fetchedObjects, obj)
-	}
-	respondJSON(w, http.StatusOK, fetchedObjects)
+	respondJSON(w, http.StatusOK, images)
 }
 
 // POST functions
@@ -134,6 +80,11 @@ func CreateImage(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 func UpdateImage(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
+	objectID, err := ObjectID(r)
+	if err != nil {
+		respondError(w, http.StatusBadRequest, err.Error())
+		return
+	}
 	body, readBodyErr := ioutil.ReadAll(r.Body)
 	if readBodyErr != nil {
 		respondError(w, http.StatusBadRequest, readBodyErr.Error())
@@ -145,7 +96,6 @@ func UpdateImage(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 		respondError(w, http.StatusBadRequest, unmarshalErr.Error())
 		return
 	}
-	objectID := chi.URLParam(r, "objectID")
 	rows, err := database.Update(db, "image", objectID, objectToUpdate)
 	// check if an error occurred
 	if err != nil {
@@ -175,8 +125,12 @@ func UpdateImage(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 func DeleteImage(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
-	objectID := chi.URLParam(r, "objectID")
-	err := database.Delete(db, "image", objectID)
+	objectID, err := ObjectID(r)
+	if err != nil {
+		respondError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+	err = database.Delete(db, "image", objectID)
 	// check if an error occurred
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, err.Error())

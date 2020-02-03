@@ -28,10 +28,9 @@ func (s *Server) Initialize(config *config.Config) {
 		config.DB.Port,
 		config.DB.Name,
 		config.DB.Charset)
-
 	db, err := sql.Open(config.DB.Dialect, dbURI)
 	if err != nil {
-		log.Fatal("Could not connect database")
+		log.Fatal("server initialize: could not connect to database")
 	}
 
 	// set DB and router

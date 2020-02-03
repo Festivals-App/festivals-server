@@ -6,9 +6,7 @@ import (
 )
 
 func main() {
-
 	conf := config.GetConfig()
-
 	serverInstance := &server.Server{}
 	serverInstance.Initialize(conf)
 	serverInstance.Run(":8080")

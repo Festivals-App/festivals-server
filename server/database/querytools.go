@@ -49,7 +49,7 @@ func DBPlaceholder(object interface{}) string {
 	panic(fmt.Errorf("DBFields requires a struct, found: %s", v.Kind().String()))
 }
 
-func DBPlaceholderForIDs(ids []string) string {
+func DBPlaceholderForIDs(ids []int) string {
 
 	placeholderString := ""
 	for i := 0; i < len(ids); i++ {
@@ -103,11 +103,11 @@ func DBKeyValuePairs(object interface{}) string {
 	panic(fmt.Errorf("DBFields requires a struct, found: %s", v.Kind().String()))
 }
 
-func InterfaceFromStringArray(strings []string) []interface{} {
+func InterfaceInt(ints []int) []interface{} {
 
-	b := make([]interface{}, len(strings))
-	for i := range strings {
-		b[i] = strings[i]
+	b := make([]interface{}, len(ints))
+	for i := range ints {
+		b[i] = ints[i]
 	}
 	return b
 }
