@@ -2,10 +2,8 @@ package handler
 
 import (
 	"database/sql"
-	"encoding/json"
 	"github.com/Phisto/eventusserver/server/database"
 	"github.com/Phisto/eventusserver/server/model"
-	"io/ioutil"
 	"net/http"
 )
 
@@ -113,43 +111,12 @@ func GetFestivalTags(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 func CreateFestival(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
-	body, readBodyErr := ioutil.ReadAll(r.Body)
-	if readBodyErr != nil {
-		respondError(w, http.StatusBadRequest, readBodyErr.Error())
-		return
-	}
-	var objectToCreate model.Festival
-	unmarshalErr := json.Unmarshal(body, &objectToCreate)
-	if unmarshalErr != nil {
-		respondError(w, http.StatusBadRequest, unmarshalErr.Error())
-		return
-	}
-	if objectToCreate.Name == "" {
-		respondError(w, http.StatusBadRequest, "The provided festival name is not valid.")
-		return
-	}
-	rows, err := database.Insert(db, "festival", objectToCreate)
+	festival, err := Create(db, r, "festival")
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
-	if rows == nil {
-		respondError(w, http.StatusInternalServerError, "create festival: failed to insert into database")
-		return
-	}
-	var fetchedObjects []model.Festival
-	// iterate over the rows
-	for rows.Next() {
-		// scan the link
-		obj, err := model.FestivalsScan(rows)
-		if err != nil {
-			respondError(w, http.StatusInternalServerError, err.Error())
-			return
-		}
-		// add object result slice
-		fetchedObjects = append(fetchedObjects, obj)
-	}
-	respondJSON(w, http.StatusOK, fetchedObjects)
+	respondJSON(w, http.StatusOK, festival)
 }
 
 func SetEventForFestival(db *sql.DB, w http.ResponseWriter, r *http.Request) {
@@ -335,49 +302,12 @@ func RemoveTagForFestival(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 func UpdateFestival(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
-	objectID, err := ObjectID(r)
-	if err != nil {
-		respondError(w, http.StatusBadRequest, err.Error())
-		return
-	}
-	body, readBodyErr := ioutil.ReadAll(r.Body)
-	if readBodyErr != nil {
-		respondError(w, http.StatusBadRequest, readBodyErr.Error())
-		return
-	}
-	var objectToUpdate model.Festival
-	unmarshalErr := json.Unmarshal(body, &objectToUpdate)
-	if unmarshalErr != nil {
-		respondError(w, http.StatusBadRequest, unmarshalErr.Error())
-		return
-	}
-	if objectToUpdate.Name == "" {
-		respondError(w, http.StatusBadRequest, "The provided festival name is not valid.")
-		return
-	}
-	rows, err := database.Update(db, "festival", objectID, objectToUpdate)
-	// check if an error occurred
+	festivals, err := Update(db, r, "festival")
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
-	// no rows and no error indicate a successful query but an empty result
-	if rows == nil {
-		respondJSON(w, http.StatusOK, []model.Festival{})
-	}
-	var fetchedObjects []model.Festival
-	// iterate over the rows an create
-	for rows.Next() {
-		// scan the link
-		obj, err := model.FestivalsScan(rows)
-		if err != nil {
-			respondError(w, http.StatusInternalServerError, err.Error())
-			return
-		}
-		// add object result slice
-		fetchedObjects = append(fetchedObjects, obj)
-	}
-	respondJSON(w, http.StatusOK, fetchedObjects)
+	respondJSON(w, http.StatusOK, festivals)
 }
 
 // DELETE functions
@@ -390,7 +320,6 @@ func DeleteFestival(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	err = database.Delete(db, "festival", objectID)
-	// check if an error occurred
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, err.Error())
 		return

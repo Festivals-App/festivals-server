@@ -2,10 +2,8 @@ package handler
 
 import (
 	"database/sql"
-	"encoding/json"
 	"github.com/Phisto/eventusserver/server/database"
 	"github.com/Phisto/eventusserver/server/model"
-	"io/ioutil"
 	"net/http"
 )
 
@@ -40,85 +38,24 @@ func GetPlace(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 func CreatePlace(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
-	body, readBodyErr := ioutil.ReadAll(r.Body)
-	if readBodyErr != nil {
-		respondError(w, http.StatusBadRequest, readBodyErr.Error())
-		return
-	}
-	var objectToCreate model.Place
-	unmarshalErr := json.Unmarshal(body, &objectToCreate)
-	if unmarshalErr != nil {
-		respondError(w, http.StatusBadRequest, unmarshalErr.Error())
-		return
-	}
-	rows, err := database.Insert(db, "place", objectToCreate)
-	// check if an error occurred
+	places, err := Create(db, r, "place")
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
-	// no rows and no error indicate a successful query but an empty result
-	if rows == nil {
-		respondJSON(w, http.StatusOK, []model.Place{})
-	}
-	var fetchedObjects []model.Place
-	// iterate over the rows an create
-	for rows.Next() {
-		// scan the link
-		obj, err := model.PlacesScan(rows)
-		if err != nil {
-			respondError(w, http.StatusInternalServerError, err.Error())
-			return
-		}
-		// add object result slice
-		fetchedObjects = append(fetchedObjects, obj)
-	}
-	respondJSON(w, http.StatusOK, fetchedObjects)
+	respondJSON(w, http.StatusOK, places)
 }
 
 // PATCH functions
 
 func UpdatePlace(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
-	objectID, err := ObjectID(r)
-	if err != nil {
-		respondError(w, http.StatusBadRequest, err.Error())
-		return
-	}
-	body, readBodyErr := ioutil.ReadAll(r.Body)
-	if readBodyErr != nil {
-		respondError(w, http.StatusBadRequest, readBodyErr.Error())
-		return
-	}
-	var objectToUpdate model.Place
-	unmarshalErr := json.Unmarshal(body, &objectToUpdate)
-	if unmarshalErr != nil {
-		respondError(w, http.StatusBadRequest, unmarshalErr.Error())
-		return
-	}
-	rows, err := database.Update(db, "place", objectID, objectToUpdate)
-	// check if an error occurred
+	places, err := Update(db, r, "place")
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
-	// no rows and no error indicate a successful query but an empty result
-	if rows == nil {
-		respondJSON(w, http.StatusOK, []model.Place{})
-	}
-	var fetchedObjects []model.Place
-	// iterate over the rows an create
-	for rows.Next() {
-		// scan the link
-		obj, err := model.PlacesScan(rows)
-		if err != nil {
-			respondError(w, http.StatusInternalServerError, err.Error())
-			return
-		}
-		// add object result slice
-		fetchedObjects = append(fetchedObjects, obj)
-	}
-	respondJSON(w, http.StatusOK, fetchedObjects)
+	respondJSON(w, http.StatusOK, places)
 }
 
 // DELETE functions

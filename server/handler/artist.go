@@ -2,13 +2,9 @@ package handler
 
 import (
 	"database/sql"
-	"encoding/json"
-	"errors"
 	"github.com/Phisto/eventusserver/server/database"
 	"github.com/Phisto/eventusserver/server/model"
-	"io/ioutil"
 	"net/http"
-	"net/url"
 )
 
 // GET functions
@@ -36,22 +32,6 @@ func GetArtist(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	respondJSON(w, http.StatusOK, artists)
-}
-
-func GetArtistRelationships(db *sql.DB, objectID int, values url.Values) (interface{}, error) {
-
-	// get relationships to include
-	includeQuery := values.Get("include")
-	if includeQuery != "" {
-		var err error
-		stringVals, err := RelationshipNames(includeQuery)
-		if err != nil {
-			return nil, err
-		}
-		return GetRelationships(db, "artist", objectID, stringVals)
-	} else {
-		return nil, errors.New("get artist: provided unknown query value")
-	}
 }
 
 func GetArtistImage(db *sql.DB, w http.ResponseWriter, r *http.Request) {
@@ -104,41 +84,12 @@ func GetArtistTags(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 func CreateArtist(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
-	body, readBodyErr := ioutil.ReadAll(r.Body)
-	if readBodyErr != nil {
-		respondError(w, http.StatusBadRequest, readBodyErr.Error())
-		return
-	}
-	var objectToCreate model.Artist
-	unmarshalErr := json.Unmarshal(body, &objectToCreate)
-	if unmarshalErr != nil {
-		respondError(w, http.StatusBadRequest, unmarshalErr.Error())
-		return
-	}
-	if objectToCreate.Name == "" {
-		respondError(w, http.StatusBadRequest, "The provided artist name is not valid.")
-		return
-	}
-	rows, err := database.Insert(db, "artist", objectToCreate)
-	// check if an error occurred
+	artist, err := Create(db, r, "artist")
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
-	// no rows and no error indicate a successful query but an empty result
-	if rows == nil {
-		respondJSON(w, http.StatusOK, []model.Artist{})
-	}
-	var fetchedObjects []model.Artist
-	for rows.Next() {
-		obj, err := model.ArtistsScan(rows)
-		if err != nil {
-			respondError(w, http.StatusInternalServerError, err.Error())
-			return
-		}
-		fetchedObjects = append(fetchedObjects, obj)
-	}
-	respondJSON(w, http.StatusOK, fetchedObjects)
+	respondJSON(w, http.StatusOK, artist)
 }
 
 func SetImageForArtist(db *sql.DB, w http.ResponseWriter, r *http.Request) {
@@ -265,49 +216,12 @@ func RemoveTagForArtist(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 func UpdateArtist(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
-	objectID, err := ObjectID(r)
-	if err != nil {
-		respondError(w, http.StatusBadRequest, err.Error())
-		return
-	}
-	body, readBodyErr := ioutil.ReadAll(r.Body)
-	if readBodyErr != nil {
-		respondError(w, http.StatusBadRequest, readBodyErr.Error())
-		return
-	}
-	var objectToUpdate model.Artist
-	unmarshalErr := json.Unmarshal(body, &objectToUpdate)
-	if unmarshalErr != nil {
-		respondError(w, http.StatusBadRequest, unmarshalErr.Error())
-		return
-	}
-	if objectToUpdate.Name == "" {
-		respondError(w, http.StatusBadRequest, "The provided artist name is not valid.")
-		return
-	}
-	rows, err := database.Update(db, "artist", objectID, objectToUpdate)
-	// check if an error occurred
+	artists, err := Update(db, r, "artist")
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
-	// no rows and no error indicate a successful query but an empty result
-	if rows == nil {
-		respondJSON(w, http.StatusOK, []model.Artist{})
-	}
-	var fetchedObjects []model.Artist
-	// iterate over the rows an create
-	for rows.Next() {
-		// scan the link
-		obj, err := model.ArtistsScan(rows)
-		if err != nil {
-			respondError(w, http.StatusInternalServerError, err.Error())
-			return
-		}
-		// add object result slice
-		fetchedObjects = append(fetchedObjects, obj)
-	}
-	respondJSON(w, http.StatusOK, fetchedObjects)
+	respondJSON(w, http.StatusOK, artists)
 }
 
 func DeleteArtist(db *sql.DB, w http.ResponseWriter, r *http.Request) {
@@ -318,7 +232,6 @@ func DeleteArtist(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	err = database.Delete(db, "artist", objectID)
-	// check if an error occurred
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, err.Error())
 		return

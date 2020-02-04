@@ -2,10 +2,12 @@ package handler
 
 import (
 	"database/sql"
+	"encoding/json"
 	"errors"
 	"github.com/Phisto/eventusserver/server/database"
 	"github.com/Phisto/eventusserver/server/model"
 	"github.com/go-chi/chi"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -22,9 +24,7 @@ func GetObjects(db *sql.DB, entity string, objectIDs []int, values url.Values) (
 	var idValues []int
 	var rels []string
 	var err error
-
 	idValues = append(idValues, objectIDs...)
-
 	if len(values) != 0 {
 		// search with name
 		name := values.Get("name")
@@ -49,7 +49,6 @@ func GetObjects(db *sql.DB, entity string, objectIDs []int, values url.Values) (
 			}
 		}
 	}
-
 	rows, err := database.Select(db, entity, idValues)
 	if err != nil {
 		return nil, err
@@ -71,12 +70,10 @@ func GetObjects(db *sql.DB, entity string, objectIDs []int, values url.Values) (
 			if err != nil {
 				return nil, err
 			}
-
 			includedRels, err := GetRelationships(db, entity, objId, rels)
 			if err != nil {
 				return nil, err
 			}
-
 			obj, err = AnonInclude(entity, obj, includedRels)
 			if err != nil {
 				return nil, err
@@ -395,6 +392,70 @@ func GetAssociatedLocation(db *sql.DB, object string, objectID int) ([]model.Loc
 	return fetchedObjects, nil
 }
 
+func Create(db *sql.DB, r *http.Request, entity string) ([]interface{}, error) {
+
+	body, readBodyErr := ioutil.ReadAll(r.Body)
+	if readBodyErr != nil {
+		return nil, readBodyErr
+	}
+	objectToCreate, err := AnonUnmarshal(entity, body)
+	if err != nil {
+		return nil, err
+	}
+	rows, err := database.Insert(db, entity, objectToCreate)
+	if err != nil {
+		return nil, err
+	}
+	// no rows and no error indicate a successful query but an empty result
+	if rows == nil {
+		return []interface{}{}, nil
+	}
+	var fetchedObjects []interface{}
+	// iterate over the rows an create
+	for rows.Next() {
+		// scan the link
+		obj, err := AnonScan(entity, rows)
+		if err != nil {
+			return nil, err
+		}
+		// add object result slice
+		fetchedObjects = append(fetchedObjects, obj)
+	}
+	return fetchedObjects, nil
+}
+
+func Update(db *sql.DB, r *http.Request, entity string) ([]interface{}, error) {
+
+	objectID, err := ObjectID(r)
+	if err != nil {
+		return nil, err
+	}
+	body, readBodyErr := ioutil.ReadAll(r.Body)
+	if readBodyErr != nil {
+		return nil, readBodyErr
+	}
+	objectToUpdate, err := AnonUnmarshal(entity, body)
+	if err != nil {
+		return nil, err
+	}
+	rows, err := database.Update(db, entity, objectID, objectToUpdate)
+	if err != nil {
+		return nil, err
+	}
+	var fetchedObjects []interface{}
+	// iterate over the rows an create
+	for rows.Next() {
+		// scan the link
+		obj, err := AnonScan(entity, rows)
+		if err != nil {
+			return nil, err
+		}
+		// add object result slice
+		fetchedObjects = append(fetchedObjects, obj)
+	}
+	return fetchedObjects, nil
+}
+
 func ObjectID(r *http.Request) (int, error) {
 
 	objectID := chi.URLParam(r, "objectID")
@@ -506,6 +567,69 @@ func AnonID(entity string, object interface{}) (int, error) {
 		return object.(model.Tag).ID, nil
 	} else {
 		return -1, errors.New("get id: tried to retrieve the ID of an unknown entity")
+	}
+}
+
+func AnonUnmarshal(entity string, body []byte) (interface{}, error) {
+
+	if CompareSensitive(entity, "event") {
+		var objectToCreate model.Event
+		err := json.Unmarshal(body, &objectToCreate)
+		if err != nil {
+			return nil, err
+		}
+		return objectToCreate, nil
+	} else if CompareSensitive(entity, "festival") {
+		var objectToCreate model.Festival
+		err := json.Unmarshal(body, &objectToCreate)
+		if err != nil {
+			return nil, err
+		}
+		return objectToCreate, nil
+	} else if CompareSensitive(entity, "artist") {
+		var objectToCreate model.Artist
+		err := json.Unmarshal(body, &objectToCreate)
+		if err != nil {
+			return nil, err
+		}
+		return objectToCreate, nil
+	} else if CompareSensitive(entity, "location") {
+		var objectToCreate model.Location
+		err := json.Unmarshal(body, &objectToCreate)
+		if err != nil {
+			return nil, err
+		}
+		return objectToCreate, nil
+	} else if CompareSensitive(entity, "image") {
+		var objectToCreate model.Image
+		err := json.Unmarshal(body, &objectToCreate)
+		if err != nil {
+			return nil, err
+		}
+		return objectToCreate, nil
+	} else if CompareSensitive(entity, "link") {
+		var objectToCreate model.Link
+		err := json.Unmarshal(body, &objectToCreate)
+		if err != nil {
+			return nil, err
+		}
+		return objectToCreate, nil
+	} else if CompareSensitive(entity, "place") {
+		var objectToCreate model.Place
+		err := json.Unmarshal(body, &objectToCreate)
+		if err != nil {
+			return nil, err
+		}
+		return objectToCreate, nil
+	} else if CompareSensitive(entity, "tag") {
+		var objectToCreate model.Tag
+		err := json.Unmarshal(body, &objectToCreate)
+		if err != nil {
+			return nil, err
+		}
+		return objectToCreate, nil
+	} else {
+		return nil, errors.New("unmarshal object: tried to unmarshal an unknown entity")
 	}
 }
 

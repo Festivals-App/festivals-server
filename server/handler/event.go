@@ -2,10 +2,8 @@ package handler
 
 import (
 	"database/sql"
-	"encoding/json"
 	"github.com/Phisto/eventusserver/server/database"
 	"github.com/Phisto/eventusserver/server/model"
-	"io/ioutil"
 	"net/http"
 )
 
@@ -85,40 +83,12 @@ func GetEventLocation(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 func CreateEvent(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
-	body, readBodyErr := ioutil.ReadAll(r.Body)
-	if readBodyErr != nil {
-		respondError(w, http.StatusBadRequest, readBodyErr.Error())
-		return
-	}
-	var objectToCreate model.Event
-	unmarshalErr := json.Unmarshal(body, &objectToCreate)
-	if unmarshalErr != nil {
-		respondError(w, http.StatusBadRequest, unmarshalErr.Error())
-		return
-	}
-	rows, err := database.Insert(db, "event", objectToCreate)
-	// check if an error occurred
+	events, err := Create(db, r, "event")
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
-	// no rows and no error indicate a successful query but an empty result
-	if rows == nil {
-		respondJSON(w, http.StatusOK, []model.Event{})
-	}
-	var fetchedObjects []model.Event
-	// iterate over the rows an create
-	for rows.Next() {
-		// scan the link
-		obj, err := model.EventsScan(rows)
-		if err != nil {
-			respondError(w, http.StatusInternalServerError, err.Error())
-			return
-		}
-		// add object result slice
-		fetchedObjects = append(fetchedObjects, obj)
-	}
-	respondJSON(w, http.StatusOK, fetchedObjects)
+	respondJSON(w, http.StatusOK, events)
 }
 
 func SetArtistForEvent(db *sql.DB, w http.ResponseWriter, r *http.Request) {
@@ -205,45 +175,12 @@ func RemoveLocationForEvent(db *sql.DB, w http.ResponseWriter, r *http.Request) 
 
 func UpdateEvent(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
-	objectID, err := ObjectID(r)
-	if err != nil {
-		respondError(w, http.StatusBadRequest, err.Error())
-		return
-	}
-	body, readBodyErr := ioutil.ReadAll(r.Body)
-	if readBodyErr != nil {
-		respondError(w, http.StatusBadRequest, readBodyErr.Error())
-		return
-	}
-	var objectToUpdate model.Event
-	unmarshalErr := json.Unmarshal(body, &objectToUpdate)
-	if unmarshalErr != nil {
-		respondError(w, http.StatusBadRequest, unmarshalErr.Error())
-		return
-	}
-	rows, err := database.Update(db, "event", objectID, objectToUpdate)
-	// check if an error occurred
+	events, err := Update(db, r, "event")
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
-	// no rows and no error indicate a successful query but an empty result
-	if rows == nil {
-		respondJSON(w, http.StatusOK, []model.Event{})
-	}
-	var fetchedObjects []model.Event
-	// iterate over the rows an create
-	for rows.Next() {
-		// scan the link
-		obj, err := model.EventsScan(rows)
-		if err != nil {
-			respondError(w, http.StatusInternalServerError, err.Error())
-			return
-		}
-		// add object result slice
-		fetchedObjects = append(fetchedObjects, obj)
-	}
-	respondJSON(w, http.StatusOK, fetchedObjects)
+	respondJSON(w, http.StatusOK, events)
 }
 
 // DELETE functions
