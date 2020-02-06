@@ -2,12 +2,8 @@ package handler
 
 import (
 	"database/sql"
-	"github.com/Phisto/eventusserver/server/database"
-	"github.com/Phisto/eventusserver/server/model"
 	"net/http"
 )
-
-// GET functions
 
 func GetArtists(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
@@ -21,12 +17,7 @@ func GetArtists(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 func GetArtist(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
-	objectID, err := ObjectID(r)
-	if err != nil {
-		respondError(w, http.StatusBadRequest, err.Error())
-		return
-	}
-	artists, err := GetObject(db, "artist", objectID, r.URL.Query())
+	artists, err := GetObject(db, r, "artist")
 	if err != nil {
 		respondError(w, http.StatusBadRequest, err.Error())
 		return
@@ -36,13 +27,7 @@ func GetArtist(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 func GetArtistImage(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
-	objectID, err := ObjectID(r)
-	if err != nil {
-		respondError(w, http.StatusBadRequest, err.Error())
-		return
-	}
-	images, err := GetAssociatedImage(db, "artist", objectID)
-	// check if an error occurred
+	images, err := GetAssociation(db, r, "artist", "image")
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, err.Error())
 		return
@@ -52,13 +37,7 @@ func GetArtistImage(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 func GetArtistLinks(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
-	objectID, err := ObjectID(r)
-	if err != nil {
-		respondError(w, http.StatusBadRequest, err.Error())
-		return
-	}
-	links, err := GetAssociatedLinks(db, "artist", objectID)
-	// check if an error occurred
+	links, err := GetAssociation(db, r, "artist", "link")
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, err.Error())
 		return
@@ -68,18 +47,72 @@ func GetArtistLinks(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 func GetArtistTags(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
-	objectID, err := ObjectID(r)
-	if err != nil {
-		respondError(w, http.StatusBadRequest, err.Error())
-		return
-	}
-	tags, err := GetAssociatedTags(db, "artist", objectID)
-	// check if an error occurred
+	tags, err := GetAssociation(db, r, "artist", "tag")
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 	respondJSON(w, http.StatusOK, tags)
+}
+
+func SetImageForArtist(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+
+	err := SetAssociation(db, r, "artist", "image")
+	if err != nil {
+		respondError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+	respondJSON(w, http.StatusOK, []interface{}{})
+}
+
+func SetLinkForArtist(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+
+	err := SetAssociation(db, r, "artist", "link")
+	if err != nil {
+		respondError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+	respondJSON(w, http.StatusOK, []interface{}{})
+}
+
+func SetTagForArtist(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+
+	err := SetAssociation(db, r, "artist", "tag")
+	if err != nil {
+		respondError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+	respondJSON(w, http.StatusOK, []interface{}{})
+}
+
+func RemoveImageForArtist(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+
+	err := RemoveAssociation(db, r, "artist", "image")
+	if err != nil {
+		respondError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+	respondJSON(w, http.StatusOK, []interface{}{})
+}
+
+func RemoveLinkForArtist(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+
+	err := RemoveAssociation(db, r, "artist", "link")
+	if err != nil {
+		respondError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+	respondJSON(w, http.StatusOK, []interface{}{})
+}
+
+func RemoveTagForArtist(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+
+	err := RemoveAssociation(db, r, "artist", "tag")
+	if err != nil {
+		respondError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+	respondJSON(w, http.StatusOK, []interface{}{})
 }
 
 func CreateArtist(db *sql.DB, w http.ResponseWriter, r *http.Request) {
@@ -91,128 +124,6 @@ func CreateArtist(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	}
 	respondJSON(w, http.StatusOK, artist)
 }
-
-func SetImageForArtist(db *sql.DB, w http.ResponseWriter, r *http.Request) {
-
-	objectID, err := ObjectID(r)
-	if err != nil {
-		respondError(w, http.StatusBadRequest, err.Error())
-		return
-	}
-	resourceID, err := ResourceID(r)
-	if err != nil {
-		respondError(w, http.StatusBadRequest, err.Error())
-		return
-	}
-	err = database.SetResource(db, "artist", objectID, "image", resourceID)
-	if err != nil {
-		respondError(w, http.StatusInternalServerError, err.Error())
-		return
-	}
-	respondJSON(w, http.StatusOK, []interface{}{})
-}
-
-func SetLinkForArtist(db *sql.DB, w http.ResponseWriter, r *http.Request) {
-
-	objectID, err := ObjectID(r)
-	if err != nil {
-		respondError(w, http.StatusBadRequest, err.Error())
-		return
-	}
-	resourceID, err := ResourceID(r)
-	if err != nil {
-		respondError(w, http.StatusBadRequest, err.Error())
-		return
-	}
-	err = database.SetResource(db, "artist", objectID, "link", resourceID)
-	if err != nil {
-		respondError(w, http.StatusInternalServerError, err.Error())
-		return
-	}
-	respondJSON(w, http.StatusOK, []interface{}{})
-}
-
-func SetTagForArtist(db *sql.DB, w http.ResponseWriter, r *http.Request) {
-
-	objectID, err := ObjectID(r)
-	if err != nil {
-		respondError(w, http.StatusBadRequest, err.Error())
-		return
-	}
-	resourceID, err := ResourceID(r)
-	if err != nil {
-		respondError(w, http.StatusBadRequest, err.Error())
-		return
-	}
-	err = database.SetResource(db, "artist", objectID, "tag", resourceID)
-	if err != nil {
-		respondError(w, http.StatusInternalServerError, err.Error())
-		return
-	}
-	respondJSON(w, http.StatusOK, []interface{}{})
-}
-
-func RemoveImageForArtist(db *sql.DB, w http.ResponseWriter, r *http.Request) {
-
-	objectID, err := ObjectID(r)
-	if err != nil {
-		respondError(w, http.StatusBadRequest, err.Error())
-		return
-	}
-	resourceID, err := ResourceID(r)
-	if err != nil {
-		respondError(w, http.StatusBadRequest, err.Error())
-		return
-	}
-	err = database.RemoveResource(db, "artist", objectID, "image", resourceID)
-	if err != nil {
-		respondError(w, http.StatusInternalServerError, err.Error())
-		return
-	}
-	respondJSON(w, http.StatusOK, []interface{}{})
-}
-
-func RemoveLinkForArtist(db *sql.DB, w http.ResponseWriter, r *http.Request) {
-
-	objectID, err := ObjectID(r)
-	if err != nil {
-		respondError(w, http.StatusBadRequest, err.Error())
-		return
-	}
-	resourceID, err := ResourceID(r)
-	if err != nil {
-		respondError(w, http.StatusBadRequest, err.Error())
-		return
-	}
-	err = database.RemoveResource(db, "artist", objectID, "link", resourceID)
-	if err != nil {
-		respondError(w, http.StatusInternalServerError, err.Error())
-		return
-	}
-	respondJSON(w, http.StatusOK, []interface{}{})
-}
-
-func RemoveTagForArtist(db *sql.DB, w http.ResponseWriter, r *http.Request) {
-
-	objectID, err := ObjectID(r)
-	if err != nil {
-		respondError(w, http.StatusBadRequest, err.Error())
-		return
-	}
-	resourceID, err := ResourceID(r)
-	if err != nil {
-		respondError(w, http.StatusBadRequest, err.Error())
-		return
-	}
-	err = database.RemoveResource(db, "artist", objectID, "tag", resourceID)
-	if err != nil {
-		respondError(w, http.StatusInternalServerError, err.Error())
-		return
-	}
-	respondJSON(w, http.StatusOK, []interface{}{})
-}
-
-// PATCH functions
 
 func UpdateArtist(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
@@ -226,15 +137,10 @@ func UpdateArtist(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 func DeleteArtist(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
-	objectID, err := ObjectID(r)
-	if err != nil {
-		respondError(w, http.StatusBadRequest, err.Error())
-		return
-	}
-	err = database.Delete(db, "artist", objectID)
+	err := Delete(db, r, "artist")
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
-	respondJSON(w, http.StatusNoContent, []model.Artist{})
+	respondJSON(w, http.StatusOK, nil)
 }

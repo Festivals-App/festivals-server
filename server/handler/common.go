@@ -14,7 +14,13 @@ import (
 	"strings"
 )
 
-func GetObject(db *sql.DB, entity string, objectID int, values url.Values) ([]interface{}, error) {
+func GetObject(db *sql.DB, r *http.Request, entity string) ([]interface{}, error) {
+
+	objectID, err := ObjectID(r)
+	if err != nil {
+		return nil, err
+	}
+	values := r.URL.Query()
 
 	return GetObjects(db, entity, []int{objectID}, values)
 }
@@ -55,7 +61,7 @@ func GetObjects(db *sql.DB, entity string, objectIDs []int, values url.Values) (
 	}
 	// no rows and no error indicate a successful query but an empty result
 	if rows == nil {
-		return nil, nil
+		return []interface{}{}, nil
 	}
 	var fetchedObjects []interface{}
 	// iterate over the rows an create
@@ -113,283 +119,95 @@ func GetRelationships(db *sql.DB, entity string, objectID int, relationships []s
 
 	relsDict := make(map[string]interface{})
 	for _, value := range relationships {
-		if CompareSensitive(value, "event") {
-			events, err := GetAssociatedEvents(db, entity, objectID, nil)
-			if err != nil {
-				return nil, err
-			}
-			relsDict[value] = events
-		} else if CompareSensitive(value, "image") {
-			images, err := GetAssociatedImage(db, entity, objectID)
-			if err != nil {
-				return nil, err
-			}
-			relsDict[value] = images
-		} else if CompareSensitive(value, "links") {
-			links, err := GetAssociatedLinks(db, entity, objectID)
-			if err != nil {
-				return nil, err
-			}
-			relsDict[value] = links
-		} else if CompareSensitive(value, "place") {
-			places, err := GetAssociatedPlace(db, entity, objectID)
-			if err != nil {
-				return nil, err
-			}
-			relsDict[value] = places
-		} else if CompareSensitive(value, "tags") {
-			tags, err := GetAssociatedTags(db, entity, objectID)
-			if err != nil {
-				return nil, err
-			}
-			relsDict[value] = tags
-		} else if CompareSensitive(value, "festival") {
-			festivals, err := GetAssociatedFestival(db, entity, objectID)
-			if err != nil {
-				return nil, err
-			}
-			relsDict[value] = festivals
-		} else if CompareSensitive(value, "artist") {
-			artists, err := GetAssociatedArtist(db, entity, objectID)
-			if err != nil {
-				return nil, err
-			}
-			relsDict[value] = artists
-		} else if CompareSensitive(value, "location") {
-			locations, err := GetAssociatedLocation(db, entity, objectID)
-			if err != nil {
-				return nil, err
-			}
-			relsDict[value] = locations
-		} else {
-			return nil, errors.New("get relationships: provided unknown relationship")
+		objcts, err := GetAssociatedObjects(db, entity, objectID, value, nil)
+		if err != nil {
+			return nil, err
 		}
+		relsDict[value] = objcts
 	}
 	return relsDict, nil
 }
 
-func GetAssociatedEvents(db *sql.DB, object string, objectID int, include []string) ([]model.Event, error) {
+func GetAssociation(db *sql.DB, r *http.Request, entity string, association string) ([]interface{}, error) {
 
-	rows, err := database.Resource(db, object, objectID, "event")
-	// check if an error occurred
+	objectID, err := ObjectID(r)
+	if err != nil {
+		return nil, err
+	}
+	includes := Includes(r)
+	return GetAssociatedObjects(db, entity, objectID, association, includes)
+}
+
+func GetAssociatedObjects(db *sql.DB, entity string, objectID int, association string, includes []string) ([]interface{}, error) {
+
+	rows, err := database.Resource(db, entity, objectID, association)
 	if err != nil {
 		return nil, err
 	}
 	// no rows and no error indicate a successful query but an empty result
 	if rows == nil {
-		return []model.Event{}, nil
+		return []interface{}{}, nil
 	}
-	var fetchedObjects []model.Event
+	var fetchedObjects []interface{}
 	// iterate over the rows an create
 	for rows.Next() {
 		// scan the link
-		obj, err := model.EventsScan(rows)
+		obj, err := AnonScan(association, rows)
 		if err != nil {
 			return nil, err
 		}
+		if includes != nil {
+			objId, err := AnonID(association, obj)
+			if err != nil {
+				return nil, err
+			}
+			includedRels, err := GetRelationships(db, association, objId, includes)
+			if err != nil {
+				return nil, err
+			}
+			obj, err = AnonInclude(association, obj, includedRels)
+			if err != nil {
+				return nil, err
+			}
+		}
 		// add object result slice
 		fetchedObjects = append(fetchedObjects, obj)
-	}
-	if len(fetchedObjects) == 0 {
-		fetchedObjects = []model.Event{}
 	}
 	return fetchedObjects, nil
 }
 
-func GetAssociatedImage(db *sql.DB, object string, objectID int) ([]model.Image, error) {
+func SetAssociation(db *sql.DB, r *http.Request, entity string, association string) error {
 
-	rows, err := database.Resource(db, object, objectID, "image")
-	// check if an error occurred
+	objectID, err := ObjectID(r)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	// no rows and no error indicate a successful query but an empty result
-	if rows == nil {
-		return []model.Image{}, nil
+	resourceID, err := ResourceID(r)
+	if err != nil {
+		return err
 	}
-	var fetchedObjects []model.Image
-	// iterate over the rows an create
-	for rows.Next() {
-		// scan the link
-		obj, err := model.ImagesScan(rows)
-		if err != nil {
-			return nil, err
-		}
-		// add object result slice
-		fetchedObjects = append(fetchedObjects, obj)
+	err = database.SetResource(db, entity, objectID, association, resourceID)
+	if err != nil {
+		return err
 	}
-	if len(fetchedObjects) == 0 {
-		fetchedObjects = []model.Image{}
-	}
-	return fetchedObjects, nil
+	return nil
 }
 
-func GetAssociatedLinks(db *sql.DB, object string, objectID int) ([]model.Link, error) {
+func RemoveAssociation(db *sql.DB, r *http.Request, entity string, association string) error {
 
-	rows, err := database.Resource(db, object, objectID, "link")
-	// check if an error occurred
+	objectID, err := ObjectID(r)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	// no rows and no error indicate a successful query but an empty result
-	if rows == nil {
-		return []model.Link{}, nil
-	}
-	var fetchedObjects []model.Link
-	// iterate over the rows an create
-	for rows.Next() {
-		// scan the link
-		obj, err := model.LinksScan(rows)
-		if err != nil {
-			return nil, err
-		}
-		// add object result slice
-		fetchedObjects = append(fetchedObjects, obj)
-	}
-	if len(fetchedObjects) == 0 {
-		fetchedObjects = []model.Link{}
-	}
-	return fetchedObjects, nil
-}
-
-func GetAssociatedPlace(db *sql.DB, object string, objectID int) ([]model.Place, error) {
-
-	rows, err := database.Resource(db, object, objectID, "place")
-	// check if an error occurred
+	resourceID, err := ResourceID(r)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	// no rows and no error indicate a successful query but an empty result
-	if rows == nil {
-		return []model.Place{}, nil
-	}
-	var fetchedObjects []model.Place
-	// iterate over the rows an create
-	for rows.Next() {
-		// scan the link
-		obj, err := model.PlacesScan(rows)
-		if err != nil {
-			return nil, err
-		}
-		// add object result slice
-		fetchedObjects = append(fetchedObjects, obj)
-	}
-	if len(fetchedObjects) == 0 {
-		fetchedObjects = []model.Place{}
-	}
-	return fetchedObjects, nil
-}
-
-func GetAssociatedTags(db *sql.DB, object string, objectID int) ([]model.Tag, error) {
-
-	rows, err := database.Resource(db, object, objectID, "tag")
-	// check if an error occurred
+	err = database.RemoveResource(db, entity, objectID, association, resourceID)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	// no rows and no error indicate a successful query but an empty result
-	if rows == nil {
-		return []model.Tag{}, nil
-	}
-	var fetchedObjects []model.Tag
-	// iterate over the rows an create
-	for rows.Next() {
-		// scan the link
-		obj, err := model.TagsScan(rows)
-		if err != nil {
-			return nil, err
-		}
-		// add object result slice
-		fetchedObjects = append(fetchedObjects, obj)
-	}
-	if len(fetchedObjects) == 0 {
-		fetchedObjects = []model.Tag{}
-	}
-	return fetchedObjects, nil
-}
-
-func GetAssociatedFestival(db *sql.DB, object string, objectID int) ([]model.Festival, error) {
-
-	rows, err := database.Resource(db, object, objectID, "festival")
-	// check if an error occurred
-	if err != nil {
-		return nil, err
-	}
-	// no rows and no error indicate a successful query but an empty result
-	if rows == nil {
-		return []model.Festival{}, nil
-	}
-	var fetchedObjects []model.Festival
-	// iterate over the rows an create
-	for rows.Next() {
-		// scan the link
-		obj, err := model.FestivalsScan(rows)
-		if err != nil {
-			return nil, err
-		}
-		// add object result slice
-		fetchedObjects = append(fetchedObjects, obj)
-	}
-	if len(fetchedObjects) == 0 {
-		fetchedObjects = []model.Festival{}
-	}
-	return fetchedObjects, nil
-}
-
-func GetAssociatedArtist(db *sql.DB, object string, objectID int) ([]model.Artist, error) {
-
-	rows, err := database.Resource(db, object, objectID, "artist")
-	// check if an error occurred
-	if err != nil {
-		return nil, err
-	}
-	// no rows and no error indicate a successful query but an empty result
-	if rows == nil {
-		return []model.Artist{}, nil
-	}
-	var fetchedObjects []model.Artist
-	// iterate over the rows an create
-	for rows.Next() {
-		// scan the link
-		obj, err := model.ArtistsScan(rows)
-		if err != nil {
-			return nil, err
-		}
-		// add object result slice
-		fetchedObjects = append(fetchedObjects, obj)
-	}
-	if len(fetchedObjects) == 0 {
-		fetchedObjects = []model.Artist{}
-	}
-	return fetchedObjects, nil
-}
-
-func GetAssociatedLocation(db *sql.DB, object string, objectID int) ([]model.Location, error) {
-
-	rows, err := database.Resource(db, object, objectID, "location")
-	// check if an error occurred
-	if err != nil {
-		return nil, err
-	}
-	// no rows and no error indicate a successful query but an empty result
-	if rows == nil {
-		return []model.Location{}, nil
-	}
-	var fetchedObjects []model.Location
-	// iterate over the rows an create
-	for rows.Next() {
-		// scan the link
-		obj, err := model.LocationsScan(rows)
-		if err != nil {
-			return nil, err
-		}
-		// add object result slice
-		fetchedObjects = append(fetchedObjects, obj)
-	}
-	if len(fetchedObjects) == 0 {
-		fetchedObjects = []model.Location{}
-	}
-	return fetchedObjects, nil
+	return nil
 }
 
 func Create(db *sql.DB, r *http.Request, entity string) ([]interface{}, error) {
@@ -456,6 +274,19 @@ func Update(db *sql.DB, r *http.Request, entity string) ([]interface{}, error) {
 	return fetchedObjects, nil
 }
 
+func Delete(db *sql.DB, r *http.Request, entity string) error {
+
+	objectID, err := ObjectID(r)
+	if err != nil {
+		return err
+	}
+	err = database.Delete(db, entity, objectID)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func ObjectID(r *http.Request) (int, error) {
 
 	objectID := chi.URLParam(r, "objectID")
@@ -476,7 +307,18 @@ func ResourceID(r *http.Request) (int, error) {
 	return int(num), nil
 }
 
-// TODO Further string/value validation
+func Includes(r *http.Request) []string {
+
+	include := r.URL.Query().Get("include")
+	if include != "" {
+		includes, err := RelationshipNames(include)
+		if err == nil {
+			return includes
+		}
+	}
+	return nil
+}
+
 func ObjectIDs(idsString string) ([]int, error) {
 
 	var ids []int
@@ -488,11 +330,9 @@ func ObjectIDs(idsString string) ([]int, error) {
 		}
 		ids = append(ids, int(idNum))
 	}
-
 	if len(ids) == 0 {
 		return nil, errors.New("ids parsing: failed to provide an id")
 	}
-
 	return ids, nil
 }
 

@@ -24,7 +24,6 @@ func DBFields(object interface{}) string {
 		}
 		return "`" + strings.Join(fields, "`,`") + "`"
 	}
-
 	panic(fmt.Errorf("DBFields requires a struct, found: %s", v.Kind().String()))
 }
 
@@ -45,7 +44,6 @@ func DBPlaceholder(object interface{}) string {
 		}
 		return strings.Join(fields, ",")
 	}
-
 	panic(fmt.Errorf("DBFields requires a struct, found: %s", v.Kind().String()))
 }
 
@@ -78,7 +76,6 @@ func DBValues(object interface{}) []interface{} {
 		}
 		return values
 	}
-
 	panic(fmt.Errorf("DBFields requires a struct, found: %s", v.Kind().String()))
 }
 
@@ -99,7 +96,6 @@ func DBKeyValuePairs(object interface{}) string {
 		}
 		return "`" + strings.Join(fields, "`=?,`") + "`=?"
 	}
-
 	panic(fmt.Errorf("DBFields requires a struct, found: %s", v.Kind().String()))
 }
 

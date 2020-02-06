@@ -2,12 +2,8 @@ package handler
 
 import (
 	"database/sql"
-	"github.com/Phisto/eventusserver/server/database"
-	"github.com/Phisto/eventusserver/server/model"
 	"net/http"
 )
-
-// GET functions
 
 func GetTags(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
@@ -21,12 +17,7 @@ func GetTags(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 func GetTag(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
-	objectID, err := ObjectID(r)
-	if err != nil {
-		respondError(w, http.StatusBadRequest, err.Error())
-		return
-	}
-	tags, err := GetObject(db, "tag", objectID, r.URL.Query())
+	tags, err := GetObject(db, r, "tag")
 	if err != nil {
 		respondError(w, http.StatusBadRequest, err.Error())
 		return
@@ -36,37 +27,13 @@ func GetTag(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 func GetTagFestivals(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
-	objectID, err := ObjectID(r)
-	if err != nil {
-		respondError(w, http.StatusBadRequest, err.Error())
-		return
-	}
-	rows, err := database.Resource(db, "tag", objectID, "festival")
-	// check if an error occurred
+	images, err := GetAssociation(db, r, "tag", "festival")
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
-	// no rows and no error indicate a successful query but an empty result
-	if rows == nil {
-		respondJSON(w, http.StatusOK, []model.Festival{})
-	}
-	var fetchedObjects []model.Festival
-	// iterate over the rows an create
-	for rows.Next() {
-		// scan the link
-		obj, err := model.FestivalsScan(rows)
-		if err != nil {
-			respondError(w, http.StatusInternalServerError, err.Error())
-			return
-		}
-		// add object result slice
-		fetchedObjects = append(fetchedObjects, obj)
-	}
-	respondJSON(w, http.StatusOK, fetchedObjects)
+	respondJSON(w, http.StatusOK, images)
 }
-
-// POST functions
 
 func CreateTag(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
@@ -78,8 +45,6 @@ func CreateTag(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	respondJSON(w, http.StatusOK, tags)
 }
 
-// PATCH functions
-
 func UpdateTag(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	tags, err := Update(db, r, "tag")
@@ -90,20 +55,12 @@ func UpdateTag(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	respondJSON(w, http.StatusOK, tags)
 }
 
-// DELETE functions
-
 func DeleteTag(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
-	objectID, err := ObjectID(r)
-	if err != nil {
-		respondError(w, http.StatusBadRequest, err.Error())
-		return
-	}
-	err = database.Delete(db, "tag", objectID)
+	err := Delete(db, r, "tag")
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
-	// TODO StatusNoContent and sending body data is not very nice
-	respondJSON(w, http.StatusNoContent, []model.Tag{})
+	respondJSON(w, http.StatusOK, nil)
 }

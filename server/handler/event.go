@@ -2,12 +2,8 @@ package handler
 
 import (
 	"database/sql"
-	"github.com/Phisto/eventusserver/server/database"
-	"github.com/Phisto/eventusserver/server/model"
 	"net/http"
 )
-
-// GET functions
 
 func GetEvents(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
@@ -21,12 +17,7 @@ func GetEvents(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 func GetEvent(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
-	objectID, err := ObjectID(r)
-	if err != nil {
-		respondError(w, http.StatusBadRequest, err.Error())
-		return
-	}
-	events, err := GetObject(db, "event", objectID, r.URL.Query())
+	events, err := GetObject(db, r, "event")
 	if err != nil {
 		respondError(w, http.StatusBadRequest, err.Error())
 		return
@@ -36,50 +27,73 @@ func GetEvent(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 func GetEventFestival(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
-	objectID, err := ObjectID(r)
-	if err != nil {
-		respondError(w, http.StatusBadRequest, err.Error())
-		return
-	}
-	festival, err := GetAssociatedFestival(db, "event", objectID)
+	festivals, err := GetAssociation(db, r, "event", "festival")
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
-	respondJSON(w, http.StatusOK, festival)
+	respondJSON(w, http.StatusOK, festivals)
 }
 
 func GetEventArtist(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
-	objectID, err := ObjectID(r)
-	if err != nil {
-		respondError(w, http.StatusBadRequest, err.Error())
-		return
-	}
-	artist, err := GetAssociatedArtist(db, "event", objectID)
+	artists, err := GetAssociation(db, r, "event", "artist")
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
-	respondJSON(w, http.StatusOK, artist)
+	respondJSON(w, http.StatusOK, artists)
 }
 
 func GetEventLocation(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
-	objectID, err := ObjectID(r)
-	if err != nil {
-		respondError(w, http.StatusBadRequest, err.Error())
-		return
-	}
-	location, err := GetAssociatedLocation(db, "event", objectID)
+	locations, err := GetAssociation(db, r, "event", "location")
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
-	respondJSON(w, http.StatusOK, location)
+	respondJSON(w, http.StatusOK, locations)
 }
 
-// POST functions
+func SetArtistForEvent(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+
+	err := SetAssociation(db, r, "event", "artist")
+	if err != nil {
+		respondError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+	respondJSON(w, http.StatusOK, []interface{}{})
+}
+
+func SetLocationForEvent(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+
+	err := SetAssociation(db, r, "event", "location")
+	if err != nil {
+		respondError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+	respondJSON(w, http.StatusOK, []interface{}{})
+}
+
+func RemoveArtistForEvent(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+
+	err := RemoveAssociation(db, r, "event", "artist")
+	if err != nil {
+		respondError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+	respondJSON(w, http.StatusOK, []interface{}{})
+}
+
+func RemoveLocationForEvent(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+
+	err := RemoveAssociation(db, r, "event", "location")
+	if err != nil {
+		respondError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+	respondJSON(w, http.StatusOK, []interface{}{})
+}
 
 func CreateEvent(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
@@ -91,88 +105,6 @@ func CreateEvent(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	respondJSON(w, http.StatusOK, events)
 }
 
-func SetArtistForEvent(db *sql.DB, w http.ResponseWriter, r *http.Request) {
-
-	objectID, err := ObjectID(r)
-	if err != nil {
-		respondError(w, http.StatusBadRequest, err.Error())
-		return
-	}
-	resourceID, err := ResourceID(r)
-	if err != nil {
-		respondError(w, http.StatusBadRequest, err.Error())
-		return
-	}
-	err = database.SetResource(db, "event", objectID, "artist", resourceID)
-	if err != nil {
-		respondError(w, http.StatusInternalServerError, err.Error())
-		return
-	}
-	respondJSON(w, http.StatusOK, []interface{}{})
-}
-
-func SetLocationForEvent(db *sql.DB, w http.ResponseWriter, r *http.Request) {
-
-	objectID, err := ObjectID(r)
-	if err != nil {
-		respondError(w, http.StatusBadRequest, err.Error())
-		return
-	}
-	resourceID, err := ResourceID(r)
-	if err != nil {
-		respondError(w, http.StatusBadRequest, err.Error())
-		return
-	}
-	err = database.SetResource(db, "event", objectID, "location", resourceID)
-	if err != nil {
-		respondError(w, http.StatusInternalServerError, err.Error())
-		return
-	}
-	respondJSON(w, http.StatusOK, []interface{}{})
-}
-
-func RemoveArtistForEvent(db *sql.DB, w http.ResponseWriter, r *http.Request) {
-
-	objectID, err := ObjectID(r)
-	if err != nil {
-		respondError(w, http.StatusBadRequest, err.Error())
-		return
-	}
-	resourceID, err := ResourceID(r)
-	if err != nil {
-		respondError(w, http.StatusBadRequest, err.Error())
-		return
-	}
-	err = database.RemoveResource(db, "event", objectID, "artist", resourceID)
-	if err != nil {
-		respondError(w, http.StatusInternalServerError, err.Error())
-		return
-	}
-	respondJSON(w, http.StatusOK, []interface{}{})
-}
-
-func RemoveLocationForEvent(db *sql.DB, w http.ResponseWriter, r *http.Request) {
-
-	objectID, err := ObjectID(r)
-	if err != nil {
-		respondError(w, http.StatusBadRequest, err.Error())
-		return
-	}
-	resourceID, err := ResourceID(r)
-	if err != nil {
-		respondError(w, http.StatusBadRequest, err.Error())
-		return
-	}
-	err = database.RemoveResource(db, "event", objectID, "location", resourceID)
-	if err != nil {
-		respondError(w, http.StatusInternalServerError, err.Error())
-		return
-	}
-	respondJSON(w, http.StatusOK, []interface{}{})
-}
-
-// PATCH functions
-
 func UpdateEvent(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	events, err := Update(db, r, "event")
@@ -183,19 +115,12 @@ func UpdateEvent(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	respondJSON(w, http.StatusOK, events)
 }
 
-// DELETE functions
-
 func DeleteEvent(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
-	objectID, err := ObjectID(r)
-	if err != nil {
-		respondError(w, http.StatusBadRequest, err.Error())
-		return
-	}
-	err = database.Delete(db, "event", objectID)
+	err := Delete(db, r, "event")
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
-	respondJSON(w, http.StatusNoContent, []model.Event{})
+	respondJSON(w, http.StatusOK, nil)
 }
