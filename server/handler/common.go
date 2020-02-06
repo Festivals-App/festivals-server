@@ -117,6 +117,7 @@ func SearchObjects(db *sql.DB, entity string, name string) ([]interface{}, error
 
 func GetRelationships(db *sql.DB, entity string, objectID int, relationships []string) (interface{}, error) {
 
+	// TODO check the relationship strings for sake of writing `include=links`instead of `include=link`?
 	relsDict := make(map[string]interface{})
 	for _, value := range relationships {
 		objcts, err := GetAssociatedObjects(db, entity, objectID, value, nil)
