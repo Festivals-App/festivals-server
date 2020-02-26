@@ -56,8 +56,8 @@ func SetResource(db *sql.DB, object string, objectID int, resource string, resou
 			return err
 		}
 	}
-
-	if mapID == "" || resource == "event" {
+	// for to-many relationships we want to create a new map entry
+	if mapID == "" || resource == "event" || resource == "tag" || resource == "link" {
 		query = "INSERT INTO `map_" + object + "_" + resource + "` ( `associated_" + object + "` , `associated_" + resource + "` ) VALUES (?,?);"
 		vars := []interface{}{objectID, resourceID}
 		result, err := ExecuteQuery(db, query, vars)
