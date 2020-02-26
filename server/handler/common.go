@@ -174,6 +174,9 @@ func GetAssociatedObjects(db *sql.DB, entity string, objectID int, association s
 		// add object result slice
 		fetchedObjects = append(fetchedObjects, obj)
 	}
+	if fetchedObjects == nil {
+		fetchedObjects = []interface{}{}
+	}
 	return fetchedObjects, nil
 }
 
