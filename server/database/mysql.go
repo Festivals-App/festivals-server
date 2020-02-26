@@ -3,8 +3,6 @@ package database
 import (
 	"database/sql"
 	"errors"
-	"log"
-
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -46,8 +44,6 @@ func SetResource(db *sql.DB, object string, objectID int, resource string, resou
 
 	query := "SELECT `map_id` from `map_" + object + "_" + resource + "` WHERE associated_" + object + " =?;"
 
-	log.Print(query)
-
 	vars := []interface{}{objectID}
 	rows, err := ExecuteRowQuery(db, query, vars)
 	if err != nil {
@@ -61,21 +57,7 @@ func SetResource(db *sql.DB, object string, objectID int, resource string, resou
 		}
 	}
 
-	log.Print("'" + mapID + "'")
-
-	if mapID != "" {
-		log.Print("update association")
-		vars = []interface{}{objectID, resourceID, mapID}
-		query = "UPDATE `map_" + object + "_" + resource + "` SET associated_" + resource + "=? WHERE map_id=?;"
-		log.Print(query)
-		vars := []interface{}{resourceID, mapID}
-		_, err := ExecuteQuery(db, query, vars)
-		if err != nil {
-			return err
-		}
-		return nil
-	} else {
-		log.Print("create association")
+	if mapID == "" || resource == "event" {
 		query = "INSERT INTO `map_" + object + "_" + resource + "` ( `associated_" + object + "` , `associated_" + resource + "` ) VALUES (?,?);"
 		vars := []interface{}{objectID, resourceID}
 		result, err := ExecuteQuery(db, query, vars)
@@ -83,6 +65,15 @@ func SetResource(db *sql.DB, object string, objectID int, resource string, resou
 			return err
 		}
 		_, err = result.LastInsertId()
+		if err != nil {
+			return err
+		}
+		return nil
+	} else {
+		vars = []interface{}{objectID, resourceID, mapID}
+		query = "UPDATE `map_" + object + "_" + resource + "` SET associated_" + resource + "=? WHERE map_id=?;"
+		vars := []interface{}{resourceID, mapID}
+		_, err := ExecuteQuery(db, query, vars)
 		if err != nil {
 			return err
 		}
