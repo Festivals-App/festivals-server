@@ -66,7 +66,7 @@ func GetObjects(db *sql.DB, entity string, objectIDs []int, values url.Values) (
 	var fetchedObjects []interface{}
 	// iterate over the rows an create
 	for rows.Next() {
-		// scan the link
+		// scan the object
 		obj, err := AnonScan(entity, rows)
 		if err != nil {
 			return nil, err
