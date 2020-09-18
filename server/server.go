@@ -3,8 +3,8 @@ package server
 import (
 	"database/sql"
 	"fmt"
-	"github.com/Phisto/eventusserver/config"
-	"github.com/Phisto/eventusserver/server/handler"
+	"github.com/Festivals-App/festivals-server/config"
+	"github.com/Festivals-App/festivals-server/server/handler"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	_ "github.com/go-sql-driver/mysql"
@@ -33,7 +33,6 @@ func (s *Server) Initialize(config *config.Config) {
 		log.Fatal("server initialize: could not connect to database")
 	}
 
-	// set DB and router
 	s.DB = db
 	s.Router = chi.NewRouter()
 

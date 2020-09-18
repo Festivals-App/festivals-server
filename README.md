@@ -1,6 +1,6 @@
 # Eventus Server
 
-[![License](https://img.shields.io/github/license/phisto/eventusserver.svg)](https://github.com/Phisto/eventusserver)
+[![License](https://img.shields.io/github/license/festivals-app/festivals-server.svg)](https://github.com/festivals-app/festivals-server)
 
 Eventus server, a live and lightweight go server app.
 
@@ -15,7 +15,7 @@ A simple RESTful API with Go using go-chi/chi and go-sql-driver/mysql.
 ## Installation
 
 ```bash
-go get github.com/Phisto/eventusserver
+go get github.com/Festivals-App/festivals-server
 ```
 
 Before running the API server, you should set the database config with your values in config/config.go
@@ -36,7 +36,7 @@ func GetConfig() *Config {
 
 ## Build and Run
 ```bash
-cd $GOPATH/src/github.com/Phisto/eventusserver
+cd $GOPATH/src/github.com/Festivals-App/festivals-server
 go build main.go
 ./main
 

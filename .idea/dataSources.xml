@@ -7,6 +7,9 @@
       <remarks>brew services restart mysql / brew services stop mysql / brew services start mysql</remarks>
       <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
       <jdbc-url>jdbc:mysql://localhost:3306/eventus_api_database</jdbc-url>
+      <driver-properties>
+        <property name="serverTimezone" value="Europe/Berlin" />
+      </driver-properties>
     </data-source>
   </component>
 </project>
