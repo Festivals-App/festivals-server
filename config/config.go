@@ -19,11 +19,11 @@ func GetConfig() *Config {
 	return &Config{
 		DB: &DBConfig{
 			Dialect:  "mysql",
-			Host:     "localhost",
+			Host:     "192.168.8.206",
 			Port:     3306,
-			Username: "dbuser",
-			Password: "Password1234!",
-			Name:     "eventus_api_database",
+			Username: "festivals.api.writer",
+			Password: "we4711",
+			Name:     "festivals_api_database",
 			Charset:  "utf8",
 		},
 		ReadOnly: false,

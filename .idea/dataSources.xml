@@ -1,15 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="MySQL - eventus_api_database@localhost" uuid="606721c9-f117-4e02-aba8-9ffa52ef89fe">
+    <data-source source="LOCAL" name="festivals_api_database@192.168.8.206" uuid="125b96e2-00d3-40ee-94ef-a54fb54b4394">
       <driver-ref>mysql.8</driver-ref>
       <synchronize>true</synchronize>
-      <remarks>brew services restart mysql / brew services stop mysql / brew services start mysql</remarks>
       <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
-      <jdbc-url>jdbc:mysql://localhost:3306/eventus_api_database</jdbc-url>
-      <driver-properties>
-        <property name="serverTimezone" value="Europe/Berlin" />
-      </driver-properties>
+      <jdbc-url>jdbc:mysql://192.168.8.206:3306/festivals_api_database</jdbc-url>
     </data-source>
   </component>
 </project>

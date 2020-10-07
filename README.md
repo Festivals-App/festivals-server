@@ -54,8 +54,6 @@ Setup local mysql enviroment: https://tableplus.com/blog/2018/11/how-to-download
 │   ├── server.go               // Server logic
 │   │     
 │   ├── database               
-│   │   ├── CreateDatabase.sql  // Script to create the database
-│   │   ├── InsertTestData.sql  // Script to insert some test data.
 │   │   ├── mysql.go            // Basic mysql queries (SELECT, INSERT, etc.)
 │   │   └── querytools.go       // Some tools to create mysql query statements
 │   │
