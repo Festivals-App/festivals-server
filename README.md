@@ -24,7 +24,7 @@
 A live and lightweight go server app providing a simple RESTful API using [go-chi/chi](https://github.com/go-chi/chi) and [go-sql-driver/mysql](https://github.com/go-sql-driver/mysql).
 
 
-##Development
+## Development
 
 TBA
 
