@@ -2,7 +2,6 @@
     Festivals App Server
 </h1>
 
-<hr />
 <p align="center">
    <a href="https://github.com/Festivals-App/festivals-database/commits/" title="Last Commit"><img src="https://img.shields.io/github/last-commit/Festivals-App/festivals-database?style=flat"></a>
    <a href="https://github.com/festivals-app/festivals-database/issues" title="Open Issues"><img src="https://img.shields.io/github/issues/festivals-app/festivals-database?style=flat"></a>
@@ -17,7 +16,6 @@
   <a href="#how-to-contribute">Contribute</a> •
   <a href="#licensing">Licensing</a>
 </p>
-<hr />
 
 A live and lightweight go server app providing a simple RESTful API using [go-chi/chi](https://github.com/go-chi/chi) and [go-sql-driver/mysql](https://github.com/go-sql-driver/mysql).
 
