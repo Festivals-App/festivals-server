@@ -1,6 +1,6 @@
-<p align="center">
- <a href=" https://simonsapps.de/misc/festivals"><img src="https://github.com/Festivals-App/festivals-documentation/blob/master/images/festivals_title.png" width="180"></a>
-</p>
+<h1 align="center">
+    Festivals App Server
+</h1>
 
 <hr />
 <p align="center">
@@ -19,10 +19,7 @@
 </p>
 <hr />
 
-# Festivals App: API Server
-
 A live and lightweight go server app providing a simple RESTful API using [go-chi/chi](https://github.com/go-chi/chi) and [go-sql-driver/mysql](https://github.com/go-sql-driver/mysql).
-
 
 ## Development
 
