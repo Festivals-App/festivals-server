@@ -1,37 +1,42 @@
-# Eventus Server
+<p align="center">
+ <a href=" https://simonsapps.de/misc/festivals"><img src="https://github.com/Festivals-App/festivals-documentation/blob/master/images/festivals_title.png" width="180"></a>
+</p>
 
-[![License](https://img.shields.io/github/license/festivals-app/festivals-server.svg)](https://github.com/festivals-app/festivals-server)
+<hr />
+<p align="center">
+   <a href="https://github.com/Festivals-App/festivals-database/commits/" title="Last Commit"><img src="https://img.shields.io/github/last-commit/Festivals-App/festivals-database?style=flat"></a>
+   <a href="https://github.com/festivals-app/festivals-database/issues" title="Open Issues"><img src="https://img.shields.io/github/issues/festivals-app/festivals-database?style=flat"></a>
+   <a href="./LICENSE" title="License"><img src="https://img.shields.io/github/license/festivals-app/festivals-server.svg"></a>
+</p>
 
-Eventus server, a live and lightweight go server app.
+<p align="center">
+  <a href="#development">Development</a> •
+  <a href="#deployment">Deployment</a> •
+  <a href="#usage">Usage</a> •
+  <a href="#support--feedback">Support</a> •
+  <a href="#how-to-contribute">Contribute</a> •
+  <a href="#licensing">Licensing</a>
+</p>
+<hr />
 
-## Overview
+# Festivals App: API Server
 
-A simple RESTful API with Go using go-chi/chi and go-sql-driver/mysql.
+A live and lightweight go server app providing a simple RESTful API using [go-chi/chi](https://github.com/go-chi/chi) and [go-sql-driver/mysql](https://github.com/go-sql-driver/mysql).
 
-## Requirements
+
+##Development
+
+TBA
+
+### Requirements
 
 -  go 1.7
 
 ## Installation
 
-```bash
-go get github.com/Festivals-App/festivals-server
-```
-
 Before running the API server, you should set the database config with your values in config/config.go
-
-```
-func GetConfig() *Config {
-	return &Config{
-		DB: &DBConfig{
-			Dialect:  "mysql",
-			Username: "guest",
-			Password: "Password0000!",
-			Name:     "eventus",
-			Charset:  "utf8",
-		},
-	}
-}
+```bash
+go get github.com/festivals-app/festivals-server
 ```
 
 ## Build and Run
@@ -52,7 +57,10 @@ Setup local mysql enviroment: https://tableplus.com/blog/2018/11/how-to-download
 ```
 ├── server
 │   ├── server.go               // Server logic
-│   │     
+│   │
+│   ├── config
+│   │   └── config.go           // Server configuration
+│   │
 │   ├── database               
 │   │   ├── mysql.go            // Basic mysql queries (SELECT, INSERT, etc.)
 │   │   └── querytools.go       // Some tools to create mysql query statements
@@ -71,9 +79,6 @@ Setup local mysql enviroment: https://tableplus.com/blog/2018/11/how-to-download
 │   └── model
 │       └── model.go            // The object models
 │
-├── config
-│   └── config.go               // Server configuration
-│
 └── main.go               
 ```
 
@@ -85,3 +90,31 @@ Setup local mysql enviroment: https://tableplus.com/blog/2018/11/how-to-download
 - [x] Organize the code with packages
 - [ ] Make docs with GoDoc
 - [ ] Building a deployment process 
+
+## Architecture & Documentation
+
+The full documentation for the Festivals App is in the [festivals-documentation](https://github.com/Festivals-App/festivals-documentation) repository. The documentation repository contains technical documents, architecture information, UI/UX specifications, and whitepapers related to this implementation.
+
+## Support & Feedback
+
+The following channels are available for discussions, feedback, and support requests:
+
+| Type                     | Channel                                                |
+| ------------------------ | ------------------------------------------------------ |
+| **General Discussion**   | <a href="https://github.com/festivals-app/festivals-documentation/issues/new/choose" title="General Discussion"><img src="https://img.shields.io/github/issues/festivals-app/festivals-documentation/question.svg?style=flat-square"></a> </a>   |
+| **Concept Feedback**    | <a href="https://github.com/festivals-app/festivals-documentation/issues/new/choose" title="Open Concept Feedback"><img src="https://img.shields.io/github/issues/festivals-app/festivals-documentation/architecture.svg?style=flat-square"></a>  |
+| **Other Requests**    | <a href="mailto:phisto05@gmail.com" title="Email Festivals Team"><img src="https://img.shields.io/badge/email-Festivals%20team-green?logo=mail.ru&style=flat-square&logoColor=white"></a>   |
+
+## How to Contribute
+
+Contribution and feedback are encouraged and always welcome. For more information about how to contribute, the project structure, as well as additional contribution information, see our [Contribution Guidelines](./CONTRIBUTING.md). By participating in this project, you agree to abide by its [Code of Conduct](./CODE_OF_CONDUCT.md) at all times.
+
+## Licensing
+
+Copyright (c) 2020 Simon Gaus.
+
+Licensed under the **GNU Lesser General Public License v3.0** (the "License"); you may not use this file except in compliance with the License.
+
+You may obtain a copy of the License at https://www.gnu.org/licenses/lgpl-3.0.html.
+
+Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the [LICENSE](./LICENSE) for the specific language governing permissions and limitations under the License.

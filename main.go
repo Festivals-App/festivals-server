@@ -1,13 +1,19 @@
 package main
 
 import (
-	"github.com/Festivals-App/festivals-server/config"
 	"github.com/Festivals-App/festivals-server/server"
+	"github.com/Festivals-App/festivals-server/server/config"
+	"os"
+	"strconv"
 )
 
 func main() {
-	conf := config.GetConfig()
+	conf := config.DefaultConfig()
+	if len(os.Args) > 1 {
+		conf = config.ParseConfig(os.Args[1])
+	}
+
 	serverInstance := &server.Server{}
 	serverInstance.Initialize(conf)
-	serverInstance.Run(":8080")
+	serverInstance.Run(":" + strconv.Itoa(conf.ServicePort))
 }

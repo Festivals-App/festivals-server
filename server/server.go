@@ -3,7 +3,7 @@ package server
 import (
 	"database/sql"
 	"fmt"
-	"github.com/Festivals-App/festivals-server/config"
+	"github.com/Festivals-App/festivals-server/server/config"
 	"github.com/Festivals-App/festivals-server/server/handler"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"

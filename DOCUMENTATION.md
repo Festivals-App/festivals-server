@@ -1,6 +1,6 @@
-## Eventus API Documentation
+## Festials API Documentation
 
-## Used Languages
+### Used Languages
 
 * Documentation: `Markdown`
 * Database: `SQL Query Scripts`
@@ -8,7 +8,7 @@
 
 ### Requests
 
-The Eventus API supports the HTTP `GET`, `POST`, `PATCH` and `DELETE` methods.
+The Festivals API supports the HTTP `GET`, `POST`, `PATCH` and `DELETE` methodes.
 
 #### Query Parameter
 
