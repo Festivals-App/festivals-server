@@ -10,10 +10,9 @@
 
 <p align="center">
   <a href="#development">Development</a> •
-  <a href="#deployment">Deployment</a> •
   <a href="#usage">Usage</a> •
-  <a href="#support--feedback">Support</a> •
-  <a href="#how-to-contribute">Contribute</a> •
+  <a href="#deployment">Deployment</a> •
+  <a href="#participate">Participate</a> •
   <a href="#licensing">Licensing</a>
 </p>
 
@@ -27,28 +26,25 @@ TBA
 
 -  go 1.7
 
-## Installation
-
-Before running the API server, you should set the database config with your values in config/config.go
-```bash
-go get github.com/festivals-app/festivals-server
-```
-
-## Build and Run
-```bash
-cd $GOPATH/src/github.com/Festivals-App/festivals-server
-go build main.go
-./main
-
-# API Endpoint : http://localhost:8080
-```
-
-## Setup development
+### Setup development
 
 Install homebrew: https://brew.sh/index_de
 Setup local mysql enviroment: https://tableplus.com/blog/2018/11/how-to-download-mysql-mac.html
 
-## Structure
+### Todo
+
+- [x] Support basic REST APIs.
+- [ ] Support Authentication with user for securing the APIs.
+- [ ] Write the tests for all APIs.
+- [x] Organize the code with packages
+- [ ] Make docs with GoDoc
+- [ ] Building a deployment process 
+
+## Usage
+
+TBA
+
+### Structure
 ```
 ├── server
 │   ├── server.go               // Server logic
@@ -77,20 +73,30 @@ Setup local mysql enviroment: https://tableplus.com/blog/2018/11/how-to-download
 └── main.go               
 ```
 
-## Todo
+### Documentation
 
-- [x] Support basic REST APIs.
-- [ ] Support Authentication with user for securing the APIs.
-- [ ] Write the tests for all APIs.
-- [x] Organize the code with packages
-- [ ] Make docs with GoDoc
-- [ ] Building a deployment process 
+The full documentation for the Festivals App is in the [festivals-documentation](https://github.com/festivals-app/festivals-documentation) repository. The documentation repository contains technical documents, architecture information, UI/UX specifications, and whitepapers related to this implementation.
 
-## Architecture & Documentation
 
-The full documentation for the Festivals App is in the [festivals-documentation](https://github.com/Festivals-App/festivals-documentation) repository. The documentation repository contains technical documents, architecture information, UI/UX specifications, and whitepapers related to this implementation.
+## Deployment
 
-## Support & Feedback
+Before running the API server, you should set the database config with your values in config/config.go
+```bash
+go get github.com/festivals-app/festivals-server
+```
+
+### Build and Run
+```bash
+cd $GOPATH/src/github.com/Festivals-App/festivals-server
+go build main.go
+./main
+
+# API Endpoint : http://localhost:8080
+```
+
+## Participate
+
+TBA
 
 The following channels are available for discussions, feedback, and support requests:
 
@@ -99,10 +105,6 @@ The following channels are available for discussions, feedback, and support requ
 | **General Discussion**   | <a href="https://github.com/festivals-app/festivals-documentation/issues/new/choose" title="General Discussion"><img src="https://img.shields.io/github/issues/festivals-app/festivals-documentation/question.svg?style=flat-square"></a> </a>   |
 | **Concept Feedback**    | <a href="https://github.com/festivals-app/festivals-documentation/issues/new/choose" title="Open Concept Feedback"><img src="https://img.shields.io/github/issues/festivals-app/festivals-documentation/architecture.svg?style=flat-square"></a>  |
 | **Other Requests**    | <a href="mailto:phisto05@gmail.com" title="Email Festivals Team"><img src="https://img.shields.io/badge/email-Festivals%20team-green?logo=mail.ru&style=flat-square&logoColor=white"></a>   |
-
-## How to Contribute
-
-Contribution and feedback are encouraged and always welcome. For more information about how to contribute, the project structure, as well as additional contribution information, see our [Contribution Guidelines](./CONTRIBUTING.md). By participating in this project, you agree to abide by its [Code of Conduct](./CODE_OF_CONDUCT.md) at all times.
 
 ## Licensing
 
