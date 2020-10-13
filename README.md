@@ -3,8 +3,8 @@
 </h1>
 
 <p align="center">
-   <a href="https://github.com/Festivals-App/festivals-database/commits/" title="Last Commit"><img src="https://img.shields.io/github/last-commit/Festivals-App/festivals-database?style=flat"></a>
-   <a href="https://github.com/festivals-app/festivals-database/issues" title="Open Issues"><img src="https://img.shields.io/github/issues/festivals-app/festivals-database?style=flat"></a>
+   <a href="https://github.com/festivals-app/festivals-server/commits/" title="Last Commit"><img src="https://img.shields.io/github/last-commit/festivals-app/festivals-server?style=flat"></a>
+   <a href="https://github.com/festivals-app/festivals-server/issues" title="Open Issues"><img src="https://img.shields.io/github/issues/festivals-app/festivals-server?style=flat"></a>
    <a href="./LICENSE" title="License"><img src="https://img.shields.io/github/license/festivals-app/festivals-server.svg"></a>
 </p>
 
@@ -12,7 +12,7 @@
   <a href="#development">Development</a> •
   <a href="#usage">Usage</a> •
   <a href="#deployment">Deployment</a> •
-  <a href="#participate">Participate</a> •
+  <a href="#engage">Engage</a> •
   <a href="#licensing">Licensing</a>
 </p>
 
@@ -30,15 +30,6 @@ TBA
 
 Install homebrew: https://brew.sh/index_de
 Setup local mysql enviroment: https://tableplus.com/blog/2018/11/how-to-download-mysql-mac.html
-
-### Todo
-
-- [x] Support basic REST APIs.
-- [ ] Support Authentication with user for securing the APIs.
-- [ ] Write the tests for all APIs.
-- [x] Organize the code with packages
-- [ ] Make docs with GoDoc
-- [ ] Building a deployment process 
 
 ## Usage
 
@@ -94,7 +85,7 @@ go build main.go
 # API Endpoint : http://localhost:8080
 ```
 
-## Participate
+## Engage
 
 TBA
 
