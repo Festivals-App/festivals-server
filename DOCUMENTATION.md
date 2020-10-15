@@ -1,9 +1,10 @@
 <!--suppress ALL -->
-<h1 style="text-align:center;">
+
+<h1 align="center">
     Festivals App Server
 </h1>
 
-<p style="text-align:center;">
+<p align="center">
   <a href="#overview">Overview</a> •
   <a href="#festival-objects">Festivals</a> •
   <a href="#artist-objects">Artists</a> •
@@ -37,7 +38,7 @@ The Festivals API supports the HTTP `GET`, `POST`, `PATCH` and `DELETE` methods.
 * `name`  
     The name parameter expects a simple string. `name=^[A-Za-z0-9_.]+$`
 * `ids`  
-    The id's parameter expects numbers separated by a comma. `ids=1,2,37`
+    The ids parameter expects numbers separated by a comma. `ids=1,2,37`
 * `include`  
     The include parameter expects the name(s) of the relationship you want the response to include. `include=rel1,rel2,rel3`
 
@@ -62,7 +63,7 @@ otherwise, an empty array is returned.
 }
 ```
 If the request specified to include relationships the objects are contained in the`included`field.  
-**Included relationships will only work if only one object is returned by the request.**
+**Included relationships will only work if the request returns only one object.**
 ```
 {
     "data": [
