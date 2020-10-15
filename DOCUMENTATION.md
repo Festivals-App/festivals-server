@@ -1,9 +1,9 @@
 <!--suppress ALL -->
-<h1 style="alignment: center">
+<h1 style="text-align:center;">
     Festivals App Server
 </h1>
 
-<p style="alignment: center">
+<p style="text-align:center;">
   <a href="#overview">Overview</a> •
   <a href="#festival-objects">Festivals</a> •
   <a href="#artist-objects">Artists</a> •
