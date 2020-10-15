@@ -557,6 +557,7 @@ A simple object that represents an event.
     "event_version":        string,
     "event_name":           string,
     "event_description":    string,
+    "event_type":           integer,
     "event_start":          integer,
     "event_end":            integer
 }
