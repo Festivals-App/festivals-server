@@ -1,7 +1,7 @@
 <!--suppress ALL -->
 
 <h1 align="center">
-    Festivals App Server
+    Festivals API Documentation
 </h1>
 
 <p align="center">
