@@ -52,6 +52,7 @@ type Event struct {
 	Version     string      `json:"event_version"`
 	Name        string      `json:"event_name" db:"event_name"`
 	Description string      `json:"event_description" db:"event_description"`
+	Type        int         `json:"event_type" db:"event_type"`
 	Start       int         `json:"event_start" db:"event_start"`
 	End         int         `json:"event_end" db:"event_end"`
 	Include     interface{} `json:"include,omitempty"`
@@ -59,7 +60,7 @@ type Event struct {
 
 func EventsScan(rs *sql.Rows) (Event, error) {
 	var e Event
-	return e, rs.Scan(&e.ID, &e.Version, &e.Name, &e.Description, &e.Start, &e.End)
+	return e, rs.Scan(&e.ID, &e.Version, &e.Name, &e.Description, &e.Type, &e.Start, &e.End)
 }
 
 type Image struct {
