@@ -1,4 +1,19 @@
-## Festials API Documentation
+<!--suppress ALL -->
+<h1 style="alignment: center">
+    Festivals App Server
+</h1>
+
+<p style="alignment: center">
+  <a href="#overview">Overview</a> •
+  <a href="#festival-objects">Festivals</a> •
+  <a href="#artist-objects">Artists</a> •
+  <a href="#location-objects">Locations</a> •
+  <a href="#event-objects">Events</a> •
+  <a href="#image-objects">Images</a> •
+  <a href="#link-objects">Links</a> •
+  <a href="#place-objects">Places</a> •
+  <a href="#tag-objects">Tags</a>
+</p>
 
 ### Used Languages
 
@@ -6,24 +21,29 @@
 * Database: `SQL Query Scripts`
 * Server Application: `golang`
 
+### Authentication
+
+To use the API you need to provide an API key with your requests HTTP header:
+```
+'API-KEY':'YOUR_API_KEY_GOES_HERE'
+```
+
 ### Requests
 
-The Festivals API supports the HTTP `GET`, `POST`, `PATCH` and `DELETE` methodes.
+The Festivals API supports the HTTP `GET`, `POST`, `PATCH` and `DELETE` methods.
 
 #### Query Parameter
 
 * `name`  
     The name parameter expects a simple string. `name=^[A-Za-z0-9_.]+$`
-
 * `ids`  
-    The ids parameter expects numbers separated by a comma. `ids=1,2,37`
-
+    The id's parameter expects numbers separated by a comma. `ids=1,2,37`
 * `include`  
     The include parameter expects the name(s) of the relationship you want the response to include. `include=rel1,rel2,rel3`
 
 ### Response
 
-Requests that are handled gracefully by the server will always return a top level object  
+Requests that are handled gracefully by the server will always return a top-level object  
 with at least either the`data`or`error`field. The`data`field will always contain an array.  
 If the request returns any objects they will be in that array,
 ```
@@ -35,7 +55,7 @@ If the request returns any objects they will be in that array,
     ]
 }
 ```
-otherwise an empty array is returned.
+otherwise, an empty array is returned.
 ```
 {
     "data": []
@@ -67,10 +87,10 @@ The `error` field will always contain a string with the error message.
 }
 ```
 
-## Available API calls
+## Overview
 
 [Festivals](#festival-objects)
-* GET, POST             `/festivals` optional name,ids
+* GET, POST             `/festivals` optional `name,ids
 * GET, PATCH, DELETE    `/festivals/{objectID}`
 * GET                   `/festivals/{objectID}/{image|links|place|tags|events}`
 * POST, DELETE          `/festivals/{objectID}/{image|links|place|tags|events}/{resourceID}`
