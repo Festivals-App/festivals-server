@@ -10,3 +10,6 @@ port = 3306
 username = "festivals.api.writer"
 password = "we4711"
 database-name = "festivals_api_database"
+
+[authentication]
+api-keys = ["TEST_API_KEY_001", "TEST_API_KEY_002", "TEST_API_KEY_003"]
