@@ -36,7 +36,7 @@ func ParseConfig(cfgFile string) *Config {
 
 	content, err := toml.LoadFile(cfgFile)
 	if err != nil {
-		log.Fatal("server initialize: could not read config file at " + cfgFile + ". Error: " + err.Error())
+		log.Fatal("server initialize: could not read config file at '" + cfgFile + "'. Error: " + err.Error())
 	}
 
 	readonly := content.Get("service.read-only").(bool)
