@@ -10,4 +10,4 @@ source ~/.bash_profile
 
 # install repositiory
 dnf install git --assumeyes
-go get github.com/festivals-app/festivalsals-server
+go get github.com/festivals-app/festivals-server
