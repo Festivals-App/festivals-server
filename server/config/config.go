@@ -24,6 +24,16 @@ type DBConfig struct {
 
 func DefaultConfig() *Config {
 
+	// first we try to parse the config at the global configuration path
+	if fileExists("/etc/festivals-server.conf") {
+		config := ParseConfig("/etc/festivals-server.conf")
+		if config != nil {
+			return config
+		}
+	}
+
+	// if there is no global configuration check the current folder for the template config file
+	// this is mostly so the application will run in the development environment
 	path, err := os.Getwd()
 	if err != nil {
 		log.Fatal("server initialize: could not read default config file")
@@ -61,4 +71,15 @@ func ParseConfig(cfgFile string) *Config {
 		ReadOnly:    readonly,
 		ServicePort: int(serverPort),
 	}
+}
+
+// fileExists checks if a file exists and is not a directory before we
+// try using it to prevent further errors.
+// see: https://golangcode.com/check-if-a-file-exists/
+func fileExists(filename string) bool {
+	info, err := os.Stat(filename)
+	if os.IsNotExist(err) {
+		return false
+	}
+	return !info.IsDir()
 }
