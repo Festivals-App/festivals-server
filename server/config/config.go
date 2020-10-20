@@ -33,7 +33,7 @@ func DefaultConfig() *Config {
 	}
 
 	// if there is no global configuration check the current folder for the template config file
-	// this is mostly so the application will run in the development environment
+	// this is mostly so the application will run in development environment
 	path, err := os.Getwd()
 	if err != nil {
 		log.Fatal("server initialize: could not read default config file")
