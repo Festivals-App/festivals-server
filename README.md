@@ -29,7 +29,7 @@ TBA
 ### Setup development
 
 Install homebrew: https://brew.sh/index_de
-Setup local mysql enviroment: https://tableplus.com/blog/2018/11/how-to-download-mysql-mac.html
+Setup local mysql environment: https://tableplus.com/blog/2018/11/how-to-download-mysql-mac.html
 
 ## Usage
 
@@ -66,23 +66,45 @@ TBA
 
 ### Documentation
 
-The full documentation for the Festivals App is in the [festivals-documentation](https://github.com/festivals-app/festivals-documentation) repository. The documentation repository contains technical documents, architecture information, UI/UX specifications, and whitepapers related to this implementation.
+The FestivalsAPI is documented in detail [here](./DOCUMENTATION.md).
 
+The full documentation for the Festivals App is in the [festivals-documentation](https://github.com/festivals-app/festivals-documentation) repository. The documentation repository contains technical documents, architecture information and UI/UX specifications related to this implementation.
 
 ## Deployment
 
-Before running the API server, you should set the database config with your values in config/config.go
+The project offers scripts to deploy the database on CentOS, macOS and Docker.
+
+### CentOS 8
+
 ```bash
-go get github.com/festivals-app/festivals-server
+curl -o deploy_centos.sh https://raw.githubusercontent.com/Festivals-App/festivals-server/main/deploy_centos.sh
+chmod +x deploy_centos.sh
+sudo ./deploy_centos.sh
+```
+To see if the server is running use:
+```bash
+sudo systemctl status festivals-server
 ```
 
-### Build and Run
+### Docker
+
+```bash
+TBA
+```
+
+### macOS
+
+```bash
+TBA
+```
+
+### Build and Run manuallly
 ```bash
 cd $GOPATH/src/github.com/Festivals-App/festivals-server
 go build main.go
 ./main
 
-# API Endpoint : http://localhost:8080
+# Default API Endpoint : http://localhost:10439
 ```
 
 ## Engage
