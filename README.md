@@ -77,7 +77,7 @@ The project offers scripts to deploy the database on CentOS, macOS and Docker.
 ### CentOS 8
 
 ```bash
-curl -o deploy_centos.sh https://raw.githubusercontent.com/Festivals-App/festivals-server/main/deploy_centos.sh
+curl -o deploy_centos.sh https://raw.githubusercontent.com/Festivals-App/festivals-server/master/deploy_centos.sh
 chmod +x deploy_centos.sh
 sudo ./deploy_centos.sh
 ```
