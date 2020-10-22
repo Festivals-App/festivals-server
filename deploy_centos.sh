@@ -26,6 +26,7 @@ go get github.com/Festivals-App/festivals-server
 cd ~/go/src/github.com/Festivals-App/festivals-server || exit
 go build main.go
 mv main /usr/local/bin/festivals-server
+restorecon -v /usr/local/bin/festivals-server
 mv config_template.toml /etc/festivals-server.conf
 
 # create systemctl service
