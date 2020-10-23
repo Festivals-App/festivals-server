@@ -7,6 +7,9 @@ rm go.tar.gz
 ln -sfn /usr/local/go/bin/* /usr/local/bin
 echo "2. Updated go"
 
+echo "5. Download current festivals-server"
+go get github.com/Festivals-App/festivals-server >/dev/null
+
 cd ~/go/src/github.com/Festivals-App/festivals-server || exit
 go build main.go
 echo "3. Build updated festivals-server"

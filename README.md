@@ -75,11 +75,17 @@ The full documentation for the Festivals App is in the [festivals-documentation]
 The project offers scripts to deploy the database on CentOS, macOS and Docker.
 
 ### CentOS 8
-
+Installing
 ```bash
 curl -o deploy_centos.sh https://raw.githubusercontent.com/Festivals-App/festivals-server/master/deploy_centos.sh
 chmod +x deploy_centos.sh
 sudo ./deploy_centos.sh
+```
+Updating
+```bash
+curl -o update_centos.sh https://raw.githubusercontent.com/Festivals-App/festivals-server/master/update_centos.sh
+chmod +x update_centos.sh
+sudo ./update_centos.sh
 ```
 To see if the server is running use:
 ```bash
