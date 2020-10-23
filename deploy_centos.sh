@@ -2,23 +2,22 @@
 #
 #
 
-# launch on startup and launch firewalld
-systemctl enable firewalld
-systemctl start firewalld
+systemctl enable firewalld >/dev/null
+systemctl start firewalld >/dev/null
+echo "Enabled firewalld"
 
-# configure firewall-cmd
 firewall-cmd --permanent --new-service=festivals-server
 firewall-cmd --permanent --service=festivals-server --set-description="A live and lightweight go server app providing the FestivalsAPI."
 firewall-cmd --permanent --service=festivals-server --add-port=10439/tcp
 firewall-cmd --permanent --add-service=festivals-server
 firewall-cmd --reload
+echo "Add festivals-server.service to firewalld"
 
-# setup go
 curl -o go.tar.gz "https://dl.google.com/go/$(curl "https://golang.org/VERSION?m=text").linux-amd64.tar.gz"
 tar -C /usr/local -xf go.tar.gz
 rm go.tar.gz
-echo "export PATH=$PATH:/usr/local/go/bin" >> .bash_profile
-source ~/.bash_profile
+ln -s /usr/local/go/bin/* /usr/local/bin
+echo "Installed go"
 
 # install repository
 dnf install git --assumeyes
