@@ -15,26 +15,28 @@ firewall-cmd --permanent --add-service=festivals-server
 firewall-cmd --reload
 echo "2. Add festivals-server.service to firewalld"
 
-curl -o /usr/local/go.tar.gz "https://dl.google.com/go/$(curl "https://golang.org/VERSION?m=text").linux-amd64.tar.gz"
-tar -C /usr/local -xf go.tar.gz
+echo "2. Downloading current go version"
+curl -o /usr/local/go.tar.gz "https://dl.google.com/go/$(curl --silent "https://golang.org/VERSION?m=text").linux-amd64.tar.gz"
+tar -C /usr/local -xf /usr/local/go.tar.gz
 rm /usr/local/go.tar.gz
-ln -s /usr/local/go/bin/* /usr/local/bin
-echo "3. Installed go"
+ln -sf /usr/local/go/bin/* /usr/local/bin
+echo "3. Updated go"
+sleep 1
 
 dnf install unzip --assumeyes
 echo "4. Installed unzip"
 
+echo "4. Downloading current festivals-server"
 curl -L -o /usr/local/festivals-server.zip https://github.com/Festivals-App/festivals-server/archive/master.zip
-unzip /usr/local/festivals-server.zip -d /usr/local
+unzip /usr/local/festivals-server.zip -d /usr/local >/dev/null
 rm /usr/local/festivals-server.zip
-echo "5. Downloaded festivals-server"
-
 cd /usr/local/festivals-server-master || exit
 /usr/local/bin/go build main.go
-echo "6. Build festivals-server"
+echo "5. Build festivals-server"
+sleep 1
 
 mv main /usr/local/bin/festivals-server
-restorecon -v /usr/local/bin/festivals-server
+restorecon -v /usr/local/bin/festivals-server >/dev/null
 mv config_template.toml /etc/festivals-server.conf
 echo "7. Installed festivals-server"
 
