@@ -2,6 +2,8 @@
 #
 #
 
+cd /usr/local
+
 systemctl enable firewalld >/dev/null
 systemctl start firewalld >/dev/null
 echo "1. Enabled firewalld"
@@ -13,21 +15,22 @@ firewall-cmd --permanent --add-service=festivals-server
 firewall-cmd --reload
 echo "2. Add festivals-server.service to firewalld"
 
-curl -o go.tar.gz "https://dl.google.com/go/$(curl "https://golang.org/VERSION?m=text").linux-amd64.tar.gz"
+curl -o /usr/local/go.tar.gz "https://dl.google.com/go/$(curl "https://golang.org/VERSION?m=text").linux-amd64.tar.gz"
 tar -C /usr/local -xf go.tar.gz
-rm go.tar.gz
+rm /usr/local/go.tar.gz
 ln -s /usr/local/go/bin/* /usr/local/bin
 echo "3. Installed go"
 
-# install repository
-dnf install git --assumeyes >/dev/null
-echo "4. Installed git"
+dnf install unzip --assumeyes
+echo "4. Installed unzip"
 
-go get github.com/Festivals-App/festivals-server >/dev/null
+curl -L -o /usr/local/festivals-server.zip https://github.com/Festivals-App/festivals-server/archive/master.zip
+unzip /usr/local/festivals-server.zip -d /usr/local
+rm /usr/local/festivals-server.zip
 echo "5. Downloaded festivals-server"
 
-cd ~/go/src/github.com/Festivals-App/festivals-server || exit
-go build main.go
+cd /usr/local/festivals-server-master || exit
+/usr/local/bin/go build main.go
 echo "6. Build festivals-server"
 
 mv main /usr/local/bin/festivals-server
@@ -58,8 +61,7 @@ systemctl start festivals-server
 echo "9. Enabled systemd service"
 
 # cleanup after installation
-rm -R ~/go
-
+rm -R /usr/local/festivals-server-master
 
 # remove this script
 rm -- "$0"

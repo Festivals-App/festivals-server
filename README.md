@@ -24,7 +24,7 @@ TBA
 
 ### Requirements
 
--  go 1.7
+-  go 1.11
 
 ### Setup development
 
