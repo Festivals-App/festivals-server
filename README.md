@@ -87,6 +87,12 @@ curl -o update_centos.sh https://raw.githubusercontent.com/Festivals-App/festiva
 chmod +x update_centos.sh
 sudo ./update_centos.sh
 ```
+Uninstalling
+```bash
+curl -o uninstall_centos.sh https://raw.githubusercontent.com/Festivals-App/festivals-server/master/uninstall_centos.sh
+chmod +x uninstall_centos.sh
+sudo ./uninstall_centos.sh
+```
 To see if the server is running use:
 ```bash
 sudo systemctl status festivals-server
