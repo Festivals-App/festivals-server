@@ -1,3 +1,9 @@
+#
+#
+#
+
+cd /usr/local
+
 systemctl stop festivals-server
 echo "1. Stopped festivals-server"
 
@@ -24,6 +30,7 @@ echo "7. Installed festivals-server"
 systemctl start festivals-server
 echo "5. Enabled systemd service"
 
+cd /usr/local
 rm -R /usr/local/festivals-server-master
 echo "6. Cleaning up after updating"
 sleep 2
