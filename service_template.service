@@ -1,0 +1,13 @@
+[Unit]
+Description=FestivalsAPI server, a live and lightweight go server app.
+ConditionPathExists=/usr/local/bin/festivals-server
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=5s
+ExecStartPre=/bin/mkdir -p /var/log/festivals-server
+ExecStart=/usr/local/bin/festivals-server
+
+[Install]
+WantedBy=multi-user.target

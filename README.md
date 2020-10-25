@@ -74,7 +74,9 @@ The full documentation for the Festivals App is in the [festivals-documentation]
 
 The project offers scripts to deploy the database on CentOS, macOS and Docker.
 
-### CentOS 8
+### Linux
+The deploy, update and uninstall script should work with any system that uses *systemd*, *firewalld* or *ufw* and optionally *SELinux*.
+
 Installing
 ```bash
 curl -o deploy_centos.sh https://raw.githubusercontent.com/Festivals-App/festivals-server/master/deploy_centos.sh
