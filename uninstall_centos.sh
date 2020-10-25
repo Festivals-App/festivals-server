@@ -1,3 +1,5 @@
+#!/bin/bash
+
 systemctl stop festivals-server >/dev/null
 echo "1. Stop festivals-server"
 sleep 1

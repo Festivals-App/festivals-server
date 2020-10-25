@@ -1,4 +1,4 @@
-#
+#!/bin/bash
 #
 #
 
@@ -7,6 +7,7 @@ cd /usr/local
 systemctl enable firewalld >/dev/null
 systemctl start firewalld >/dev/null
 echo "1. Enabled firewalld"
+sleep 1
 
 firewall-cmd --permanent --new-service=festivals-server >/dev/null
 firewall-cmd --permanent --service=festivals-server --set-description="A live and lightweight go server app providing the FestivalsAPI." >/dev/null
@@ -44,7 +45,6 @@ mv config_template.toml /etc/festivals-server.conf
 echo "8. Installed festivals-server"
 sleep 1
 
-# create systemctl service
 sudo tee -a /etc/systemd/system/festivals-server.service > /dev/null <<EOT
 [Unit]
 Description=FestivalsAPI server, a live and lightweight go server app.
