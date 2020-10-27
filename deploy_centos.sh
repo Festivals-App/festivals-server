@@ -7,7 +7,6 @@
 # (c)2020 Simon Gaus
 #
 
-
 # Enable and configure the firewall.
 # Supported firewalls: ufw and firewalld
 # This step is skipped under macOS.
