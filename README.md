@@ -79,21 +79,21 @@ The deploy, update and uninstall script should work with any system that uses *s
 
 Installing
 ```bash
-curl -o deploy_centos.sh https://raw.githubusercontent.com/Festivals-App/festivals-server/master/deploy_centos.sh
-chmod +x deploy_centos.sh
-sudo ./deploy_centos.sh
+curl -o install.sh https://github.com/Festivals-App/festivals-server/blob/master/operation/install.sh
+chmod +x install.sh
+sudo ./install.sh
 ```
 Updating
 ```bash
-curl -o update_centos.sh https://raw.githubusercontent.com/Festivals-App/festivals-server/master/update_centos.sh
-chmod +x update_centos.sh
-sudo ./update_centos.sh
+curl -o update.sh https://raw.githubusercontent.com/Festivals-App/festivals-server/master/operation/update.sh
+chmod +x update.sh
+sudo ./update.sh
 ```
 Uninstalling
 ```bash
-curl -o uninstall_centos.sh https://raw.githubusercontent.com/Festivals-App/festivals-server/master/uninstall_centos.sh
-chmod +x uninstall_centos.sh
-sudo ./uninstall_centos.sh
+curl -o uninstall.sh https://raw.githubusercontent.com/Festivals-App/festivals-server/master/operation/uninstall.sh
+chmod +x uninstall.sh
+sudo ./uninstall.sh
 ```
 To see if the server is running use:
 ```bash

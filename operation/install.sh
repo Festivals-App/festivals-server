@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# deploy.sh 1.0.0
+# install.sh 1.0.0
 #
 # Enables the firewall, installs the newest go and the festivals-server and starts it as a service.
 #
@@ -99,7 +99,7 @@ sleep 1
 if command -v service > /dev/null; then
 
   if ! [ -f "/etc/systemd/system/festivals-server.service" ]; then
-    mv service_template.service /etc/systemd/system/festivals-server.service
+    mv operation/service_template.service /etc/systemd/system/festivals-server.service
     echo "Created systemd service."
     sleep 1
   fi
