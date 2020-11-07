@@ -54,13 +54,15 @@ if ! command -v go > /dev/null; then
   goURL="https://dl.google.com/go/$currentGo"
   goOut=/var/cache/festivals-server/$currentGo
   if ! [ -f "/etc/systemd/system/festivals-server.service" ]; then
-    curl -o goOut goURL
+    curl --progress-bar -o goOut goURL
+  elif
+    echo "Usinng cached go package at $goOut"
   fi
   tar -C /usr/local -xf goOut
   ln -sf /usr/local/go/bin/* /usr/local/bin
-  echo "Updated go"
+  echo "Installed go ($currentGo)"
   sleep 1
-fi1
+fi
 
 # Install git if needed.
 #
@@ -68,7 +70,7 @@ if ! command -v git > /dev/null; then
   if command -v dnf > /dev/null; then
     echo "---> Installing git"
     dnf install git -y > /dev/null;
-  elif command -v dnf > /dev/null; then
+  elif command -v apt > /dev/null; then
     echo "---> Installing git"
     apt install git -y > /dev/null;
   else
@@ -108,5 +110,9 @@ if command -v service > /dev/null; then
   systemctl start festivals-server > /dev/null
   echo "Enabled systemd service."
   sleep 1
-if
+
+elif ! [ "$(uname -s)" = "Darwin" ]; then
+  echo "Systemd is missing and not on macOS. Exiting."
+  exit 1
+fi
 echo "Done."
