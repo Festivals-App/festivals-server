@@ -7,6 +7,10 @@
 # (c)2020 Simon Gaus
 #
 
+# Move to working directory
+#
+cd /usr/local || exit
+
 # Enable and configure the firewall.
 # Supported firewalls: ufw and firewalld
 # This step is skipped under macOS.
@@ -56,7 +60,7 @@ if ! command -v go > /dev/null; then
   if ! [ -f "/etc/systemd/system/festivals-server.service" ]; then
     curl --progress-bar -o goOut goURL
   elif
-    echo "Usinng cached go package at $goOut"
+    echo "Using cached go package at $goOut"
   fi
   tar -C /usr/local -xf goOut
   ln -sf /usr/local/go/bin/* /usr/local/bin
@@ -68,10 +72,10 @@ fi
 #
 if ! command -v git > /dev/null; then
   if command -v dnf > /dev/null; then
-    echo "---> Installing git"
+    echo "Installing git"
     dnf install git -y > /dev/null;
   elif command -v apt > /dev/null; then
-    echo "---> Installing git"
+    echo "Installing git"
     apt install git -y > /dev/null;
   else
     echo "Unable to install git. Exiting."
@@ -79,7 +83,7 @@ if ! command -v git > /dev/null; then
     exit 1
   fi
 else
-  echo "---> Already installed git"
+  echo "Already installed git"
 fi
 
 # Install festivals-server to /usr/local/bin/festivals-server. TODO: Maybe just link to /usr/local/bin?
@@ -115,4 +119,5 @@ elif ! [ "$(uname -s)" = "Darwin" ]; then
   echo "Systemd is missing and not on macOS. Exiting."
   exit 1
 fi
+
 echo "Done."

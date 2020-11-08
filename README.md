@@ -68,14 +68,14 @@ TBA
 
 The FestivalsAPI is documented in detail [here](./DOCUMENTATION.md).
 
-The full documentation for the Festivals App is in the [festivals-documentation](https://github.com/festivals-app/festivals-documentation) repository. The documentation repository contains technical documents, architecture information and UI/UX specifications related to this implementation.
+The full documentation for the Festivals App is in the [festivals-documentation](https://github.com/festivals-app/festivals-documentation) repository. 
+The documentation repository contains technical documents, architecture information and UI/UX specifications related to this implementation.
 
 ## Deployment
 
-The project offers scripts to deploy the database on CentOS, macOS and Docker.
-
-### Linux
-The deploy, update and uninstall script should work with any system that uses *systemd*, *firewalld* or *ufw* and optionally *SELinux*.
+The install, update and uninstall scripts should work with any system that uses *systemd*, *firewalld* or *ufw* and it 
+optionally supports *SELinux*. Additionally the scripts will somewhat work under macOS but won't configure the firewall 
+or launch service. 
 
 Installing
 ```bash

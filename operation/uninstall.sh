@@ -8,16 +8,24 @@
 # (c)2020 Simon Gaus
 #
 
+# Move to working directory
+#
+cd /usr/local || exit
+
+# Stop the service
+#
 systemctl stop festivals-server >/dev/null
-echo "1. Stopped festivals-server"
+echo "Stopped festivals-server"
 sleep 1
 
+# Remove systemd configuration
+#
 systemctl disable festivals-server >/dev/null
 rm /etc/systemd/system/festivals-server.service
-echo "2. Removed systemd service"
+echo "Removed systemd service"
 sleep 1
 
-# Disable and un-configure the firewall.
+# Remove the firewall configuration.
 # Supported firewalls: ufw and firewalld
 # This step is skipped under macOS.
 #
@@ -27,21 +35,13 @@ if command -v firewalld > /dev/null; then
   rm -f /etc/firewalld/services/festivals-server.xml
   rm -f /etc/firewalld/services/festivals-server.xml.old
   firewall-cmd --reload >/dev/null
-
-  echo "3. Removed firewalld configuration"
+  echo "Removed firewalld configuration"
   sleep 1
 
 elif command -v ufw > /dev/null; then
 
-  ufw default deny incoming
-  ufw default allow outgoing
-  ufw allow OpenSSH
-  yes | sudo ufw enable >/dev/null
-  echo "Enabled ufw"
-  sleep 1
-
-  ufw allow 10439/tcp
-  echo "Added festivals-server to ufw"
+  ufw delete allow 10439/tcp
+  echo "Removed ufw configuration"
   sleep 1
 
 elif ! [ "$(uname -s)" = "Darwin" ]; then
@@ -49,36 +49,20 @@ elif ! [ "$(uname -s)" = "Darwin" ]; then
   exit 1
 fi
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# Remove go
+#
 rm -R /usr/local/go
 rm /usr/local/bin/go
 rm /usr/local/bin/gofmt
-echo "4. Remove go"
+echo "Removed go"
 sleep 1
 
+# Remove festivals-server
+#
 rm /usr/local/bin/festivals-server
 rm /etc/festivals-server.conf
 rm -R /var/log/festivals-server
-echo "5. Remove festivals-server"
+echo "Removed festivals-server"
 sleep 1
 
-dnf remove unzip --assumeyes >/dev/null
-echo "6. Uninstall unzip"
-sleep 1
-
-echo "7. Done"
+echo "Done"
