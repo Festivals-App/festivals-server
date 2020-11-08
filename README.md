@@ -79,7 +79,7 @@ or launch service.
 
 Installing
 ```bash
-curl -o install.sh https://github.com/Festivals-App/festivals-server/blob/master/operation/install.sh
+curl -o install.sh https://raw.githubusercontent.com/Festivals-App/festivals-server/master/operation/install.sh
 chmod +x install.sh
 sudo ./install.sh
 ```
