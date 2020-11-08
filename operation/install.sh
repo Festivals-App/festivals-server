@@ -57,13 +57,15 @@ if ! command -v go > /dev/null; then
   currentGo="$goVersion.linux-amd64.tar.gz"
   goURL="https://dl.google.com/go/$currentGo"
   goOut=/var/cache/festivals-server/$currentGo
+
   if ! [ -f "/etc/systemd/system/festivals-server.service" ]; then
-    curl --progress-bar -o goOut goURL
+    curl --progress-bar -o $goOut $goURL || { echo "Failed to download go. Exiting." ; exit 1; }
   else
     echo "Using cached go package at $goOut"
     sleep 1
   fi
-  tar -C /usr/local -xf goOut
+
+  tar -C /usr/local -xf $goOut
   ln -sf /usr/local/go/bin/* /usr/local/bin
   echo "Installed go ($currentGo)"
   sleep 1
@@ -90,10 +92,10 @@ fi
 # Install festivals-server to /usr/local/bin/festivals-server. TODO: Maybe just link to /usr/local/bin?
 #
 echo "Downloading current festivals-server..."
-yes | sudo git clone https://github.com/Festivals-App/festivals-server.git /usr/local/festivals-server
-cd /usr/local/festivals-server || exit
+yes | sudo git clone https://github.com/Festivals-App/festivals-server.git /usr/local/festivals-server > /dev/null;
+cd /usr/local/festivals-server || { echo "Failed to access working directory. Exiting." ; exit 1; }
 /usr/local/bin/go build main.go
-mv main /usr/local/bin/festivals-server
+mv main /usr/local/bin/festivals-server || { echo "Failed to install festivals-server binary. Exiting." ; exit 1; }
 if command -v restorecon > /dev/null; then
   restorecon -v /usr/local/bin/festivals-server >/dev/null
 fi
