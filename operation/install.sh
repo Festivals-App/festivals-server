@@ -32,14 +32,14 @@ if command -v firewalld > /dev/null; then
 
 elif command -v ufw > /dev/null; then
 
-  ufw default deny incoming
-  ufw default allow outgoing
-  ufw allow OpenSSH
+  ufw default deny incoming >/dev/null
+  ufw default allow outgoing >/dev/null
+  ufw allow OpenSSH >/dev/null
   yes | sudo ufw enable >/dev/null
   echo "Enabled ufw"
   sleep 1
 
-  ufw allow 10439/tcp
+  ufw allow 10439/tcp >/dev/null
   echo "Added festivals-server to ufw"
   sleep 1
 
@@ -59,8 +59,9 @@ if ! command -v go > /dev/null; then
   goOut=/var/cache/festivals-server/$currentGo
   if ! [ -f "/etc/systemd/system/festivals-server.service" ]; then
     curl --progress-bar -o goOut goURL
-  elif
+  else
     echo "Using cached go package at $goOut"
+    sleep 1
   fi
   tar -C /usr/local -xf goOut
   ln -sf /usr/local/go/bin/* /usr/local/bin
