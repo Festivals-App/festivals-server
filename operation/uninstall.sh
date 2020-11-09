@@ -1,5 +1,4 @@
 #!/bin/bash
-#!/bin/bash
 #
 # uninstall.sh 1.0.0
 #
