@@ -39,7 +39,7 @@ if command -v firewalld > /dev/null; then
 
 elif command -v ufw > /dev/null; then
 
-  ufw delete allow 10439/tcp
+  ufw delete allow 10439/tcp >/dev/null
   echo "Removed ufw configuration"
   sleep 1
 

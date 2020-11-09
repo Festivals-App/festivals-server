@@ -73,9 +73,8 @@ The documentation repository contains technical documents, architecture informat
 
 ## Deployment
 
-The install, update and uninstall scripts should work with any system that uses *systemd*, *firewalld* or *ufw* and it 
-optionally supports *SELinux*. Additionally the scripts will somewhat work under macOS but won't configure the firewall 
-or launch service. 
+The install, update and uninstall scripts should work with any system that uses *systemd* and *firewalld* or *ufw*. 
+Additionally the scripts will somewhat work under macOS but won't configure the firewall or launch service.
 
 Installing
 ```bash
@@ -112,7 +111,7 @@ TBA
 TBA
 ```
 
-### Build and Run manuallly
+### Build and Run manually
 ```bash
 cd $GOPATH/src/github.com/Festivals-App/festivals-server
 go build main.go

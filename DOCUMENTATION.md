@@ -18,9 +18,10 @@
 
 ### Used Languages
 
-* Documentation: `Markdown`
+* Documentation: `Markdown`, `HTML`
 * Database: `SQL Query Scripts`
 * Server Application: `golang`
+* Deployment: `bash`
 
 ### Authentication
 
