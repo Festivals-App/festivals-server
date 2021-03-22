@@ -6,7 +6,7 @@ import (
 	"errors"
 	"github.com/Festivals-App/festivals-server/server/database"
 	"github.com/Festivals-App/festivals-server/server/model"
-	"github.com/go-chi/chi"
+	"github.com/go-chi/chi/v5"
 	"io/ioutil"
 	"net/http"
 	"net/url"
