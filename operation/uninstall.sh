@@ -61,6 +61,7 @@ sleep 1
 rm /usr/local/bin/festivals-server
 rm /etc/festivals-server.conf
 rm -R /var/log/festivals-server
+rm -R /usr/local/festivals-server
 echo "Removed festivals-server"
 sleep 1
 
