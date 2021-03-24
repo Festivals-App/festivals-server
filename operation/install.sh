@@ -12,25 +12,8 @@
 cd /usr/local || exit
 
 # Enable and configure the firewall.
-# Supported firewalls: ufw and firewalld
-# This step is skipped under macOS.
-#
-if command -v firewalld > /dev/null; then
-
-  systemctl enable firewalld >/dev/null
-  systemctl start firewalld >/dev/null
-  echo "Enabled firewalld"
-  sleep 1
-
-  firewall-cmd --permanent --new-service=festivals-server >/dev/null
-  firewall-cmd --permanent --service=festivals-server --set-description="A live and lightweight go server app providing the FestivalsAPI." >/dev/null
-  firewall-cmd --permanent --service=festivals-server --add-port=10439/tcp >/dev/null
-  firewall-cmd --permanent --add-service=festivals-server >/dev/null
-  firewall-cmd --reload >/dev/null
-  echo "Added festivals-server.service to firewalld"
-  sleep 1
-
-elif command -v ufw > /dev/null; then
+# 
+if command -v ufw > /dev/null; then
 
   ufw default deny incoming >/dev/null
   ufw default allow outgoing >/dev/null
@@ -75,10 +58,7 @@ fi
 # Install git if needed.
 #
 if ! command -v git > /dev/null; then
-  if command -v dnf > /dev/null; then
-    echo "Installing git"
-    dnf install git -y > /dev/null;
-  elif command -v apt > /dev/null; then
+  if command -v apt > /dev/null; then
     echo "Installing git"
     apt install git -y > /dev/null;
   else

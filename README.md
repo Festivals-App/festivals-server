@@ -105,12 +105,6 @@ sudo systemctl status festivals-server
 TBA
 ```
 
-### macOS
-
-```bash
-TBA
-```
-
 ### Build and Run manually
 ```bash
 cd $GOPATH/src/github.com/Festivals-App/festivals-server
