@@ -58,16 +58,8 @@ fi
 # Install git if needed.
 #
 if ! command -v git > /dev/null; then
-  if command -v apt > /dev/null; then
-    echo "Installing git"
-    apt install git -y > /dev/null;
-  else
-    echo "Unable to install git. Exiting."
-    sleep 1
-    exit 1
-  fi
-else
-  echo "Already installed git"
+  echo "Installing git"
+  apt-get install git -y > /dev/null;
 fi
 
 # Install festivals-server to /usr/local/bin/festivals-server. TODO: Maybe just link to /usr/local/bin?
