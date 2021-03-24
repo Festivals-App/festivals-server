@@ -41,15 +41,15 @@ if ! command -v go > /dev/null; then
   goURL="https://dl.google.com/go/$currentGo"
   goOut=/var/cache/festivals-server/$currentGo
 
-  if ! [ -f $goOut ]; then
+  if ! [ -f "$goOut" ]; then
     mkdir -p /var/cache/festivals-server >/dev/null || { echo "Failed to create cache directory. Exiting." ; exit 1; }
-    curl --progress-bar -o $goOut $goURL || { echo "Failed to download go. Exiting." ; exit 1; }
+    curl --progress-bar -o "$goOut" "$goURL" || { echo "Failed to download go. Exiting." ; exit 1; }
   else
     echo "Using cached go package at $goOut"
     sleep 1
   fi
 
-  tar -C /usr/local -xf $goOut
+  tar -C /usr/local -xf "$goOut"
   ln -sf /usr/local/go/bin/* /usr/local/bin
   echo "Installed go ($currentGo)"
   sleep 1
