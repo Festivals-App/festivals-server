@@ -1,15 +1,17 @@
 package config
 
 import (
-	"github.com/pelletier/go-toml"
 	"log"
 	"os"
+
+	"github.com/pelletier/go-toml"
 )
 
 type Config struct {
-	DB          *DBConfig
-	ReadOnly    bool
-	ServicePort int
+	DB                 *DBConfig
+	ReadOnly           bool
+	ServiceBindAddress string
+	ServicePort        int
 }
 
 type DBConfig struct {
@@ -50,6 +52,7 @@ func ParseConfig(cfgFile string) *Config {
 	}
 
 	readonly := content.Get("service.read-only").(bool)
+	serverBindAdress := content.Get("service.bind-address").(string)
 	serverPort := content.Get("service.port").(int64)
 
 	dbHost := content.Get("database.host").(string)
@@ -68,8 +71,9 @@ func ParseConfig(cfgFile string) *Config {
 			Name:     databaseName,
 			Charset:  "utf8",
 		},
-		ReadOnly:    readonly,
-		ServicePort: int(serverPort),
+		ReadOnly:           readonly,
+		ServiceBindAddress: serverBindAdress,
+		ServicePort:        int(serverPort),
 	}
 }
 

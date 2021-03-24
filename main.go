@@ -1,10 +1,11 @@
 package main
 
 import (
-	"github.com/Festivals-App/festivals-server/server"
-	"github.com/Festivals-App/festivals-server/server/config"
 	"os"
 	"strconv"
+
+	"github.com/Festivals-App/festivals-server/server"
+	"github.com/Festivals-App/festivals-server/server/config"
 )
 
 func main() {
@@ -15,5 +16,5 @@ func main() {
 
 	serverInstance := &server.Server{}
 	serverInstance.Initialize(conf)
-	serverInstance.Run(":" + strconv.Itoa(conf.ServicePort))
+	serverInstance.Run(conf.ServiceBindAddress + ":" + strconv.Itoa(conf.ServicePort))
 }

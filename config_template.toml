@@ -3,6 +3,7 @@
 
 [service]
 read-only = false
+bind-address = "localhost"
 port = 10439
 
 [database]
