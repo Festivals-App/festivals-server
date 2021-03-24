@@ -4,7 +4,7 @@
 
 # Move to working dir
 #
-cd /usr/local
+cd /usr/local || exit
 
 # Stop the festivals-server
 #
@@ -19,14 +19,14 @@ goVersion="$(curl --silent "https://golang.org/VERSION?m=text")"
 currentGo="$goVersion.linux-amd64.tar.gz"
 goURL="https://dl.google.com/go/$currentGo"
 goOut=/var/cache/festivals-server/$currentGo
-if ! [ -f $goOut ]; then
+if ! [ -f "$goOut" ]; then
     mkdir -p /var/cache/festivals-server >/dev/null || { echo "Failed to create cache directory. Exiting." ; exit 1; }
-    curl --progress-bar -o $goOut $goURL || { echo "Failed to download go. Exiting." ; exit 1; }
+    curl --progress-bar -o "$goOut" "$goURL" || { echo "Failed to download go. Exiting." ; exit 1; }
 else
     echo "Using cached go package at $goOut"
     sleep 1
 fi
-tar -C /usr/local -xf $goOut
+tar -C /usr/local -xf "$goOut"
 ln -sf /usr/local/go/bin/* /usr/local/bin
 echo "Updated go to ($currentGo)"
 sleep 1
@@ -50,6 +50,9 @@ sleep 1
 echo "Installing the festivals-server"
 mv main /usr/local/bin/festivals-server
 sleep 1
+
+# Updating go to the newest version
+#
 systemctl start festivals-server
 echo "Started festivals-server"
 sleep 1
