@@ -12,6 +12,7 @@ type Config struct {
 	ReadOnly           bool
 	ServiceBindAddress string
 	ServicePort        int
+	APIKeys            []string
 }
 
 type DBConfig struct {
@@ -55,6 +56,12 @@ func ParseConfig(cfgFile string) *Config {
 	serverBindAdress := content.Get("service.bind-address").(string)
 	serverPort := content.Get("service.port").(int64)
 
+	keyValues := content.Get("authentication.api-keys").([]interface{})
+	keys := make([]string, len(keyValues))
+	for i, v := range keyValues {
+		keys[i] = v.(string)
+	}
+
 	dbHost := content.Get("database.host").(string)
 	dbPort := content.Get("database.port").(int64)
 	dbUsername := content.Get("database.username").(string)
@@ -74,6 +81,7 @@ func ParseConfig(cfgFile string) *Config {
 		ReadOnly:           readonly,
 		ServiceBindAddress: serverBindAdress,
 		ServicePort:        int(serverPort),
+		APIKeys:            keys,
 	}
 }
 

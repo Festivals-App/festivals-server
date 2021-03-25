@@ -1,7 +1,14 @@
+github.com/Festivals-App/festivals-identity-server v0.0.0-20210325184046-04b770a84b8d h1:G+aBU61eMdgA4kNhkymFctjUtcYSmIqDglSXMli8X90=
+github.com/Festivals-App/festivals-identity-server v0.0.0-20210325184046-04b770a84b8d/go.mod h1:5HfqJrKCDd+WDbSm9PTqRlkkUxfua9j258d3f4jSg2Q=
+github.com/Festivals-App/festivals-identity-server v0.0.0-20210325185328-7a6071365783 h1:N/6+E7t99zYjfZ3PqEvrD2LDWNQ+QmKvWNedE6i5fuA=
+github.com/Festivals-App/festivals-identity-server v0.0.0-20210325185328-7a6071365783/go.mod h1:5HfqJrKCDd+WDbSm9PTqRlkkUxfua9j258d3f4jSg2Q=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
+github.com/dgrijalva/jwt-go v3.2.0+incompatible/go.mod h1:E3ru+11k8xSBh+hMPgOLZmtrrCbhqsmaPHjLKYnJCaQ=
 github.com/go-chi/chi/v5 v5.0.1 h1:ALxjCrTf1aflOlkhMnCUP86MubbWFrzB3gkRPReLpTo=
 github.com/go-chi/chi/v5 v5.0.1/go.mod h1:DslCQbL2OYiznFReuXYUmQ2hGd1aDpCnlMNITLSKoi8=
+github.com/go-chi/chi/v5 v5.0.2 h1:4xKeALZdMEsuI5s05PU2Bm89Uc5iM04qFubUCl5LfAQ=
+github.com/go-chi/chi/v5 v5.0.2/go.mod h1:DslCQbL2OYiznFReuXYUmQ2hGd1aDpCnlMNITLSKoi8=
 github.com/go-sql-driver/mysql v1.5.0 h1:ozyZYNQW3x3HtqT1jira07DN2PArx2v7/mN66gGcHOs=
 github.com/go-sql-driver/mysql v1.5.0/go.mod h1:DCzpHaOWr8IXmIStZouvnhqoel9Qv2LBy8hT2VhHyBg=
 github.com/pelletier/go-toml v1.8.1 h1:1Nf83orprkJyknT6h7zbuEGUEjcyVlCxSUGTENmNCRM=

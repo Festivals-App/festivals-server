@@ -3,19 +3,22 @@ package server
 import (
 	"database/sql"
 	"fmt"
+	"log"
+	"net/http"
+
+	"github.com/Festivals-App/festivals-identity-server/authentication"
 	"github.com/Festivals-App/festivals-server/server/config"
 	"github.com/Festivals-App/festivals-server/server/handler"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	_ "github.com/go-sql-driver/mysql"
-	"log"
-	"net/http"
 )
 
 // Server has router and db instances
 type Server struct {
 	Router *chi.Mux
 	DB     *sql.DB
+	Config *config.Config
 }
 
 // Initialize the server with predefined configuration
@@ -35,6 +38,7 @@ func (s *Server) Initialize(config *config.Config) {
 
 	s.DB = db
 	s.Router = chi.NewRouter()
+	s.Config = config
 
 	s.setMiddleware()
 	s.setWalker()
@@ -177,7 +181,8 @@ type RequestHandlerFunction func(db *sql.DB, w http.ResponseWriter, r *http.Requ
 
 // inject DB in handler functions
 func (s *Server) handleRequest(handler RequestHandlerFunction) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
+
+	return authentication.IsAuthenticated(s.Config.APIKeys, func(w http.ResponseWriter, r *http.Request) {
 		handler(s.DB, w, r)
-	}
+	})
 }
