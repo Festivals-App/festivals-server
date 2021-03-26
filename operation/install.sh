@@ -51,7 +51,7 @@ fi
 echo "Downloading current festivals-server..."
 yes | sudo git clone https://github.com/Festivals-App/festivals-server.git /usr/local/festivals-server > /dev/null;
 cd /usr/local/festivals-server || { echo "Failed to access working directory. Exiting." ; exit 1; }
-/usr/local/bin/go build main.go
+go build main.go
 mv main /usr/local/bin/festivals-server || { echo "Failed to install festivals-server binary. Exiting." ; exit 1; }
 mv config_template.toml /etc/festivals-server.conf
 echo "Installed festivals-server."
