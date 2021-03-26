@@ -25,19 +25,9 @@ echo "Removed systemd service"
 sleep 1
 
 # Remove the firewall configuration.
-# Supported firewalls: ufw and firewalld
 # This step is skipped under macOS.
 #
-if command -v firewalld > /dev/null; then
-
-  firewall-cmd --permanent --remove-service=festivals-server >/dev/null
-  rm -f /etc/firewalld/services/festivals-server.xml
-  rm -f /etc/firewalld/services/festivals-server.xml.old
-  firewall-cmd --reload >/dev/null
-  echo "Removed firewalld configuration"
-  sleep 1
-
-elif command -v ufw > /dev/null; then
+if command -v ufw > /dev/null; then
 
   ufw delete allow 10439/tcp >/dev/null
   echo "Removed ufw configuration"
@@ -50,9 +40,8 @@ fi
 
 # Remove go
 #
-rm -R /usr/local/go
-rm /usr/local/bin/go
-rm /usr/local/bin/gofmt
+apt-get --purge remove golang -y
+apt autoremove -y
 echo "Removed go"
 sleep 1
 
