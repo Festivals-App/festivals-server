@@ -35,6 +35,16 @@ func GetEventFestival(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	respondJSON(w, http.StatusOK, festivals)
 }
 
+func GetEventImage(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+
+	artists, err := GetAssociation(db, r, "event", "image")
+	if err != nil {
+		respondError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+	respondJSON(w, http.StatusOK, artists)
+}
+
 func GetEventArtist(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	artists, err := GetAssociation(db, r, "event", "artist")
@@ -55,6 +65,16 @@ func GetEventLocation(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	respondJSON(w, http.StatusOK, locations)
 }
 
+func SetImageForEvent(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+
+	err := SetAssociation(db, r, "event", "image")
+	if err != nil {
+		respondError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+	respondJSON(w, http.StatusOK, []interface{}{})
+}
+
 func SetArtistForEvent(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	err := SetAssociation(db, r, "event", "artist")
@@ -68,6 +88,16 @@ func SetArtistForEvent(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 func SetLocationForEvent(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	err := SetAssociation(db, r, "event", "location")
+	if err != nil {
+		respondError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+	respondJSON(w, http.StatusOK, []interface{}{})
+}
+
+func RemoveImageForEvent(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+
+	err := RemoveAssociation(db, r, "event", "image")
 	if err != nil {
 		respondError(w, http.StatusBadRequest, err.Error())
 		return

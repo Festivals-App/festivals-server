@@ -94,6 +94,7 @@ func (s *Server) setRoutes(config *config.Config) {
 	s.Router.Get("/events", s.handleRequest(handler.GetEvents))
 	s.Router.Get("/events/{objectID}", s.handleRequest(handler.GetEvent))
 	s.Router.Get("/events/{objectID}/festival", s.handleRequest(handler.GetEventFestival))
+	s.Router.Get("/events/{objectID}/image", s.handleRequest(handler.GetEventImage))
 	s.Router.Get("/events/{objectID}/artist", s.handleRequest(handler.GetEventArtist))
 	s.Router.Get("/events/{objectID}/location", s.handleRequest(handler.GetEventLocation))
 
@@ -110,7 +111,7 @@ func (s *Server) setRoutes(config *config.Config) {
 	s.Router.Get("/tags/{objectID}", s.handleRequest(handler.GetTag))
 	s.Router.Get("/tags/{objectID}/festivals", s.handleRequest(handler.GetTagFestivals))
 
-	if config.ReadOnly != true {
+	if !config.ReadOnly {
 
 		s.Router.Post("/festivals", s.handleRequest(handler.CreateFestival))
 		s.Router.Patch("/festivals/{objectID}", s.handleRequest(handler.UpdateFestival))
@@ -148,8 +149,10 @@ func (s *Server) setRoutes(config *config.Config) {
 		s.Router.Post("/events", s.handleRequest(handler.CreateEvent))
 		s.Router.Patch("/events/{objectID}", s.handleRequest(handler.UpdateEvent))
 		s.Router.Delete("/events/{objectID}", s.handleRequest(handler.DeleteEvent))
+		s.Router.Post("/events/{objectID}/image/{resourceID}", s.handleRequest(handler.SetImageForEvent))
 		s.Router.Post("/events/{objectID}/artist/{resourceID}", s.handleRequest(handler.SetArtistForEvent))
 		s.Router.Post("/events/{objectID}/location/{resourceID}", s.handleRequest(handler.SetLocationForEvent))
+		s.Router.Delete("/events/{objectID}/image/{resourceID}", s.handleRequest(handler.RemoveImageForEvent))
 		s.Router.Delete("/events/{objectID}/artist/{resourceID}", s.handleRequest(handler.RemoveArtistForEvent))
 		s.Router.Delete("/events/{objectID}/location/{resourceID}", s.handleRequest(handler.RemoveLocationForEvent))
 
