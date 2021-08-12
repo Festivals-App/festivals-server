@@ -112,8 +112,8 @@ The `error` field will always contain a string with the error message.
 [Events](#event-objects)
 * GET, POST             `/events`
 * GET, PATCH, DELETE    `/events/{objectID}`
-* GET                   `/events/{objectID}/{artist|location}`
-* POST, DELETE          `/events/{objectID}/{artist|location}/{resourceID}`
+* GET                   `/events/{objectID}/{image|artist|location}`
+* POST, DELETE          `/events/{objectID}/{image|artist|location}/{resourceID}`
 
 [Images](#image-objects)
 * GET, POST             `/images`
@@ -601,13 +601,13 @@ Create a new event
 Get the event with the given `objectID`.
 
 * Query Parameter:  
-    `include`: Include relationships {`artist`|`location`}  
+    `include`: Include relationships {`image`|`artist`|`location`}  
         
             Note: You need to specify the relationship not the associated object type.
 
  * Examples:  
     `GET https://localhost:8080/events/1`  
-    `GET https://localhost:8080/events/1?include=image,place`
+    `GET https://localhost:8080/events/1?include=image,artist,location`
       
  * Returns 
      * Returns the event on success.
@@ -642,7 +642,7 @@ Delete the event with the given `objectID`.
      * `data` or `error` field
 
 ------------------------------------------------------------------------------------
-#### GET `/events/{objectID}/{artist|location|festival}`
+#### GET `/events/{objectID}/{image|artist|location|festival}`
 
 Get the objects that are described by the`{relationship}`.
 
@@ -657,7 +657,7 @@ Get the objects that are described by the`{relationship}`.
      * `data` or `error` field
 
 ------------------------------------------------------------------------------------
-#### POST `/events/{objectID}/{artist|location}/{resourceID}`
+#### POST `/events/{objectID}/{image|artist|location}/{resourceID}`
 
 Adds the object with the given`{resourceID}`to the relationship for the event with the given`{objectID}`.
 
@@ -672,7 +672,7 @@ Adds the object with the given`{resourceID}`to the relationship for the event wi
      * `data` or `error` field
 
 ------------------------------------------------------------------------------------
-#### DELETE `/events/{objectID}/{artist|location}/{resourceID}`
+#### DELETE `/events/{objectID}/{image|artist|location}/{resourceID}`
 
 Removes the object with the given`{resourceID}`from the relationship for the event with the given`{objectID}`.
 
