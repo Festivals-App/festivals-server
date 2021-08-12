@@ -1,5 +1,10 @@
 #!/bin/bash
 #
+# update.sh 1.0.0
+#
+# Updates the festivals-server and restarts it.
+#
+# (c)2020-2021 Simon Gaus
 #
 
 # Move to working dir
@@ -12,24 +17,30 @@ systemctl stop festivals-server
 echo "Stopped festivals-server"
 sleep 1
 
-# Install unzip if needed.
+# Install go if needed.
+# Binaries linked to /usr/local/bin
 #
-if ! command -v unzip > /dev/null; then
-  echo "Installing unzip..."
-  apt-get install unzip -y > /dev/null;
+if ! command -v go > /dev/null; then
+  echo "Installing go..."
+  apt-get install golang -y > /dev/null;
+fi
+
+# Install git if needed.
+#
+if ! command -v git > /dev/null; then
+  echo "Installing git..."
+  apt-get install git -y > /dev/null;
 fi
 
 # Updating festivals-server to the newest version
 #
-echo "Downloading the current festivals-server"
-curl --progress-bar -L -o /usr/local/festivals-server.zip https://github.com/Festivals-App/festivals-server/archive/master.zip
-unzip /usr/local/festivals-server.zip -d /usr/local >/dev/null
-cd /usr/local/festivals-server-master || exit
-echo "Building the festivals-server..."
+echo "Downloading current festivals-server..."
+yes | sudo git clone https://github.com/Festivals-App/festivals-server.git /usr/local/festivals-server > /dev/null;
+cd /usr/local/festivals-server || { echo "Failed to access working directory. Exiting." ; exit 1; }
 go build main.go
-sleep 1
-echo "Installing the festivals-server..."
-mv main /usr/local/bin/festivals-server
+mv main /usr/local/bin/festivals-server || { echo "Failed to install festivals-server binary. Exiting." ; exit 1; }
+mv config_template.toml /etc/festivals-server.conf
+echo "Installed festivals-server."
 sleep 1
 
 # Updating go to the newest version
@@ -38,12 +49,11 @@ systemctl start festivals-server
 echo "Started festivals-server"
 sleep 1
 
-# Remving used files
+# Removing unused files
 #
 echo "Cleanup..."
 cd /usr/local || exit
-rm -R /usr/local/festivals-server-master
-rm /usr/local/festivals-server.zip
+rm -R /usr/local/festivals-server
 sleep 1
 
 echo "Done!"

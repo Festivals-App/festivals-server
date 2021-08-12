@@ -4,7 +4,7 @@
 #
 # Enables the firewall, installs the newest go and the festivals-server and starts it as a service.
 #
-# (c)2020 Simon Gaus
+# (c)2020-2021 Simon Gaus
 #
 
 # Move to working directory
@@ -12,7 +12,7 @@
 cd /usr/local || exit
 
 # Enable and configure the firewall.
-# 
+#
 if command -v ufw > /dev/null; then
 
   ufw default deny incoming >/dev/null
@@ -23,7 +23,7 @@ if command -v ufw > /dev/null; then
   sleep 1
 
   ufw allow 10439/tcp >/dev/null
-  echo "Added festivals-server to ufw"
+  echo "Added festivals-server to ufw using port 10439."
   sleep 1
 
 elif ! [ "$(uname -s)" = "Darwin" ]; then
@@ -76,5 +76,12 @@ elif ! [ "$(uname -s)" = "Darwin" ]; then
   echo "Systemd is missing and not on macOS. Exiting."
   exit 1
 fi
+
+# Remving unused files
+#
+echo "Cleanup..."
+cd /usr/local || exit
+rm -R /usr/local/festivals-server
+sleep 1
 
 echo "Done."

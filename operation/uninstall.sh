@@ -4,7 +4,7 @@
 #
 # Removes the firewall configuration, uninstalls go, git and the festivals-server and stops and removes it as a service.
 #
-# (c)2020 Simon Gaus
+# (c)2020-2021 Simon Gaus
 #
 
 # Move to working directory
