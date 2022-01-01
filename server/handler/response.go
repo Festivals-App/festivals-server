@@ -52,3 +52,15 @@ func respondError(w http.ResponseWriter, code int, message string) {
 		log.Print(err.Error())
 	}
 }
+
+// respondError makes the error response with payload as json format
+func respondString(w http.ResponseWriter, code int, message string) {
+
+	response := []byte(message)
+	w.Header().Set("Content-Type", "text/plain")
+	w.WriteHeader(code)
+	_, err := w.Write(response)
+	if err != nil {
+		log.Print(err.Error())
+	}
+}
