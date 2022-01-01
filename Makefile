@@ -1,8 +1,8 @@
 # Makefile for festivals-server
 
-VERSION=v1.1.1
+VERSION=development
 DATE=$(shell date +"%d-%m-%Y-%H-%M")
-REF=1a410efbd13591db07496601ebc7a059dd55cfe9
+REF='refs/tags/development'
 export
 
 build:
@@ -12,6 +12,11 @@ install:
 	cp festivals-server /usr/local/bin/festivals-server
 	cp config_template.toml /etc/festivals-server.conf
 	cp operation/service_template.service /etc/systemd/system/festivals-server.service
+
+update:
+	systemctl stop festivals-server
+	cp festivals-server /usr/local/bin/festivals-server
+	systemctl start festivals-server
 
 uninstall:
 	rm /usr/local/bin/festivals-server
