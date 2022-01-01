@@ -2,7 +2,7 @@
 
 VERSION=development
 DATE=$(shell date +"%d-%m-%Y-%H-%M")
-REF='refs/tags/development'
+REF=refs/tags/development
 export
 
 build:
