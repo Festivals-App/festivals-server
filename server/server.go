@@ -3,15 +3,14 @@ package server
 import (
 	"database/sql"
 	"fmt"
-	"log"
-	"net/http"
-
 	"github.com/Festivals-App/festivals-identity-server/authentication"
 	"github.com/Festivals-App/festivals-server/server/config"
 	"github.com/Festivals-App/festivals-server/server/handler"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	_ "github.com/go-sql-driver/mysql"
+	"log"
+	"net/http"
 )
 
 // Server has router and db instances
@@ -70,6 +69,9 @@ func (s *Server) setWalker() {
 
 // setRouters sets the all required routers
 func (s *Server) setRoutes(config *config.Config) {
+
+	s.Router.Get("/version", s.handleRequestWithoutAuthentication(handler.GetVersion))
+	s.Router.Get("/info", s.handleRequestWithoutAuthentication(handler.GetInfo))
 
 	s.Router.Get("/festivals", s.handleRequest(handler.GetFestivals))
 	s.Router.Get("/festivals/{objectID}", s.handleRequest(handler.GetFestival))
@@ -182,10 +184,18 @@ func (s *Server) Run(host string) {
 // function prototype to inject DB instance in handleRequest()
 type RequestHandlerFunction func(db *sql.DB, w http.ResponseWriter, r *http.Request)
 
-// inject DB in handler functions
-func (s *Server) handleRequest(handler RequestHandlerFunction) http.HandlerFunc {
+// inject DB in handler functions and authentication
+func (s *Server) handleRequest(requestHandler RequestHandlerFunction) http.HandlerFunc {
 
 	return authentication.IsAuthenticated(s.Config.APIKeys, func(w http.ResponseWriter, r *http.Request) {
-		handler(s.DB, w, r)
+		requestHandler(s.DB, w, r)
+	})
+}
+
+// inject DB in handler functions
+func (s *Server) handleRequestWithoutAuthentication(requestHandler RequestHandlerFunction) http.HandlerFunc {
+
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		requestHandler(s.DB, w, r)
 	})
 }
