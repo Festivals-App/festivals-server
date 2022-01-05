@@ -10,8 +10,9 @@
 
 <p align="center">
   <a href="#development">Development</a> •
-  <a href="#usage">Usage</a> •
   <a href="#deployment">Deployment</a> •
+  <a href="#festivalsapi">FestivalsAPI</a> •
+  <a href="#architecture">Architecture</a> •
   <a href="#engage">Engage</a> •
   <a href="#licensing">Licensing</a>
 </p>
@@ -20,24 +21,22 @@ A live and lightweight go server app providing a simple RESTful API using [go-ch
 
 ## Development
 
-TBA
+The developement of the [FestivalsAPI](./DOCUMENTATION.md) and the festivals-server is heavily dependend on the [festivals-api-ios](https://github.com/Festivals-App/festivals-api-ios) as
+in my regular development workflow i first mock the needed behaviour in the API client library. After the behaviour works the way i need it to i start implementing the changes in the festivals-server and after that in the [festivals-database](https://github.com/Festivals-App/festivals-database).
+
+To test whether the festivals-server is working correctly i'm currently relying on downstream tests of the [API framework](https://github.com/Festivals-App/festivals-api-ios).
 
 ### Requirements
 
--  go 1.11
-
-### Setup development
-
-Install homebrew: https://brew.sh/index_de
-Setup local mysql environment: https://tableplus.com/blog/2018/11/how-to-download-mysql-mac.html
-
-## Usage
-
-TBA
+- [Golang](https://go.dev/) Version 1.17+
+- [Visual Studio Code](https://code.visualstudio.com/download) 1.63.2+
+    * Plugin recommendations are managed via [workspace recommendations](https://code.visualstudio.com/docs/editor/extension-marketplace#_recommended-extensions).
+- [Bash script](https://en.wikipedia.org/wiki/Bash_(Unix_shell)) friendly environment
 
 ### Structure
 ```
 ├── server
+│   │
 │   ├── server.go               // Server logic
 │   │
 │   ├── config
@@ -48,7 +47,8 @@ TBA
 │   │   └── querytools.go       // Some tools to create mysql query statements
 │   │
 │   ├── handler                
-│   │   ├── common.go           // Common response functions
+│   │   ├── reponse.go          // Send a response
+│   │   ├── common.go           // Common handler functions
 │   │   ├── festival.go         // APIs for the Festival model
 │   │   ├── artist.go           // APIs for the Artist model
 │   │   ├── location.go         // APIs for the Location model
@@ -58,22 +58,35 @@ TBA
 │   │   ├── place.go            // APIs for the Place model
 │   │   └── tag.go              // APIs for the Tag model
 │   │
-│   └── model
-│       └── model.go            // The object models
+│   ├── model
+│   │   └── model.go            // The object models for the handler
+│   │
+│   └── status
+│       └── status.go           // API for the status of the application
 │
-└── main.go               
+└── main.go        
 ```
-
-### Documentation
-
-The FestivalsAPI is documented in detail [here](./DOCUMENTATION.md).
-
-The full documentation for the Festivals App is in the [festivals-documentation](https://github.com/festivals-app/festivals-documentation) repository. 
-The documentation repository contains technical documents, architecture information and UI/UX specifications related to this implementation.
 
 ## Deployment
 
-The install, update and uninstall scripts should work with any system that uses *systemd* and *firewalld* or *ufw*. 
+Running the festivals-server is pretty easy becaus Go binaries are able to run without system dependencies 
+on the target for which they are compiled. The only dependency is that the festivals-server expects either a config file at `/etc/festivals-server.conf`,
+the environment variables set or the template config file present in the directory it runs.
+
+### Build and Run manually
+
+```bash
+cd /path/to/repository/festivals-server
+make build
+(make install)
+make run
+
+# Default API Endpoint : http://localhost:10439
+```
+
+### VM deployment
+
+The install, update and uninstall scripts should work with any system that uses *systemd* and *firewalld*.
 Additionally the scripts will somewhat work under macOS but won't configure the firewall or launch service.
 
 Installing
@@ -99,36 +112,42 @@ To see if the server is running use:
 sudo systemctl status festivals-server
 ```
 
-### Docker
+### Container deployment
 
 ```bash
 TBA
 ```
 
-### Build and Run manually
-```bash
-cd $GOPATH/src/github.com/Festivals-App/festivals-server
-go build main.go
-./main
+## FestivalsAPI
 
-# Default API Endpoint : http://localhost:10439
-```
+The FestivalsAPI is documented in detail [here](./DOCUMENTATION.md).
+
+The full documentation for the Festivals App is in the [festivals-documentation](https://github.com/festivals-app/festivals-documentation) repository. 
+The documentation repository contains technical documents, architecture information and UI/UX specifications related to this implementation.
+
+## Architecture
+
+![Figure 1: Architecture Overview Highlighted](https://github.com/Festivals-App/festivals-documentation/blob/main/images/architecture/overview_server.png "Figure 1: Architecture Overview Highlighted")
+
+The festivals-server is tightly coupled with the [festivals-database](https://github.com/Festivals-App/festivals-database) which provides the persistent storage to the FestivalsAPI. To find out more about architecture and technical information see the [ARCHITECTURE](./ARCHITECTURE.md) document.
+
+The general documentation for the Festivals App is in the [festivals-documentation](https://github.com/festivals-app/festivals-documentation) repository. 
+The documentation repository contains architecture information, general deployment documentation, templates and other helpful documents.
 
 ## Engage
 
-TBA
+I welcome every contribution, whether it is a pull request or a fixed typo. The best place to discuss questions and suggestions regarding the festivals-server is the [issues](https://github.com/festivals-app/festivals-server/issues/) section. More general information and a good starting point if you want to get involved is the [festival-documentation](https://github.com/Festivals-App/festivals-documentation) repository.
 
 The following channels are available for discussions, feedback, and support requests:
 
 | Type                     | Channel                                                |
 | ------------------------ | ------------------------------------------------------ |
 | **General Discussion**   | <a href="https://github.com/festivals-app/festivals-documentation/issues/new/choose" title="General Discussion"><img src="https://img.shields.io/github/issues/festivals-app/festivals-documentation/question.svg?style=flat-square"></a> </a>   |
-| **Concept Feedback**    | <a href="https://github.com/festivals-app/festivals-documentation/issues/new/choose" title="Open Concept Feedback"><img src="https://img.shields.io/github/issues/festivals-app/festivals-documentation/architecture.svg?style=flat-square"></a>  |
-| **Other Requests**    | <a href="mailto:phisto05@gmail.com" title="Email Festivals Team"><img src="https://img.shields.io/badge/email-Festivals%20team-green?logo=mail.ru&style=flat-square&logoColor=white"></a>   |
+| **Other Requests**    | <a href="mailto:simon.cay.gaus@gmail.com" title="Email me"><img src="https://img.shields.io/badge/email-Simon-green?logo=mail.ru&style=flat-square&logoColor=white"></a>   |
 
 ## Licensing
 
-Copyright (c) 2020 Simon Gaus.
+Copyright (c) 2017-2022 Simon Gaus.
 
 Licensed under the **GNU Lesser General Public License v3.0** (the "License"); you may not use this file except in compliance with the License.
 
