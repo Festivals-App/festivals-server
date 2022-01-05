@@ -15,13 +15,6 @@ cd /usr/local || exit
 #
 if command -v ufw > /dev/null; then
 
-  ufw default deny incoming >/dev/null
-  ufw default allow outgoing >/dev/null
-  ufw allow OpenSSH >/dev/null
-  yes | sudo ufw enable >/dev/null
-  echo "Enabled ufw"
-  sleep 1
-
   ufw allow 10439/tcp >/dev/null
   echo "Added festivals-server to ufw using port 10439."
   sleep 1
@@ -29,6 +22,14 @@ if command -v ufw > /dev/null; then
 elif ! [ "$(uname -s)" = "Darwin" ]; then
   echo "No firewall detected and not on macOS. Exiting."
   exit 1
+fi
+
+
+# 
+if [ "$(uname -s)" = "Darwin" ]; then
+
+elif
+
 fi
 
 # Install go if needed.
