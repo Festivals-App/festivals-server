@@ -69,7 +69,7 @@ To test whether the festivals-server is working correctly i'm currently relying 
 
 ## Deployment
 
-Running the festivals-server is pretty easy becaus Go binaries are able to run without system dependencies 
+Running the festivals-server is pretty easy because Go binaries are able to run without system dependencies 
 on the target for which they are compiled. The only dependency is that the festivals-server expects either a config file at `/etc/festivals-server.conf`,
 the environment variables set or the template config file present in the directory it runs.
 
