@@ -17,7 +17,7 @@
   <a href="#licensing">Licensing</a>
 </p>
 
-A live and lightweight go server app providing a simple RESTful API using [go-chi/chi](https://github.com/go-chi/chi) and [go-sql-driver/mysql](https://github.com/go-sql-driver/mysql).
+A live and lightweight go server app providing a simple RESTful API called FestivalsAPI using [go-chi/chi](https://github.com/go-chi/chi) and [go-sql-driver/mysql](https://github.com/go-sql-driver/mysql).
 
 ## Development
 
