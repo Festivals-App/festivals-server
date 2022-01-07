@@ -57,7 +57,7 @@ If the request returns any objects they will be in that array,
     ]
 }
 ```
-otherwise, an empty array is returned.
+otherwise, an empty array is returned. This is *not* true for the [status](#server-status) API.
 ```
 {
     "data": []
@@ -90,6 +90,11 @@ The `error` field will always contain a string with the error message.
 ```
 
 ## Overview
+
+[Status](#server-status)
+* GET            `/info`
+* GET            `/version`
+* GET            `/health`
 
 [Festivals](#festival-objects)
 * GET, POST             `/festivals` optional `name,ids
@@ -131,6 +136,42 @@ The `error` field will always contain a string with the error message.
 * GET, POST             `/tags`
 * GET, PATCH, DELETE    `/tags/{objectID}`
 
+------------------------------------------------------------------------------------
+## Server Status
+Determine the state of the server.
+
+Info object
+```
+{
+    "BuildTime":      string,
+    "GitRef":         string,
+    "Version":        string
+}
+```
+
+------------------------------------------------------------------------------------
+#### GET `/info`
+        
+ * Returns
+      * Returns the info object 
+      * Codes `200`/`40x`/`50x`
+      * `data` or `error` field
+
+------------------------------------------------------------------------------------
+#### GET `/version`
+
+ * Returns
+      * Always returns HTTP status code 200
+      * Code `200`
+      * server version as a string `text/plain`
+
+------------------------------------------------------------------------------------
+#### GET `/health`
+
+ * Returns
+      * The version of the server application.
+      * Code `200`
+      * empty `text/plain`
 
 ------------------------------------------------------------------------------------
 ## Festival Objects
