@@ -21,8 +21,7 @@ A live and lightweight go server app providing a simple RESTful API called Festi
 
 ## Development
 
-The developement of the [FestivalsAPI](./DOCUMENTATION.md) and the festivals-server is heavily dependend on the [festivals-api-ios](https://github.com/Festivals-App/festivals-api-ios) as
-in my regular development workflow i first mock the needed behaviour in the API client library. After the behaviour works the way i need it to i start implementing the changes in the festivals-server and after that in the [festivals-database](https://github.com/Festivals-App/festivals-database).
+The developement of the [FestivalsAPI](./DOCUMENTATION.md) and the festivals-server is heavily dependend on the [festivals-api-ios](https://github.com/Festivals-App/festivals-api-ios) as in my regular development workflow i first mock the needed behaviour in the API client library. After the behaviour works the way i need it to, i start implementing the changes in the festivals-server and after that in the [festivals-database](https://github.com/Festivals-App/festivals-database).
 
 To test whether the festivals-server is working correctly i'm currently relying on downstream tests of the [API framework](https://github.com/Festivals-App/festivals-api-ios).
 
@@ -71,7 +70,7 @@ To test whether the festivals-server is working correctly i'm currently relying 
 
 Running the festivals-server is pretty easy because Go binaries are able to run without system dependencies 
 on the target for which they are compiled. The only dependency is that the festivals-server expects either a config file at `/etc/festivals-server.conf`,
-the environment variables set or the template config file present in the directory it runs.
+the environment variables set or the template config file present in the directory it runs from.
 
 ### Build and Run manually
 
