@@ -72,6 +72,7 @@ func (s *Server) setRoutes(config *config.Config) {
 
 	s.Router.Get("/version", s.handleRequestWithoutAuthentication(handler.GetVersion))
 	s.Router.Get("/info", s.handleRequestWithoutAuthentication(handler.GetInfo))
+	s.Router.Get("/health", s.handleRequestWithoutAuthentication(handler.GetHealth))
 
 	s.Router.Get("/festivals", s.handleRequest(handler.GetFestivals))
 	s.Router.Get("/festivals/{objectID}", s.handleRequest(handler.GetFestival))

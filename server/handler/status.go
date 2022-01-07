@@ -15,3 +15,8 @@ func GetInfo(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	respondJSON(w, http.StatusOK, status.InfoString())
 }
+
+func GetHealth(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+
+	respondCode(w, status.HealthStatus())
+}

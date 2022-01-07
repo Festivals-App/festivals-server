@@ -64,3 +64,10 @@ func respondString(w http.ResponseWriter, code int, message string) {
 		log.Print(err.Error())
 	}
 }
+
+//
+func respondCode(w http.ResponseWriter, code int) {
+
+	w.Header().Set("Content-Type", "text/plain")
+	w.WriteHeader(code)
+}
