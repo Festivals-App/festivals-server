@@ -161,15 +161,15 @@ Info object
 #### GET `/version`
 
  * Returns
-      * Always returns HTTP status code 200
-      * Code `200`
+      * The version of the server application.
+      * Codes `200`/`40x`/`50x`
       * server version as a string `text/plain`
 
 ------------------------------------------------------------------------------------
 #### GET `/health`
 
  * Returns
-      * The version of the server application.
+      * Always returns HTTP status code 200
       * Code `200`
       * empty `text/plain`
 
