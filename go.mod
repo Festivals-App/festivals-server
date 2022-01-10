@@ -1,6 +1,6 @@
 module github.com/Festivals-App/festivals-server
 
-go 1.11
+go 1.17
 
 require (
 	github.com/Festivals-App/festivals-identity-server v0.0.0-20210325185328-7a6071365783
