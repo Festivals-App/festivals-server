@@ -46,15 +46,16 @@ To test whether the festivals-server is working correctly i'm currently relying 
 │   │   └── querytools.go       // Some tools to create mysql query statements
 │   │
 │   ├── handler                
-│   │   ├── reponse.go          // Send a response
-│   │   ├── common.go           // Common handler functions
-│   │   ├── festival.go         // APIs for the Festival model
 │   │   ├── artist.go           // APIs for the Artist model
-│   │   ├── location.go         // APIs for the Location model
+│   │   ├── common.go           // Common handler functions
 │   │   ├── event.go            // APIs for the Event model
+│   │   ├── festival.go         // APIs for the Festival model
+│   │   ├── location.go         // APIs for the Location model
 │   │   ├── image.go            // APIs for the Image model
 │   │   ├── link.go             // APIs for the Link model
 │   │   ├── place.go            // APIs for the Place model
+│   │   ├── response.go         // Send a response
+│   │   ├── status.go           // Handling status server status requests
 │   │   └── tag.go              // APIs for the Tag model
 │   │
 │   ├── model
