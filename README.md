@@ -122,9 +122,6 @@ TBA
 
 The FestivalsAPI is documented in detail [here](./DOCUMENTATION.md).
 
-The full documentation for the Festivals App is in the [festivals-documentation](https://github.com/festivals-app/festivals-documentation) repository. 
-The documentation repository contains technical documents, architecture information and UI/UX specifications related to this implementation.
-
 ## Architecture
 
 ![Figure 1: Architecture Overview Highlighted](https://github.com/Festivals-App/festivals-documentation/blob/main/images/architecture/overview_server.png "Figure 1: Architecture Overview Highlighted")
