@@ -4,7 +4,7 @@
 #
 # Enables the firewall, installs the newest go and the festivals-server and starts it as a service.
 #
-# (c)2020-2021 Simon Gaus
+# (c)2020-2022 Simon Gaus
 #
 
 # Move to working directory
