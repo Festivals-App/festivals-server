@@ -24,14 +24,6 @@ elif ! [ "$(uname -s)" = "Darwin" ]; then
   exit 1
 fi
 
-
-# 
-if [ "$(uname -s)" = "Darwin" ]; then
-
-elif
-
-fi
-
 # Install go if needed.
 # Binaries linked to /usr/local/bin
 #
