@@ -8,3 +8,5 @@ require (
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/pelletier/go-toml v1.9.4
 )
+
+require github.com/Festivals-App/festivals-gateway v0.0.0-20220115223608-22adfb109082

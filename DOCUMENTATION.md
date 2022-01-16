@@ -27,7 +27,7 @@
 
 To use the API you need to provide an API key with your requests HTTP header:
 ```
-'API-KEY':'YOUR_API_KEY_GOES_HERE'
+'Api-Key':'YOUR_API_KEY_GOES_HERE'
 ```
 
 ### Requests
