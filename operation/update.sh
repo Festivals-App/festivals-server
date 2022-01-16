@@ -39,14 +39,7 @@ yes | sudo git clone https://github.com/Festivals-App/festivals-server.git /usr/
 cd /usr/local/festivals-server || { echo "Failed to access working directory. Exiting." ; exit 1; }
 go build main.go
 mv main /usr/local/bin/festivals-server || { echo "Failed to install festivals-server binary. Exiting." ; exit 1; }
-mv config_template.toml /etc/festivals-server.conf
-echo "Installed festivals-server."
-sleep 1
-
-# Updating go to the newest version
-#
-systemctl start festivals-server
-echo "Started festivals-server"
+echo "Updated festivals-server binary."
 sleep 1
 
 # Removing unused files
