@@ -52,5 +52,5 @@ sleep 1
 echo "Done!"
 sleep 1
 
-echo "Please start the server manually by running `systemctl start festivals-server` after you updated the configuration file at `/etc/festivals-server.conf`."
+echo "Please start the server manually by running 'systemctl start festivals-server' after you updated the configuration file at '/etc/festivals-server.conf'"
 sleep 1
