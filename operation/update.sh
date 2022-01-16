@@ -4,7 +4,7 @@
 #
 # Updates the festivals-server and restarts it.
 #
-# (c)2020-2021 Simon Gaus
+# (c)2020-2022 Simon Gaus
 #
 
 # Move to working dir
@@ -53,7 +53,7 @@ sleep 1
 #
 echo "Cleanup..."
 cd /usr/local || exit
-rm -R /usr/local/festivals-server
+rm -r /usr/local/festivals-server
 sleep 1
 
 echo "Done!"
