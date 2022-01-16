@@ -100,7 +100,6 @@ Updating
 curl -o update.sh https://raw.githubusercontent.com/Festivals-App/festivals-server/main/operation/update.sh
 chmod +x update.sh
 sudo ./update.sh
-systemctl start festivals-server
 ```
 Uninstalling
 ```bash
