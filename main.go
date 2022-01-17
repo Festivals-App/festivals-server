@@ -39,7 +39,7 @@ func sendHeartbeat(conf *config.Config) {
 		timer := time.After(time.Second * 2)
 		<-timer
 		var beat *heartbeat.Heartbeat = &heartbeat.Heartbeat{Service: "festivals-server", Host: conf.ServiceBindAddress, Port: conf.ServicePort, Available: true}
-		heartbeat.SendHeartbeat("http://discovery.localhost:8080/loversear", beat)
+		heartbeat.SendHeartbeat(conf.LoversEar, beat)
 	}
 }
 
