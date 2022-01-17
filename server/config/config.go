@@ -12,6 +12,7 @@ type Config struct {
 	ReadOnly           bool
 	ServiceBindAddress string
 	ServicePort        int
+	LoversEar          string
 	APIKeys            []string
 }
 
@@ -64,6 +65,7 @@ func ParseConfig(cfgFile string) *Config {
 	serverBindAdress := content.Get("service.bind-address").(string)
 	serverPort := content.Get("service.port").(int64)
 
+	loversearEndpoint := content.Get("authentication.heartbeat").(string)
 	keyValues := content.Get("authentication.api-keys").([]interface{})
 	keys := make([]string, len(keyValues))
 	for i, v := range keyValues {
@@ -89,6 +91,7 @@ func ParseConfig(cfgFile string) *Config {
 		ReadOnly:           readonly,
 		ServiceBindAddress: serverBindAdress,
 		ServicePort:        int(serverPort),
+		LoversEar:          loversearEndpoint,
 		APIKeys:            keys,
 	}
 }
