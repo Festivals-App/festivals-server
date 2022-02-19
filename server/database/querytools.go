@@ -1,14 +1,14 @@
 package database
 
 import (
-	"fmt"
+	"errors"
 	"reflect"
 	"strings"
 )
 
 // taken from: https://github.com/jmoiron/sqlx/issues/255
 // DBFields reflects on a struct and returns the values of fields with `db` tags and returns the keys.
-func DBFields(object interface{}) string {
+func DBFields(object interface{}) (string, error) {
 
 	v := reflect.ValueOf(object)
 	if v.Kind() == reflect.Ptr {
@@ -22,13 +22,14 @@ func DBFields(object interface{}) string {
 				fields = append(fields, field)
 			}
 		}
-		return "`" + strings.Join(fields, "`,`") + "`"
+		return "`" + strings.Join(fields, "`,`") + "`", nil
 	}
-	panic(fmt.Errorf("DBFields requires a struct, found: %s", v.Kind().String()))
+
+	return "", errors.New("DBFields requires a struct, found: " + v.Kind().String())
 }
 
 // DBPlaceholder reflects on a struct and returns a placeholder string for every field which have a `db` tag.
-func DBPlaceholder(object interface{}) string {
+func DBPlaceholder(object interface{}) (string, error) {
 
 	v := reflect.ValueOf(object)
 	if v.Kind() == reflect.Ptr {
@@ -42,9 +43,10 @@ func DBPlaceholder(object interface{}) string {
 				fields = append(fields, "?")
 			}
 		}
-		return strings.Join(fields, ",")
+		return strings.Join(fields, ","), nil
 	}
-	panic(fmt.Errorf("DBFields requires a struct, found: %s", v.Kind().String()))
+
+	return "", errors.New("DBFields requires a struct, found: " + v.Kind().String())
 }
 
 func DBPlaceholderForIDs(ids []int) string {
@@ -60,7 +62,7 @@ func DBPlaceholderForIDs(ids []int) string {
 }
 
 // DBValues reflects on a struct and returns the values of fields which have a `db` tag.
-func DBValues(object interface{}) []interface{} {
+func DBValues(object interface{}) ([]interface{}, error) {
 
 	v := reflect.ValueOf(object)
 	if v.Kind() == reflect.Ptr {
@@ -74,13 +76,14 @@ func DBValues(object interface{}) []interface{} {
 				values = append(values, v.Field(i).Interface())
 			}
 		}
-		return values
+		return values, nil
 	}
-	panic(fmt.Errorf("DBFields requires a struct, found: %s", v.Kind().String()))
+
+	return []interface{}{}, errors.New("DBFields requires a struct, found: " + v.Kind().String())
 }
 
 // DBValues reflects on a struct and returns the values of fields which have a `db` tag.
-func DBKeyValuePairs(object interface{}) string {
+func DBKeyValuePairs(object interface{}) (string, error) {
 
 	v := reflect.ValueOf(object)
 	if v.Kind() == reflect.Ptr {
@@ -94,9 +97,10 @@ func DBKeyValuePairs(object interface{}) string {
 				fields = append(fields, field)
 			}
 		}
-		return "`" + strings.Join(fields, "`=?,`") + "`=?"
+		return "`" + strings.Join(fields, "`=?,`") + "`=?", nil
 	}
-	panic(fmt.Errorf("DBFields requires a struct, found: %s", v.Kind().String()))
+
+	return "", errors.New("DBFields requires a struct, found: " + v.Kind().String())
 }
 
 func InterfaceInt(ints []int) []interface{} {

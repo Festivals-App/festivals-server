@@ -1,8 +1,11 @@
 package config
 
 import (
-	"log"
+	"errors"
+	"io/fs"
 	"os"
+
+	"github.com/rs/zerolog/log"
 
 	"github.com/pelletier/go-toml"
 )
@@ -48,7 +51,7 @@ func DefaultConfig() *Config {
 	// this is mostly so the application will run in development environment
 	path, err := os.Getwd()
 	if err != nil {
-		log.Fatal("server initialize: could not read default config file")
+		log.Fatal().Msg("server initialize: could not read default config file with error:" + err.Error())
 	}
 	path = path + "/config_template.toml"
 	return ParseConfig(path)
@@ -58,7 +61,7 @@ func ParseConfig(cfgFile string) *Config {
 
 	content, err := toml.LoadFile(cfgFile)
 	if err != nil {
-		log.Fatal("server initialize: could not read config file at '" + cfgFile + "'. Error: " + err.Error())
+		log.Fatal().Msg("server initialize: could not read config file at '" + cfgFile + "' with error: " + err.Error())
 	}
 
 	readonly := content.Get("service.read-only").(bool)
@@ -101,7 +104,7 @@ func ParseConfig(cfgFile string) *Config {
 // see: https://golangcode.com/check-if-a-file-exists/
 func fileExists(filename string) bool {
 	info, err := os.Stat(filename)
-	if os.IsNotExist(err) {
+	if errors.Is(err, fs.ErrNotExist) {
 		return false
 	}
 	return !info.IsDir()

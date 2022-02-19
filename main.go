@@ -10,29 +10,32 @@ import (
 	"github.com/Festivals-App/festivals-server/server"
 	"github.com/Festivals-App/festivals-server/server/config"
 	"github.com/Festivals-App/festivals-server/server/status"
+	"github.com/rs/zerolog/log"
 )
 
 func main() {
+
+	log.Info().Msg("Server startup.")
 
 	conf := config.DefaultConfig()
 	if len(os.Args) > 1 {
 		conf = config.ParseConfig(os.Args[1])
 	}
+	log.Info().Msg("Server configuration was initialized.")
 
 	serverInstance := &server.Server{}
 	serverInstance.Initialize(conf)
-	go sendHeartbeat(conf)
-	serverInstance.Run(conf.ServiceBindAddress + ":" + strconv.Itoa(conf.ServicePort))
-}
 
-/*
-type Heartbeat struct {
-	Service   string `json:"service"`
-	Host      string `json:"host"`
-	Port      int    `json:"port"`
-	Available bool   `json:"available"`
+	go serverInstance.Run(conf.ServiceBindAddress + ":" + strconv.Itoa(conf.ServicePort))
+	log.Info().Msg("Server did start.")
+
+	go sendHeartbeat(conf)
+	log.Info().Msg("Heartbeat routine was started.")
+
+	// wait forever
+	// https://stackoverflow.com/questions/36419054/go-projects-main-goroutine-sleep-forever
+	select {}
 }
-*/
 
 func sendHeartbeat(conf *config.Config) {
 	for {

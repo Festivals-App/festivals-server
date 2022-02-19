@@ -3,14 +3,20 @@ package server
 import (
 	"database/sql"
 	"fmt"
+	"io"
+	"net/http"
+	"os"
+
 	"github.com/Festivals-App/festivals-identity-server/authentication"
 	"github.com/Festivals-App/festivals-server/server/config"
 	"github.com/Festivals-App/festivals-server/server/handler"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	_ "github.com/go-sql-driver/mysql"
-	"log"
-	"net/http"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/hlog"
+	"github.com/rs/zerolog/log"
+	"gopkg.in/natefinch/lumberjack.v2"
 )
 
 // Server has router and db instances
@@ -32,7 +38,7 @@ func (s *Server) Initialize(config *config.Config) {
 		config.DB.Charset)
 	db, err := sql.Open(config.DB.Dialect, dbURI)
 	if err != nil {
-		log.Fatal("server initialize: could not connect to database")
+		log.Fatal().Msg("server initialize: could not connect to database")
 	}
 
 	s.DB = db
@@ -41,6 +47,7 @@ func (s *Server) Initialize(config *config.Config) {
 
 	s.setMiddleware()
 	s.setWalker()
+	s.setLogging()
 	s.setRoutes(config)
 }
 
@@ -49,8 +56,6 @@ func (s *Server) setMiddleware() {
 	s.Router.Use(
 		// used to log the request to the console | development
 		middleware.Logger,
-		// helps to redirect wrong requests (why do one want that?)
-		//middleware.RedirectSlashes,
 		// tries to recover after panics (?)
 		middleware.Recoverer,
 	)
@@ -63,7 +68,40 @@ func (s *Server) setWalker() {
 		return nil
 	}
 	if err := chi.Walk(s.Router, walkFunc); err != nil {
-		log.Panicf("Logging err: %s\n", err.Error())
+		log.Panic().Msg(err.Error())
+	}
+}
+
+func (s *Server) setLogging() {
+
+	var writers []io.Writer
+
+	writers = append(writers, zerolog.ConsoleWriter{Out: os.Stderr})
+	writers = append(writers, newRollingFile())
+
+	mw := io.MultiWriter(writers...)
+
+	// zerolog.SetGlobalLevel(zerolog.DebugLevel)
+	logger := zerolog.New(mw).With().Timestamp().Logger()
+
+	logger.Info().
+		Msg("logging configured")
+
+	s.Router.Use(hlog.NewHandler(logger))
+}
+
+func newRollingFile() io.Writer {
+
+	if err := os.MkdirAll("/var/log/festivals-server/", 0744); err != nil {
+		log.Error().Err(err).Str("path", "/var/log/festivals-server/info.log").Msg("can't create log directory")
+		return nil
+	}
+
+	return &lumberjack.Logger{
+		Filename:   "/var/log/festivals-server/info.log",
+		MaxBackups: 3,   // files
+		MaxSize:    500, // megabytes
+		MaxAge:     10,  // days
 	}
 }
 
@@ -179,7 +217,9 @@ func (s *Server) setRoutes(config *config.Config) {
 
 // Run the server on it's router
 func (s *Server) Run(host string) {
-	log.Fatal(http.ListenAndServe(host, s.Router))
+	if err := http.ListenAndServe(host, s.Router); err != nil {
+		log.Fatal().Err(err).Msg("Startup failed")
+	}
 }
 
 // function prototype to inject DB instance in handleRequest()
