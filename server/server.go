@@ -3,20 +3,16 @@ package server
 import (
 	"database/sql"
 	"fmt"
-	"io"
 	"net/http"
-	"os"
 
+	"github.com/Festivals-App/festivals-gateway/server/logger"
 	"github.com/Festivals-App/festivals-identity-server/authentication"
 	"github.com/Festivals-App/festivals-server/server/config"
 	"github.com/Festivals-App/festivals-server/server/handler"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/rs/zerolog"
-	"github.com/rs/zerolog/hlog"
 	"github.com/rs/zerolog/log"
-	"gopkg.in/natefinch/lumberjack.v2"
 )
 
 // Server has router and db instances
@@ -37,6 +33,7 @@ func (s *Server) Initialize(config *config.Config) {
 		config.DB.Name,
 		config.DB.Charset)
 	db, err := sql.Open(config.DB.Dialect, dbURI)
+
 	if err != nil {
 		log.Fatal().Msg("server initialize: could not connect to database")
 	}
@@ -47,15 +44,16 @@ func (s *Server) Initialize(config *config.Config) {
 
 	s.setMiddleware()
 	s.setWalker()
-	s.setLogging()
 	s.setRoutes(config)
 }
 
 func (s *Server) setMiddleware() {
+
 	// tell the router which middleware to use
 	s.Router.Use(
 		// used to log the request to the console | development
-		middleware.Logger,
+		//LoggerMiddleware(s.Config.Logger),
+		logger.Middleware(&log.Logger),
 		// tries to recover after panics (?)
 		middleware.Recoverer,
 	)
@@ -64,44 +62,11 @@ func (s *Server) setMiddleware() {
 func (s *Server) setWalker() {
 
 	walkFunc := func(method string, route string, handler http.Handler, middlewares ...func(http.Handler) http.Handler) error {
-		log.Printf("%s %s \n", method, route)
+		log.Info().Msg(method + " " + route + " \n")
 		return nil
 	}
 	if err := chi.Walk(s.Router, walkFunc); err != nil {
 		log.Panic().Msg(err.Error())
-	}
-}
-
-func (s *Server) setLogging() {
-
-	var writers []io.Writer
-
-	writers = append(writers, zerolog.ConsoleWriter{Out: os.Stderr})
-	writers = append(writers, newRollingFile())
-
-	mw := io.MultiWriter(writers...)
-
-	// zerolog.SetGlobalLevel(zerolog.DebugLevel)
-	logger := zerolog.New(mw).With().Timestamp().Logger()
-
-	logger.Info().
-		Msg("logging configured")
-
-	s.Router.Use(hlog.NewHandler(logger))
-}
-
-func newRollingFile() io.Writer {
-
-	if err := os.MkdirAll("/var/log/festivals-server/", 0744); err != nil {
-		log.Error().Err(err).Str("path", "/var/log/festivals-server/info.log").Msg("can't create log directory")
-		return nil
-	}
-
-	return &lumberjack.Logger{
-		Filename:   "/var/log/festivals-server/info.log",
-		MaxBackups: 3,   // files
-		MaxSize:    500, // megabytes
-		MaxAge:     10,  // days
 	}
 }
 
@@ -111,6 +76,7 @@ func (s *Server) setRoutes(config *config.Config) {
 	s.Router.Get("/version", s.handleRequestWithoutAuthentication(handler.GetVersion))
 	s.Router.Get("/info", s.handleRequestWithoutAuthentication(handler.GetInfo))
 	s.Router.Get("/health", s.handleRequestWithoutAuthentication(handler.GetHealth))
+	s.Router.Get("/log", s.handleRequestWithoutAuthentication(handler.GetLog))
 
 	s.Router.Get("/festivals", s.handleRequest(handler.GetFestivals))
 	s.Router.Get("/festivals/{objectID}", s.handleRequest(handler.GetFestival))

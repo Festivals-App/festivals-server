@@ -5,9 +5,9 @@ import (
 	"io/fs"
 	"os"
 
-	"github.com/rs/zerolog/log"
-
 	"github.com/pelletier/go-toml"
+
+	"github.com/rs/zerolog/log"
 )
 
 type Config struct {
