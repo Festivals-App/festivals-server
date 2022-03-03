@@ -15,8 +15,10 @@ type Config struct {
 	ReadOnly           bool
 	ServiceBindAddress string
 	ServicePort        int
+	ServiceKey         string
 	LoversEar          string
 	APIKeys            []string
+	AdminKeys          []string
 }
 
 type DBConfig struct {
@@ -65,14 +67,21 @@ func ParseConfig(cfgFile string) *Config {
 	}
 
 	readonly := content.Get("service.read-only").(bool)
-	serverBindAdress := content.Get("service.bind-address").(string)
-	serverPort := content.Get("service.port").(int64)
+	serviceBindAdress := content.Get("service.bind-address").(string)
+	servicePort := content.Get("service.port").(int64)
+	serviceKey := content.Get("service.key").(string)
 
-	loversearEndpoint := content.Get("authentication.heartbeat").(string)
+	loversear := content.Get("heartbeat.endpoint").(string)
+
 	keyValues := content.Get("authentication.api-keys").([]interface{})
 	keys := make([]string, len(keyValues))
 	for i, v := range keyValues {
 		keys[i] = v.(string)
+	}
+	adminKeyValues := content.Get("authentication.admin-keys").([]interface{})
+	adminKeys := make([]string, len(adminKeyValues))
+	for i, v := range adminKeyValues {
+		adminKeys[i] = v.(string)
 	}
 
 	dbHost := content.Get("database.host").(string)
@@ -92,10 +101,12 @@ func ParseConfig(cfgFile string) *Config {
 			Charset:  "utf8",
 		},
 		ReadOnly:           readonly,
-		ServiceBindAddress: serverBindAdress,
-		ServicePort:        int(serverPort),
-		LoversEar:          loversearEndpoint,
+		ServiceBindAddress: serviceBindAdress,
+		ServicePort:        int(servicePort),
+		ServiceKey:         serviceKey,
+		LoversEar:          loversear,
 		APIKeys:            keys,
+		AdminKeys:          adminKeys,
 	}
 }
 
