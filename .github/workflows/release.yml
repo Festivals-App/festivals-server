@@ -30,6 +30,7 @@ jobs:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         goos: ${{ matrix.goos }}
         goarch: ${{ matrix.goarch }}
+        asset_name: festivals-server-${{ matrix.goos }}-${{ matrix.goarch }}
         build_flags: -v
         ldflags: -X 'github.com/Festivals-App/festivals-server/server/status.ServerVersion=${{ env.APP_VERSION }}' -X 'github.com/Festivals-App/festivals-server/server/status.BuildTime=${{ env.BUILD_TIME }}' -X 'github.com/Festivals-App/festivals-server/server/status.GitRef=${{ github.ref }}'
         extra_files: LICENSE README.md
