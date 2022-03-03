@@ -5,6 +5,7 @@
 read-only = false
 bind-address = "localhost"
 port = 10439
+key = "TEST_API_KEY_001"
 
 [database]
 host = "localhost"
@@ -13,6 +14,9 @@ username = "festivals.api.writer"
 password = "we4711"
 database-name = "festivals_api_database"
 
+[heartbeat]
+endpoint = "localhost"
+
 [authentication]
-heartbeat = "localhost"
 api-keys = ["TEST_API_KEY_001", "TEST_API_KEY_002", "TEST_API_KEY_003"]
+admin-keys = ["TEST_API_KEY_001"]
