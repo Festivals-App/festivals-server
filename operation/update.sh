@@ -9,7 +9,8 @@
 
 # Move to working dir
 #
-cd /usr/local || exit
+mkdir /usr/local/festivals-server || { echo "Failed to create working directory. Exiting." ; exit 1; }
+cd /usr/local/festivals-server || { echo "Failed to access working directory. Exiting." ; exit 1; }
 
 # Stop the festivals-server
 #
@@ -17,27 +18,40 @@ systemctl stop festivals-server
 echo "Stopped festivals-server"
 sleep 1
 
-# Install git if needed.
-#
-if ! command -v git > /dev/null; then
-  echo "Installing git..."
-  apt-get install git -y > /dev/null;
+
+if [ "$(uname -s)" = "Darwin" ]; then
+  os="darwin"
+elif [ "$(uname -s)" = "Linux" ]; then
+  os="linux"
+else
+  echo "System is not Darwin or Linux. Exiting."
+  exit 1
 fi
+
+if [ "$(uname -m)" = "x86_64" ]; then
+  arch="amd64"
+elif [ "$(uname -m)" = "arm64" ]; then
+  arch="arm64"
+else
+  echo "System is not x86_64 or arm64. Exiting."
+  exit 1
+fi
+
+file_url="https://github.com/Festivals-App/festivals-server/releases/latest/download/festivals-server-$os-$arch.tar.gz"
 
 # Updating festivals-server to the newest version
 #
 echo "Downloading newest festivals-server..."
-yes | sudo git clone https://github.com/Festivals-App/festivals-server.git /usr/local/festivals-server > /dev/null;
-cd /usr/local/festivals-server || { echo "Failed to access working directory. Exiting." ; exit 1; }
-go build main.go
-mv main /usr/local/bin/festivals-server || { echo "Failed to install festivals-server binary. Exiting." ; exit 1; }
+curl -L file_url -o festivals-server.tar.gz
+tar -xf festivals-server.tar.gz
+mv festivals-server /usr/local/bin/festivals-server || { echo "Failed to install festivals-server binary. Exiting." ; exit 1; }
 echo "Updated festivals-server binary."
 sleep 1
 
 # Removing unused files
 #
 echo "Cleanup..."
-cd /usr/local || exit
+cd ~/ || { echo "Failed to access home directory. Exiting." ; exit 1; }
 rm -r /usr/local/festivals-server
 sleep 1
 
