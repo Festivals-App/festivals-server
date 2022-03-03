@@ -73,10 +73,11 @@ func (s *Server) setWalker() {
 // setRouters sets the all required routers
 func (s *Server) setRoutes(config *config.Config) {
 
-	s.Router.Get("/version", s.handleRequestWithoutAuthentication(handler.GetVersion))
-	s.Router.Get("/info", s.handleRequestWithoutAuthentication(handler.GetInfo))
-	s.Router.Get("/health", s.handleRequestWithoutAuthentication(handler.GetHealth))
-	s.Router.Get("/log", s.handleRequestWithoutAuthentication(handler.GetLog))
+	s.Router.Get("/version", s.handleRequestWithoutValidation(handler.GetVersion))
+	s.Router.Get("/info", s.handleRequestWithoutValidation(handler.GetInfo))
+	s.Router.Get("/health", s.handleRequestWithoutValidation(handler.GetHealth))
+
+	s.Router.Get("/log", s.handleAdminRequest(handler.GetLog))
 
 	s.Router.Get("/festivals", s.handleRequest(handler.GetFestivals))
 	s.Router.Get("/festivals/{objectID}", s.handleRequest(handler.GetFestival))
@@ -120,64 +121,64 @@ func (s *Server) setRoutes(config *config.Config) {
 
 	if !config.ReadOnly {
 
-		s.Router.Post("/festivals", s.handleRequest(handler.CreateFestival))
-		s.Router.Patch("/festivals/{objectID}", s.handleRequest(handler.UpdateFestival))
-		s.Router.Delete("/festivals/{objectID}", s.handleRequest(handler.DeleteFestival))
-		s.Router.Post("/festivals/{objectID}/events/{resourceID}", s.handleRequest(handler.SetEventForFestival))
-		s.Router.Post("/festivals/{objectID}/image/{resourceID}", s.handleRequest(handler.SetImageForFestival))
-		s.Router.Post("/festivals/{objectID}/links/{resourceID}", s.handleRequest(handler.SetLinkForFestival))
-		s.Router.Post("/festivals/{objectID}/place/{resourceID}", s.handleRequest(handler.SetPlaceForFestival))
-		s.Router.Post("/festivals/{objectID}/tags/{resourceID}", s.handleRequest(handler.SetTagForFestival))
-		s.Router.Delete("/festivals/{objectID}/image/{resourceID}", s.handleRequest(handler.RemoveImageForFestival))
-		s.Router.Delete("/festivals/{objectID}/links/{resourceID}", s.handleRequest(handler.RemoveLinkForFestival))
-		s.Router.Delete("/festivals/{objectID}/place/{resourceID}", s.handleRequest(handler.RemovePlaceForFestival))
-		s.Router.Delete("/festivals/{objectID}/tags/{resourceID}", s.handleRequest(handler.RemoveTagForFestival))
+		s.Router.Post("/festivals", s.handleAdminRequest(handler.CreateFestival))
+		s.Router.Patch("/festivals/{objectID}", s.handleAdminRequest(handler.UpdateFestival))
+		s.Router.Delete("/festivals/{objectID}", s.handleAdminRequest(handler.DeleteFestival))
+		s.Router.Post("/festivals/{objectID}/events/{resourceID}", s.handleAdminRequest(handler.SetEventForFestival))
+		s.Router.Post("/festivals/{objectID}/image/{resourceID}", s.handleAdminRequest(handler.SetImageForFestival))
+		s.Router.Post("/festivals/{objectID}/links/{resourceID}", s.handleAdminRequest(handler.SetLinkForFestival))
+		s.Router.Post("/festivals/{objectID}/place/{resourceID}", s.handleAdminRequest(handler.SetPlaceForFestival))
+		s.Router.Post("/festivals/{objectID}/tags/{resourceID}", s.handleAdminRequest(handler.SetTagForFestival))
+		s.Router.Delete("/festivals/{objectID}/image/{resourceID}", s.handleAdminRequest(handler.RemoveImageForFestival))
+		s.Router.Delete("/festivals/{objectID}/links/{resourceID}", s.handleAdminRequest(handler.RemoveLinkForFestival))
+		s.Router.Delete("/festivals/{objectID}/place/{resourceID}", s.handleAdminRequest(handler.RemovePlaceForFestival))
+		s.Router.Delete("/festivals/{objectID}/tags/{resourceID}", s.handleAdminRequest(handler.RemoveTagForFestival))
 
-		s.Router.Post("/artists", s.handleRequest(handler.CreateArtist))
-		s.Router.Patch("/artists/{objectID}", s.handleRequest(handler.UpdateArtist))
-		s.Router.Delete("/artists/{objectID}", s.handleRequest(handler.DeleteArtist))
-		s.Router.Post("/artists/{objectID}/image/{resourceID}", s.handleRequest(handler.SetImageForArtist))
-		s.Router.Post("/artists/{objectID}/links/{resourceID}", s.handleRequest(handler.SetLinkForArtist))
-		s.Router.Post("/artists/{objectID}/tags/{resourceID}", s.handleRequest(handler.SetTagForArtist))
-		s.Router.Delete("/artists/{objectID}/image/{resourceID}", s.handleRequest(handler.RemoveImageForArtist))
-		s.Router.Delete("/artists/{objectID}/links/{resourceID}", s.handleRequest(handler.RemoveLinkForArtist))
-		s.Router.Delete("/artists/{objectID}/tags/{resourceID}", s.handleRequest(handler.RemoveTagForArtist))
+		s.Router.Post("/artists", s.handleAdminRequest(handler.CreateArtist))
+		s.Router.Patch("/artists/{objectID}", s.handleAdminRequest(handler.UpdateArtist))
+		s.Router.Delete("/artists/{objectID}", s.handleAdminRequest(handler.DeleteArtist))
+		s.Router.Post("/artists/{objectID}/image/{resourceID}", s.handleAdminRequest(handler.SetImageForArtist))
+		s.Router.Post("/artists/{objectID}/links/{resourceID}", s.handleAdminRequest(handler.SetLinkForArtist))
+		s.Router.Post("/artists/{objectID}/tags/{resourceID}", s.handleAdminRequest(handler.SetTagForArtist))
+		s.Router.Delete("/artists/{objectID}/image/{resourceID}", s.handleAdminRequest(handler.RemoveImageForArtist))
+		s.Router.Delete("/artists/{objectID}/links/{resourceID}", s.handleAdminRequest(handler.RemoveLinkForArtist))
+		s.Router.Delete("/artists/{objectID}/tags/{resourceID}", s.handleAdminRequest(handler.RemoveTagForArtist))
 
-		s.Router.Post("/locations", s.handleRequest(handler.CreateLocation))
-		s.Router.Patch("/locations/{objectID}", s.handleRequest(handler.UpdateLocation))
-		s.Router.Delete("/locations/{objectID}", s.handleRequest(handler.DeleteLocation))
-		s.Router.Post("/locations/{objectID}/image/{resourceID}", s.handleRequest(handler.SetImageForLocation))
-		s.Router.Post("/locations/{objectID}/links/{resourceID}", s.handleRequest(handler.SetLinkForLocation))
-		s.Router.Post("/locations/{objectID}/place/{resourceID}", s.handleRequest(handler.SetPlaceForLocation))
-		s.Router.Delete("/locations/{objectID}/image/{resourceID}", s.handleRequest(handler.RemoveImageForLocation))
-		s.Router.Delete("/locations/{objectID}/links/{resourceID}", s.handleRequest(handler.RemoveLinkForLocation))
-		s.Router.Delete("/locations/{objectID}/place/{resourceID}", s.handleRequest(handler.RemovePlaceForLocation))
+		s.Router.Post("/locations", s.handleAdminRequest(handler.CreateLocation))
+		s.Router.Patch("/locations/{objectID}", s.handleAdminRequest(handler.UpdateLocation))
+		s.Router.Delete("/locations/{objectID}", s.handleAdminRequest(handler.DeleteLocation))
+		s.Router.Post("/locations/{objectID}/image/{resourceID}", s.handleAdminRequest(handler.SetImageForLocation))
+		s.Router.Post("/locations/{objectID}/links/{resourceID}", s.handleAdminRequest(handler.SetLinkForLocation))
+		s.Router.Post("/locations/{objectID}/place/{resourceID}", s.handleAdminRequest(handler.SetPlaceForLocation))
+		s.Router.Delete("/locations/{objectID}/image/{resourceID}", s.handleAdminRequest(handler.RemoveImageForLocation))
+		s.Router.Delete("/locations/{objectID}/links/{resourceID}", s.handleAdminRequest(handler.RemoveLinkForLocation))
+		s.Router.Delete("/locations/{objectID}/place/{resourceID}", s.handleAdminRequest(handler.RemovePlaceForLocation))
 
-		s.Router.Post("/events", s.handleRequest(handler.CreateEvent))
-		s.Router.Patch("/events/{objectID}", s.handleRequest(handler.UpdateEvent))
-		s.Router.Delete("/events/{objectID}", s.handleRequest(handler.DeleteEvent))
-		s.Router.Post("/events/{objectID}/image/{resourceID}", s.handleRequest(handler.SetImageForEvent))
-		s.Router.Post("/events/{objectID}/artist/{resourceID}", s.handleRequest(handler.SetArtistForEvent))
-		s.Router.Post("/events/{objectID}/location/{resourceID}", s.handleRequest(handler.SetLocationForEvent))
-		s.Router.Delete("/events/{objectID}/image/{resourceID}", s.handleRequest(handler.RemoveImageForEvent))
-		s.Router.Delete("/events/{objectID}/artist/{resourceID}", s.handleRequest(handler.RemoveArtistForEvent))
-		s.Router.Delete("/events/{objectID}/location/{resourceID}", s.handleRequest(handler.RemoveLocationForEvent))
+		s.Router.Post("/events", s.handleAdminRequest(handler.CreateEvent))
+		s.Router.Patch("/events/{objectID}", s.handleAdminRequest(handler.UpdateEvent))
+		s.Router.Delete("/events/{objectID}", s.handleAdminRequest(handler.DeleteEvent))
+		s.Router.Post("/events/{objectID}/image/{resourceID}", s.handleAdminRequest(handler.SetImageForEvent))
+		s.Router.Post("/events/{objectID}/artist/{resourceID}", s.handleAdminRequest(handler.SetArtistForEvent))
+		s.Router.Post("/events/{objectID}/location/{resourceID}", s.handleAdminRequest(handler.SetLocationForEvent))
+		s.Router.Delete("/events/{objectID}/image/{resourceID}", s.handleAdminRequest(handler.RemoveImageForEvent))
+		s.Router.Delete("/events/{objectID}/artist/{resourceID}", s.handleAdminRequest(handler.RemoveArtistForEvent))
+		s.Router.Delete("/events/{objectID}/location/{resourceID}", s.handleAdminRequest(handler.RemoveLocationForEvent))
 
-		s.Router.Post("/images", s.handleRequest(handler.CreateImage))
-		s.Router.Patch("/images/{objectID}", s.handleRequest(handler.UpdateImage))
-		s.Router.Delete("/images/{objectID}", s.handleRequest(handler.DeleteImage))
+		s.Router.Post("/images", s.handleAdminRequest(handler.CreateImage))
+		s.Router.Patch("/images/{objectID}", s.handleAdminRequest(handler.UpdateImage))
+		s.Router.Delete("/images/{objectID}", s.handleAdminRequest(handler.DeleteImage))
 
-		s.Router.Post("/links", s.handleRequest(handler.CreateLink))
-		s.Router.Patch("/links/{objectID}", s.handleRequest(handler.UpdateLink))
-		s.Router.Delete("/links/{objectID}", s.handleRequest(handler.DeleteLink))
+		s.Router.Post("/links", s.handleAdminRequest(handler.CreateLink))
+		s.Router.Patch("/links/{objectID}", s.handleAdminRequest(handler.UpdateLink))
+		s.Router.Delete("/links/{objectID}", s.handleAdminRequest(handler.DeleteLink))
 
-		s.Router.Post("/places", s.handleRequest(handler.CreatePlace))
-		s.Router.Patch("/places/{objectID}", s.handleRequest(handler.UpdatePlace))
-		s.Router.Delete("/places/{objectID}", s.handleRequest(handler.DeletePlace))
+		s.Router.Post("/places", s.handleAdminRequest(handler.CreatePlace))
+		s.Router.Patch("/places/{objectID}", s.handleAdminRequest(handler.UpdatePlace))
+		s.Router.Delete("/places/{objectID}", s.handleAdminRequest(handler.DeletePlace))
 
-		s.Router.Post("/tags", s.handleRequest(handler.CreateTag))
-		s.Router.Patch("/tags/{objectID}", s.handleRequest(handler.UpdateTag))
-		s.Router.Delete("/tags/{objectID}", s.handleRequest(handler.DeleteTag))
+		s.Router.Post("/tags", s.handleAdminRequest(handler.CreateTag))
+		s.Router.Patch("/tags/{objectID}", s.handleAdminRequest(handler.UpdateTag))
+		s.Router.Delete("/tags/{objectID}", s.handleAdminRequest(handler.DeleteTag))
 	}
 }
 
@@ -191,16 +192,21 @@ func (s *Server) Run(host string) {
 // function prototype to inject DB instance in handleRequest()
 type RequestHandlerFunction func(db *sql.DB, w http.ResponseWriter, r *http.Request)
 
-// inject DB in handler functions and authentication
 func (s *Server) handleRequest(requestHandler RequestHandlerFunction) http.HandlerFunc {
 
-	return authentication.IsAuthenticated(s.Config.APIKeys, func(w http.ResponseWriter, r *http.Request) {
+	return authentication.IsEntitled(s.Config.APIKeys, func(w http.ResponseWriter, r *http.Request) {
 		requestHandler(s.DB, w, r)
 	})
 }
 
-// inject DB in handler functions
-func (s *Server) handleRequestWithoutAuthentication(requestHandler RequestHandlerFunction) http.HandlerFunc {
+func (s *Server) handleAdminRequest(requestHandler RequestHandlerFunction) http.HandlerFunc {
+
+	return authentication.IsEntitled(s.Config.AdminKeys, func(w http.ResponseWriter, r *http.Request) {
+		requestHandler(s.DB, w, r)
+	})
+}
+
+func (s *Server) handleRequestWithoutValidation(requestHandler RequestHandlerFunction) http.HandlerFunc {
 
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		requestHandler(s.DB, w, r)
