@@ -17,14 +17,6 @@ systemctl stop festivals-server
 echo "Stopped festivals-server"
 sleep 1
 
-# Install go if needed.
-# Binaries linked to /usr/local/bin
-#
-if ! command -v go > /dev/null; then
-  echo "Installing go..."
-  apt-get install golang -y > /dev/null;
-fi
-
 # Install git if needed.
 #
 if ! command -v git > /dev/null; then
@@ -34,7 +26,7 @@ fi
 
 # Updating festivals-server to the newest version
 #
-echo "Downloading current festivals-server..."
+echo "Downloading newest festivals-server..."
 yes | sudo git clone https://github.com/Festivals-App/festivals-server.git /usr/local/festivals-server > /dev/null;
 cd /usr/local/festivals-server || { echo "Failed to access working directory. Exiting." ; exit 1; }
 go build main.go
