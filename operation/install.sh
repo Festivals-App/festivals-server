@@ -7,9 +7,52 @@
 # (c)2020-2022 Simon Gaus
 #
 
-# Move to working directory
+# Move to working dir
 #
-cd /usr/local || exit
+mkdir /usr/local/festivals-server || { echo "Failed to create working directory. Exiting." ; exit 1; }
+cd /usr/local/festivals-server || { echo "Failed to access working directory. Exiting." ; exit 1; }
+
+echo "Installing festivals-server using port 10439."
+sleep 1
+
+# Get system os
+#
+if [ "$(uname -s)" = "Darwin" ]; then
+  os="darwin"
+elif [ "$(uname -s)" = "Linux" ]; then
+  os="linux"
+else
+  echo "System is not Darwin or Linux. Exiting."
+  exit 1
+fi
+
+# Get systems cpu architecture
+#
+if [ "$(uname -m)" = "x86_64" ]; then
+  arch="amd64"
+elif [ "$(uname -m)" = "arm64" ]; then
+  arch="arm64"
+else
+  echo "System is not x86_64 or arm64. Exiting."
+  exit 1
+fi
+
+# Build url to latest binary for the given system
+#
+file_url="https://github.com/Festivals-App/festivals-server/releases/latest/download/festivals-server-$os-$arch.tar.gz"
+echo "The system is $os on $arch."
+sleep 1
+
+# Install festivals-server to /usr/local/bin/festivals-server. TODO: Maybe just link to /usr/local/bin?
+#
+echo "Downloading newest festivals-server binary release..."
+curl -L file_url -o festivals-server.tar.gz
+tar -xf festivals-server.tar.gz
+mv festivals-server /usr/local/bin/festivals-server || { echo "Failed to install festivals-server binary. Exiting." ; exit 1; }
+echo "Installed the festivals-server binary to '/usr/local/bin/festivals-server'."
+mv config_template.toml /etc/festivals-server.conf
+echo "Moved default festivals-server config to '/etc/festivals-server.conf'."
+sleep 1
 
 # Enable and configure the firewall.
 #
@@ -24,44 +67,17 @@ elif ! [ "$(uname -s)" = "Darwin" ]; then
   exit 1
 fi
 
-# Install go if needed.
-# Binaries linked to /usr/local/bin
-#
-if ! command -v go > /dev/null; then
-  echo "Installing go..."
-  apt-get install golang -y > /dev/null;
-fi
-
-# Install git if needed.
-#
-if ! command -v git > /dev/null; then
-  echo "Installing git..."
-  apt-get install git -y > /dev/null;
-fi
-
-# Install festivals-server to /usr/local/bin/festivals-server. TODO: Maybe just link to /usr/local/bin?
-#
-echo "Downloading current festivals-server..."
-yes | sudo git clone https://github.com/Festivals-App/festivals-server.git /usr/local/festivals-server > /dev/null;
-cd /usr/local/festivals-server || { echo "Failed to access working directory. Exiting." ; exit 1; }
-go build main.go
-mv main /usr/local/bin/festivals-server || { echo "Failed to install festivals-server binary. Exiting." ; exit 1; }
-mv config_template.toml /etc/festivals-server.conf
-echo "Installed festivals-server."
-sleep 1
-
 # Install systemd service
 #
 if command -v service > /dev/null; then
 
   if ! [ -f "/etc/systemd/system/festivals-server.service" ]; then
-    mv operation/service_template.service /etc/systemd/system/festivals-server.service
+    mv service_template.service /etc/systemd/system/festivals-server.service
     echo "Created systemd service."
     sleep 1
   fi
 
   systemctl enable festivals-server > /dev/null
-  systemctl start festivals-server > /dev/null
   echo "Enabled systemd service."
   sleep 1
 
@@ -77,4 +93,8 @@ cd /usr/local || exit
 rm -R /usr/local/festivals-server
 sleep 1
 
-echo "Done."
+echo "Done!"
+sleep 1
+
+echo "You can start the server manually by running 'systemctl start festivals-server' after you updated the configuration file at '/etc/festivals-server.conf'"
+sleep 1
