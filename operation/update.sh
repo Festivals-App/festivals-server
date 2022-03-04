@@ -18,7 +18,8 @@ systemctl stop festivals-server
 echo "Stopped festivals-server"
 sleep 1
 
-
+# Get system os
+#
 if [ "$(uname -s)" = "Darwin" ]; then
   os="darwin"
 elif [ "$(uname -s)" = "Linux" ]; then
@@ -28,6 +29,8 @@ else
   exit 1
 fi
 
+# Get systems cpu architecture
+#
 if [ "$(uname -m)" = "x86_64" ]; then
   arch="amd64"
 elif [ "$(uname -m)" = "arm64" ]; then
@@ -37,11 +40,15 @@ else
   exit 1
 fi
 
-file_url="https://github.com/Festivals-App/festivals-server/releases/latest/download/festivals-server-$os-$arch.tar.gz"
-
-# Updating festivals-server to the newest version
+# Build url to latest binary for the given system
 #
-echo "Downloading newest festivals-server..."
+file_url="https://github.com/Festivals-App/festivals-server/releases/latest/download/festivals-server-$os-$arch.tar.gz"
+echo "The system is $os on $arch."
+sleep 1
+
+# Updating festivals-server to the newest binary release
+#
+echo "Downloading newest festivals-server binary release..."
 curl -L file_url -o festivals-server.tar.gz
 tar -xf festivals-server.tar.gz
 mv festivals-server /usr/local/bin/festivals-server || { echo "Failed to install festivals-server binary. Exiting." ; exit 1; }
