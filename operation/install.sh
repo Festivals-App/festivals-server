@@ -46,7 +46,7 @@ sleep 1
 # Install festivals-server to /usr/local/bin/festivals-server. TODO: Maybe just link to /usr/local/bin?
 #
 echo "Downloading newest festivals-server binary release..."
-curl -L file_url -o festivals-server.tar.gz
+curl -L "$file_url" -o festivals-server.tar.gz
 tar -xf festivals-server.tar.gz
 mv festivals-server /usr/local/bin/festivals-server || { echo "Failed to install festivals-server binary. Exiting." ; exit 1; }
 echo "Installed the festivals-server binary to '/usr/local/bin/festivals-server'."

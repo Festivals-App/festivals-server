@@ -49,7 +49,7 @@ sleep 1
 # Updating festivals-server to the newest binary release
 #
 echo "Downloading newest festivals-server binary release..."
-curl -L file_url -o festivals-server.tar.gz
+curl -L "$file_url" -o festivals-server.tar.gz
 tar -xf festivals-server.tar.gz
 mv festivals-server /usr/local/bin/festivals-server || { echo "Failed to install festivals-server binary. Exiting." ; exit 1; }
 echo "Updated festivals-server binary."
