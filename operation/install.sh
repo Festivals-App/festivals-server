@@ -7,6 +7,18 @@
 # (c)2020-2022 Simon Gaus
 #
 
+# Test for web server user
+#
+WEB_USER="www-data"
+id -u "$WEB_USER" &>/dev/null;
+if [ $? -ne 0 ]; then
+  WEB_USER="www"
+  if [ $? -ne 0 ]; then
+    echo "Failed to find user to run web server. Exiting."
+    exit 1
+  fi
+fi
+
 # Move to working dir
 #
 mkdir /usr/local/festivals-server || { echo "Failed to create working directory. Exiting." ; exit 1; }
@@ -53,6 +65,10 @@ echo "Installed the festivals-server binary to '/usr/local/bin/festivals-server'
 mv config_template.toml /etc/festivals-server.conf
 echo "Moved default festivals-server config to '/etc/festivals-server.conf'."
 sleep 1
+mkdir /var/log/festivals-server || { echo "Failed to create log directory. Exiting." ; exit 1; }
+chown "$WEB_USER":"$WEB_USER" /var/log/festivals-server
+echo "Create log directory at '/var/log/festivals-server'."
+
 
 # Enable and configure the firewall.
 #
