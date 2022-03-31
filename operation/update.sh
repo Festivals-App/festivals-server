@@ -58,12 +58,15 @@ sleep 1
 # Removing unused files
 #
 echo "Cleanup..."
-cd ~/ || { echo "Failed to access home directory. Exiting." ; exit 1; }
+cd /usr/local
 rm -r /usr/local/festivals-server
 sleep 1
 
-echo "Done!"
+# Stop the festivals-server
+#
+systemctl start festivals-server
+echo "Started festivals-server"
 sleep 1
 
-echo "Please start the server manually by running 'systemctl start festivals-server' after you updated the configuration file at '/etc/festivals-server.conf'"
+echo "Done!"
 sleep 1
