@@ -62,9 +62,18 @@ curl -L "$file_url" -o festivals-server.tar.gz
 tar -xf festivals-server.tar.gz
 mv festivals-server /usr/local/bin/festivals-server || { echo "Failed to install festivals-server binary. Exiting." ; exit 1; }
 echo "Installed the festivals-server binary to '/usr/local/bin/festivals-server'."
+sleep 1
+
+## Install server config file
 mv config_template.toml /etc/festivals-server.conf
 echo "Moved default festivals-server config to '/etc/festivals-server.conf'."
 sleep 1
+
+## Prepare server update workflow
+mv update.sh /usr/local/festivals-server/update.sh
+
+
+## Prepare log directory
 mkdir /var/log/festivals-server || { echo "Failed to create log directory. Exiting." ; exit 1; }
 chown "$WEB_USER":"$WEB_USER" /var/log/festivals-server
 echo "Create log directory at '/var/log/festivals-server'."
@@ -101,6 +110,21 @@ elif ! [ "$(uname -s)" = "Darwin" ]; then
   echo "Systemd is missing and not on macOS. Exiting."
   exit 1
 fi
+
+## Prepare update workflow
+#
+cp /etc/sudoers /tmp/sudoers.bak
+echo "$WEB_USER ALL = (ALL) NOPASSWD: /usr/local/festivals-server/update.sh" >> /tmp/sudoers.bak
+
+# Check syntax of the backup file to make sure it is correct.
+visudo -cf /tmp/sudoers.bak
+if [ $? -eq 0 ]; then
+  # Replace the sudoers file with the new only if syntax is correct.
+  sudo cp /tmp/sudoers.bak /etc/sudoers
+else
+  echo "Could not modify /etc/sudoers file. Please do this manually."
+fi
+
 
 # Remving unused files
 #
