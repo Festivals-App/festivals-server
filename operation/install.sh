@@ -2,7 +2,7 @@
 #
 # install.sh 1.0.0
 #
-# Enables the firewall, installs the newest go and the festivals-server and starts it as a service.
+# Enables the firewall, installs the newest festivals-server and starts it as a service.
 #
 # (c)2020-2022 Simon Gaus
 #
@@ -21,8 +21,8 @@ fi
 
 # Move to working dir
 #
-mkdir /usr/local/festivals-server || { echo "Failed to create working directory. Exiting." ; exit 1; }
-cd /usr/local/festivals-server || { echo "Failed to access working directory. Exiting." ; exit 1; }
+mkdir -p /usr/local/festivals-server/install || { echo "Failed to create working directory. Exiting." ; exit 1; }
+cd /usr/local/festivals-server/install || { echo "Failed to access working directory. Exiting." ; exit 1; }
 
 echo "Installing festivals-server using port 10439."
 sleep 1
@@ -69,15 +69,25 @@ mv config_template.toml /etc/festivals-server.conf
 echo "Moved default festivals-server config to '/etc/festivals-server.conf'."
 sleep 1
 
-## Prepare server update workflow
-mv update.sh /usr/local/festivals-server/update.sh
-
-
 ## Prepare log directory
 mkdir /var/log/festivals-server || { echo "Failed to create log directory. Exiting." ; exit 1; }
 chown "$WEB_USER":"$WEB_USER" /var/log/festivals-server
 echo "Create log directory at '/var/log/festivals-server'."
 
+## Prepare update workflow
+#
+mv update.sh /usr/local/festivals-server/update.sh
+cp /etc/sudoers /tmp/sudoers.bak
+echo "$WEB_USER ALL = (ALL) NOPASSWD: /usr/local/festivals-server/update.sh" >> /tmp/sudoers.bak
+
+# Check syntax of the backup file to make sure it is correct.
+visudo -cf /tmp/sudoers.bak
+if [ $? -eq 0 ]; then
+  # Replace the sudoers file with the new only if syntax is correct.
+  sudo cp /tmp/sudoers.bak /etc/sudoers
+else
+  echo "Could not modify /etc/sudoers file. Please do this manually." ; exit 1;
+fi
 
 # Enable and configure the firewall.
 #
@@ -111,26 +121,11 @@ elif ! [ "$(uname -s)" = "Darwin" ]; then
   exit 1
 fi
 
-## Prepare update workflow
-#
-cp /etc/sudoers /tmp/sudoers.bak
-echo "$WEB_USER ALL = (ALL) NOPASSWD: /usr/local/festivals-server/update.sh" >> /tmp/sudoers.bak
-
-# Check syntax of the backup file to make sure it is correct.
-visudo -cf /tmp/sudoers.bak
-if [ $? -eq 0 ]; then
-  # Replace the sudoers file with the new only if syntax is correct.
-  sudo cp /tmp/sudoers.bak /etc/sudoers
-else
-  echo "Could not modify /etc/sudoers file. Please do this manually."
-fi
-
-
 # Remving unused files
 #
 echo "Cleanup..."
-cd /usr/local || exit
-rm -R /usr/local/festivals-server
+cd /usr/local/festials-server || exit
+rm -R /usr/local/festivals-server/install
 sleep 1
 
 echo "Done!"
