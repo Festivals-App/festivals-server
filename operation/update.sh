@@ -9,8 +9,8 @@
 
 # Move to working dir
 #
-mkdir /usr/local/festivals-server || { echo "Failed to create working directory. Exiting." ; exit 1; }
-cd /usr/local/festivals-server || { echo "Failed to access working directory. Exiting." ; exit 1; }
+mkdir /usr/local/festivals-server/install || { echo "Failed to create working directory. Exiting." ; exit 1; }
+cd /usr/local/festivals-server/install || { echo "Failed to access working directory. Exiting." ; exit 1; }
 
 # Stop the festivals-server
 #
@@ -58,11 +58,11 @@ sleep 1
 # Removing unused files
 #
 echo "Cleanup..."
-cd /usr/local
-rm -r /usr/local/festivals-server
+cd /usr/local/festivals-server
+rm -r /usr/local/festivals-server/install
 sleep 1
 
-# Stop the festivals-server
+# Start the festivals-server
 #
 systemctl start festivals-server
 echo "Started festivals-server"
