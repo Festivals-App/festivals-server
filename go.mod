@@ -13,6 +13,5 @@ require (
 
 require (
 	github.com/go-chi/chi v1.5.4 // indirect
-	github.com/go-chi/hostrouter v0.2.0 // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0 // indirect
 )
