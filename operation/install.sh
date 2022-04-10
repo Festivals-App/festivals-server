@@ -124,7 +124,7 @@ fi
 # Remving unused files
 #
 echo "Cleanup..."
-cd /usr/local/festials-server || exit
+cd /usr/local/festivals-server || exit
 rm -R /usr/local/festivals-server/install
 sleep 1
 
