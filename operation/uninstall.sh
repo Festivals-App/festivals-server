@@ -4,7 +4,7 @@
 #
 # Removes the firewall configuration, uninstalls go, git and the festivals-server and stops and removes it as a service.
 #
-# (c)2020-2021 Simon Gaus
+# (c)2020-2022 Simon Gaus
 #
 
 # Move to working directory
@@ -41,7 +41,7 @@ fi
 # Remove go
 #
 apt-get --purge remove golang -y
-apt autoremove -y
+apt-get autoremove -y
 echo "Removed go"
 sleep 1
 
