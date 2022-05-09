@@ -11,7 +11,7 @@ import (
 
 func MakeUpdate(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
-	newVersion, err := update.RunUpdate(status.ServerVersion, "https://github.com/Festivals-App/festivals-server/releases/latest", "/usr/local/festivals-server/update.sh")
+	newVersion, err := update.RunUpdate(status.ServerVersion, "Festivals-App", "festivals-server", "/usr/local/festivals-server/update.sh")
 	if err != nil {
 		log.Error().Err(err).Msg("Failed to update")
 		respondError(w, http.StatusInternalServerError, "Failed to update")
