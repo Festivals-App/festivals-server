@@ -65,11 +65,13 @@ echo "Installed the festivals-server binary to '/usr/local/bin/festivals-server'
 sleep 1
 
 ## Install server config file
+#
 mv config_template.toml /etc/festivals-server.conf
 echo "Moved default festivals-server config to '/etc/festivals-server.conf'."
 sleep 1
 
 ## Prepare log directory
+#
 mkdir /var/log/festivals-server || { echo "Failed to create log directory. Exiting." ; exit 1; }
 chown "$WEB_USER":"$WEB_USER" /var/log/festivals-server
 echo "Create log directory at '/var/log/festivals-server'."
@@ -79,7 +81,6 @@ echo "Create log directory at '/var/log/festivals-server'."
 mv update.sh /usr/local/festivals-server/update.sh
 cp /etc/sudoers /tmp/sudoers.bak
 echo "$WEB_USER ALL = (ALL) NOPASSWD: /usr/local/festivals-server/update.sh" >> /tmp/sudoers.bak
-
 # Check syntax of the backup file to make sure it is correct.
 visudo -cf /tmp/sudoers.bak
 if [ $? -eq 0 ]; then
