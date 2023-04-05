@@ -1,10 +1,8 @@
 #!/bin/bash
 #
-# install.sh 1.0.0
-#
 # Enables the firewall, installs the newest festivals-server and starts it as a service.
 #
-# (c)2020-2022 Simon Gaus
+# (c)2020-2023 Simon Gaus
 #
 
 # Test for web server user

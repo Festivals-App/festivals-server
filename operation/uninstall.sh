@@ -1,10 +1,8 @@
 #!/bin/bash
 #
-# uninstall.sh 1.0.0
-#
 # Removes the firewall configuration, uninstalls go, git and the festivals-server and stops and removes it as a service.
 #
-# (c)2020-2022 Simon Gaus
+# (c)2020-2023 Simon Gaus
 #
 
 # Move to working directory

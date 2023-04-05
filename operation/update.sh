@@ -1,10 +1,8 @@
 #!/bin/bash
 #
-# update.sh 1.0.0
-#
 # Updates the festivals-server and restarts it.
 #
-# (c)2020-2022 Simon Gaus
+# (c)2020-2023 Simon Gaus
 #
 
 # Move to working dir
