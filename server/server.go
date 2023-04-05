@@ -35,7 +35,7 @@ func (s *Server) Initialize(config *config.Config) {
 	db, err := sql.Open(config.DB.Dialect, dbURI)
 
 	if err != nil {
-		log.Fatal().Msg("server initialize: could not connect to database")
+		log.Fatal().Err(err).Msg("Could not connect to database")
 	}
 
 	s.DB = db
