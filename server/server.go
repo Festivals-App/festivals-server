@@ -43,7 +43,6 @@ func (s *Server) Initialize(config *config.Config) {
 	s.Config = config
 
 	s.setMiddleware()
-	//s.setWalker()
 	s.setRoutes(config)
 }
 
@@ -57,19 +56,6 @@ func (s *Server) setMiddleware() {
 		middleware.Recoverer,
 	)
 }
-
-/*
-func (s *Server) setWalker() {
-
-	walkFunc := func(method string, route string, handler http.Handler, middlewares ...func(http.Handler) http.Handler) error {
-		log.Info().Msg(method + " " + route)
-		return nil
-	}
-	if err := chi.Walk(s.Router, walkFunc); err != nil {
-		log.Panic().Err(err).Msg("Error during walking.")
-	}
-}
-*/
 
 // setRouters sets the all required routers
 func (s *Server) setRoutes(config *config.Config) {
