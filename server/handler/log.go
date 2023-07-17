@@ -3,8 +3,8 @@ package handler
 import (
 	"database/sql"
 	"errors"
-	"io/ioutil"
 	"net/http"
+	"os"
 
 	"github.com/rs/zerolog/log"
 )
@@ -33,7 +33,7 @@ func GetTraceLog(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 func Log(location string) (string, error) {
 
-	l, err := ioutil.ReadFile(location)
+	l, err := os.ReadFile(location)
 	if err != nil {
 		return "", errors.New("Failed to read log file at: '" + location + "' with error: " + err.Error())
 	}

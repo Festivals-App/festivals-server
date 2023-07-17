@@ -4,14 +4,15 @@ import (
 	"database/sql"
 	"encoding/json"
 	"errors"
-	"github.com/Festivals-App/festivals-server/server/database"
-	"github.com/Festivals-App/festivals-server/server/model"
-	"github.com/go-chi/chi/v5"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/url"
 	"strconv"
 	"strings"
+
+	"github.com/Festivals-App/festivals-server/server/database"
+	"github.com/Festivals-App/festivals-server/server/model"
+	"github.com/go-chi/chi/v5"
 )
 
 func GetObject(db *sql.DB, r *http.Request, entity string) ([]interface{}, error) {
@@ -216,7 +217,7 @@ func RemoveAssociation(db *sql.DB, r *http.Request, entity string, association s
 
 func Create(db *sql.DB, r *http.Request, entity string) ([]interface{}, error) {
 
-	body, readBodyErr := ioutil.ReadAll(r.Body)
+	body, readBodyErr := io.ReadAll(r.Body)
 	if readBodyErr != nil {
 		return nil, readBodyErr
 	}
@@ -252,7 +253,7 @@ func Update(db *sql.DB, r *http.Request, entity string) ([]interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
-	body, readBodyErr := ioutil.ReadAll(r.Body)
+	body, readBodyErr := io.ReadAll(r.Body)
 	if readBodyErr != nil {
 		return nil, readBodyErr
 	}
