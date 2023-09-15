@@ -66,7 +66,6 @@ To test whether the festivals-server is working correctly i'm currently relying 
 │
 └── main.go        
 ```
-
 ## Deployment
 
 Running the festivals-server is pretty easy because Go binaries are able to run without system dependencies 
