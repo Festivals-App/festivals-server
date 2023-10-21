@@ -9,9 +9,9 @@ key = "TEST_API_KEY_001"
 read-only = false
 
 [tls]
-festivaslapp-root-ca = "/usr/local/festivals-identity-server/ca.crt"
-cert = "/usr/local/festivals-identity-server/server.crt"
-key = "/usr/local/festivals-identity-server/server.key"
+festivaslapp-root-ca = "/usr/local/festivals-server/ca.crt"
+cert = "/usr/local/festivals-server/server.crt"
+key = "/usr/local/festivals-server/server.key"
 
 [database]
 host = "localhost"
