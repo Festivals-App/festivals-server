@@ -11,14 +11,18 @@ import (
 )
 
 type Config struct {
-	DB                 *DBConfig
-	ReadOnly           bool
 	ServiceBindAddress string
+	ServiceBindHost    string
 	ServicePort        int
 	ServiceKey         string
+	TLSRootCert        string
+	TLSCert            string
+	TLSKey             string
 	LoversEar          string
 	APIKeys            []string
 	AdminKeys          []string
+	DB                 *DBConfig
+	ReadOnly           bool
 }
 
 type DBConfig struct {
@@ -63,13 +67,17 @@ func ParseConfig(cfgFile string) *Config {
 
 	content, err := toml.LoadFile(cfgFile)
 	if err != nil {
-		log.Fatal().Msg("server initialize: could not read config file at '" + cfgFile + "' with error: " + err.Error())
+		log.Fatal().Err(err).Msg("server initialize: could not read config file at '" + cfgFile + "'")
 	}
 
-	readonly := content.Get("service.read-only").(bool)
 	serviceBindAdress := content.Get("service.bind-address").(string)
+	serviceBindHost := content.Get("service.bind-host").(string)
 	servicePort := content.Get("service.port").(int64)
 	serviceKey := content.Get("service.key").(string)
+
+	tlsrootcert := content.Get("tls.festivaslapp-root-ca").(string)
+	tlscert := content.Get("tls.cert").(string)
+	tlskey := content.Get("tls.key").(string)
 
 	loversear := content.Get("heartbeat.endpoint").(string)
 
@@ -90,7 +98,19 @@ func ParseConfig(cfgFile string) *Config {
 	dbPassword := content.Get("database.password").(string)
 	databaseName := content.Get("database.database-name").(string)
 
+	readonly := content.Get("service.read-only").(bool)
+
 	return &Config{
+		ServiceBindAddress: serviceBindAdress,
+		ServiceBindHost:    serviceBindHost,
+		ServicePort:        int(servicePort),
+		ServiceKey:         serviceKey,
+		TLSRootCert:        tlsrootcert,
+		TLSCert:            tlscert,
+		TLSKey:             tlskey,
+		LoversEar:          loversear,
+		APIKeys:            keys,
+		AdminKeys:          adminKeys,
 		DB: &DBConfig{
 			Dialect:  "mysql",
 			Host:     dbHost,
@@ -100,13 +120,7 @@ func ParseConfig(cfgFile string) *Config {
 			Name:     databaseName,
 			Charset:  "utf8",
 		},
-		ReadOnly:           readonly,
-		ServiceBindAddress: serviceBindAdress,
-		ServicePort:        int(servicePort),
-		ServiceKey:         serviceKey,
-		LoversEar:          loversear,
-		APIKeys:            keys,
-		AdminKeys:          adminKeys,
+		ReadOnly: readonly,
 	}
 }
 

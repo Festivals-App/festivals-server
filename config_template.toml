@@ -2,10 +2,16 @@
 # TOML 1.0.0-rc.2+
 
 [service]
-read-only = false
 bind-address = "localhost"
+bind-host = "localhost"
 port = 10439
 key = "TEST_API_KEY_001"
+read-only = false
+
+[tls]
+festivaslapp-root-ca = "/usr/local/festivals-identity-server/ca.crt"
+cert = "/usr/local/festivals-identity-server/server.crt"
+key = "/usr/local/festivals-identity-server/server.key"
 
 [database]
 host = "localhost"
