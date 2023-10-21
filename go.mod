@@ -13,8 +13,6 @@ require (
 )
 
 require (
-	github.com/go-chi/chi v1.5.5 // indirect
-	github.com/go-chi/hostrouter v0.2.0 // indirect
 	github.com/google/go-github v17.0.0+incompatible // indirect
 	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
