@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/Festivals-App/festivals-gateway/server/logger"
 	"github.com/Festivals-App/festivals-identity-server/authentication"
@@ -64,6 +65,7 @@ func (s *Server) setTLSHandling() {
 	}
 
 	tlsConfig := certManager.TLSConfig()
+	tlsConfig.ClientAuth = tls.RequireAndVerifyClientCert
 	tlsConfig.GetCertificate = festivalspki.LoadServerCertificates(s.Config.TLSCert, s.Config.TLSKey, s.Config.TLSRootCert, &certManager)
 	s.CertManager = &certManager
 	s.TLSConfig = tlsConfig
@@ -194,16 +196,15 @@ func (s *Server) setRoutes(config *config.Config) {
 	}
 }
 
-func (s *Server) Run(host string) {
+func (s *Server) Run(conf *config.Config) {
 
 	server := http.Server{
-		Addr:      host,
+		Addr:      conf.ServiceBindHost + ":" + strconv.Itoa(conf.ServicePort),
 		Handler:   s.Router,
 		TLSConfig: s.TLSConfig,
 	}
 
-	specifiedInTLSConfig := ""
-	if err := server.ListenAndServeTLS(specifiedInTLSConfig, specifiedInTLSConfig); err != nil {
+	if err := server.ListenAndServeTLS("", ""); err != nil {
 		log.Fatal().Err(err).Str("type", "server").Msg("Failed to run server")
 	}
 }
