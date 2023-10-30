@@ -48,8 +48,8 @@ func sendHeartbeat(conf *config.Config) {
 	for {
 		timer := time.After(time.Second * 2)
 		<-timer
-		var beat *heartbeat.Heartbeat = &heartbeat.Heartbeat{Service: "festivals-server", Host: conf.ServiceBindHost, Port: conf.ServicePort, Available: true}
-		err := heartbeat.SendHeartbeat(conf.LoversEar, conf.ServiceKey, beat)
+		var beat *heartbeat.Heartbeat = &heartbeat.Heartbeat{Service: "festivals-server", Host: "https://" + conf.ServiceBindHost, Port: conf.ServicePort, Available: true}
+		err := heartbeat.SendHeartbeat(conf.LoversEar, conf.ServiceKey, conf.TLSCert, conf.TLSKey, conf.TLSRootCert, beat)
 		if err != nil {
 			log.Error().Err(err).Msg("Failed to send heartbeat")
 		}
