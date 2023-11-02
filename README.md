@@ -10,7 +10,7 @@
   <br/><br/>
 </h1>
 
-A lightweight go server app providing a simple RESTful API called FestivalsAPI using [go-chi/chi](https://github.com/go-chi/chi) and [go-sql-driver/mysql](https://github.com/go-sql-driver/mysql).
+A lightweight go server app providing a RESTful API, called FestivalsAPI. The FestivalsAPI exposes all data functions needed by the FestivalsApp.
 
 ![Figure 1: Architecture Overview Highlighted](https://github.com/Festivals-App/festivals-documentation/blob/main/images/architecture/overview_server.png "Figure 1: Architecture Overview Highlighted")
 
@@ -26,6 +26,8 @@ A lightweight go server app providing a simple RESTful API called FestivalsAPI u
 <hr/>
 
 ## Development
+
+using [go-chi/chi](https://github.com/go-chi/chi) and [go-sql-driver/mysql](https://github.com/go-sql-driver/mysql)
 
 The developement of the [FestivalsAPI](./DOCUMENTATION.md) and the festivals-server is heavily dependend on the [festivals-api-ios](https://github.com/Festivals-App/festivals-api-ios) as in my regular development workflow i first mock the needed behaviour in the API client library. After the behaviour works the way i need it to, i start implementing the changes in the festivals-server and after that in the [festivals-database](https://github.com/Festivals-App/festivals-database).
 
