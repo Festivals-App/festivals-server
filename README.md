@@ -10,6 +10,11 @@
   <br/><br/>
 </h1>
 
+A lightweight go server app providing a simple RESTful API called FestivalsAPI using [go-chi/chi](https://github.com/go-chi/chi) and [go-sql-driver/mysql](https://github.com/go-sql-driver/mysql).
+
+![Figure 1: Architecture Overview Highlighted](https://github.com/Festivals-App/festivals-documentation/blob/main/images/architecture/overview_server.png "Figure 1: Architecture Overview Highlighted")
+
+<hr/>
 <p align="center">
   <a href="#development">Development</a> •
   <a href="#deployment">Deployment</a> •
@@ -18,10 +23,7 @@
   <a href="#engage">Engage</a> •
   <a href="#licensing">Licensing</a>
 </p>
-
-A live and lightweight go server app providing a simple RESTful API called FestivalsAPI using [go-chi/chi](https://github.com/go-chi/chi) and [go-sql-driver/mysql](https://github.com/go-sql-driver/mysql).
-
-![Figure 1: Architecture Overview Highlighted](https://github.com/Festivals-App/festivals-documentation/blob/main/images/architecture/overview_server.png "Figure 1: Architecture Overview Highlighted")
+<hr/>
 
 ## Development
 
@@ -31,8 +33,8 @@ To test whether the festivals-server is working correctly i'm currently relying 
 
 ### Requirements
 
-- [Golang](https://go.dev/) Version 1.17+
-- [Visual Studio Code](https://code.visualstudio.com/download) 1.63.2+
+- [Golang](https://go.dev/) Version 1.20+
+- [Visual Studio Code](https://code.visualstudio.com/download) 1.84.0+
     * Plugin recommendations are managed via [workspace recommendations](https://code.visualstudio.com/docs/editor/extension-marketplace#_recommended-extensions).
 - [Bash script](https://en.wikipedia.org/wiki/Bash_(Unix_shell)) friendly environment
 
