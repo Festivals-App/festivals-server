@@ -19,6 +19,8 @@
 
 A live and lightweight go server app providing a simple RESTful API called FestivalsAPI using [go-chi/chi](https://github.com/go-chi/chi) and [go-sql-driver/mysql](https://github.com/go-sql-driver/mysql).
 
+![Figure 1: Architecture Overview Highlighted](https://github.com/Festivals-App/festivals-documentation/blob/main/images/architecture/overview_server.png "Figure 1: Architecture Overview Highlighted")
+
 ## Development
 
 The developement of the [FestivalsAPI](./DOCUMENTATION.md) and the festivals-server is heavily dependend on the [festivals-api-ios](https://github.com/Festivals-App/festivals-api-ios) as in my regular development workflow i first mock the needed behaviour in the API client library. After the behaviour works the way i need it to, i start implementing the changes in the festivals-server and after that in the [festivals-database](https://github.com/Festivals-App/festivals-database).
@@ -32,40 +34,6 @@ To test whether the festivals-server is working correctly i'm currently relying 
     * Plugin recommendations are managed via [workspace recommendations](https://code.visualstudio.com/docs/editor/extension-marketplace#_recommended-extensions).
 - [Bash script](https://en.wikipedia.org/wiki/Bash_(Unix_shell)) friendly environment
 
-### Structure
-```
-├── server
-│   │
-│   ├── server.go               // Server logic
-│   │
-│   ├── config
-│   │   └── config.go           // Server configuration
-│   │
-│   ├── database               
-│   │   ├── mysql.go            // Basic mysql queries (SELECT, INSERT, etc.)
-│   │   └── querytools.go       // Some tools to create mysql query statements
-│   │
-│   ├── handler                
-│   │   ├── artist.go           // APIs for the Artist model
-│   │   ├── common.go           // Common handler functions
-│   │   ├── event.go            // APIs for the Event model
-│   │   ├── festival.go         // APIs for the Festival model
-│   │   ├── location.go         // APIs for the Location model
-│   │   ├── image.go            // APIs for the Image model
-│   │   ├── link.go             // APIs for the Link model
-│   │   ├── place.go            // APIs for the Place model
-│   │   ├── response.go         // Send a response
-│   │   ├── status.go           // Handling status server status requests
-│   │   └── tag.go              // APIs for the Tag model
-│   │
-│   ├── model
-│   │   └── model.go            // The object models for the handler
-│   │
-│   └── status
-│       └── status.go           // API for the status of the application
-│
-└── main.go        
-```
 ## Deployment
 
 Running the festivals-server is pretty easy because Go binaries are able to run without system dependencies 
@@ -108,13 +76,7 @@ sudo ./uninstall.sh
 ```
 To see if the server is running use:
 ```bash
-sudo systemctl status festivals-server
-```
-
-### Container deployment
-
-```bash
-TBA
+sudo sudo systemctl status festivals-server
 ```
 
 ## FestivalsAPI
@@ -122,8 +84,6 @@ TBA
 The FestivalsAPI is documented in detail [here](./DOCUMENTATION.md).
 
 ## Architecture
-
-![Figure 1: Architecture Overview Highlighted](https://github.com/Festivals-App/festivals-documentation/blob/main/images/architecture/overview_server.png "Figure 1: Architecture Overview Highlighted")
 
 The festivals-server is tightly coupled with the [festivals-database](https://github.com/Festivals-App/festivals-database) which provides the persistent storage to the FestivalsAPI. To find out more about architecture and technical information see the [ARCHITECTURE](./ARCHITECTURE.md) document.
 
@@ -143,7 +103,7 @@ The following channels are available for discussions, feedback, and support requ
 
 ## Licensing
 
-Copyright (c) 2017-2022 Simon Gaus.
+Copyright (c) 2017-2023 Simon Gaus.
 
 Licensed under the **GNU Lesser General Public License v3.0** (the "License"); you may not use this file except in compliance with the License.
 
