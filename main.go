@@ -1,9 +1,7 @@
 package main
 
 import (
-	"net/http"
 	"os"
-	"strconv"
 	"time"
 
 	"github.com/Festivals-App/festivals-gateway/server/heartbeat"
@@ -28,10 +26,6 @@ func main() {
 
 	serverInstance := &server.Server{}
 	serverInstance.Initialize(conf)
-
-	// Redirect traffic from port 80 to used port
-	go http.ListenAndServe(":80", serverInstance.CertManager.HTTPHandler(nil))
-	log.Info().Msg("Start redirecting http traffic from port 80 to port " + strconv.Itoa(serverInstance.Config.ServicePort) + " and https")
 
 	go serverInstance.Run(conf)
 	log.Info().Msg("Server did start.")
