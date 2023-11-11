@@ -26,6 +26,12 @@ type Server struct {
 	TLSConfig *tls.Config
 }
 
+func NewServer(config *config.Config) *Server {
+	server := &Server{}
+	server.Initialize(config)
+	return server
+}
+
 // Initialize the server with predefined configuration
 func (s *Server) Initialize(config *config.Config) {
 

@@ -14,20 +14,16 @@ import (
 func main() {
 
 	logger.InitializeGlobalLogger("/var/log/festivals-server/info.log", true)
-
 	log.Info().Msg("Server startup.")
 
 	conf := config.DefaultConfig()
 	if len(os.Args) > 1 {
 		conf = config.ParseConfig(os.Args[1])
 	}
-
 	log.Info().Msg("Server configuration was initialized.")
 
-	serverInstance := &server.Server{}
-	serverInstance.Initialize(conf)
-
-	go serverInstance.Run(conf)
+	server := server.NewServer(conf)
+	go server.Run(conf)
 	log.Info().Msg("Server did start.")
 
 	go sendHeartbeat(conf)
