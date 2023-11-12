@@ -88,45 +88,45 @@ func (s *Server) setRoutes(config *config.Config) {
 	s.Router.Get("/log", s.handleAdminRequest(handler.GetLog))
 	s.Router.Get("/log/trace", s.handleAdminRequest(handler.GetTraceLog))
 
-	s.Router.Get("/festivals", s.handleRequest(handler.GetFestivals))
-	s.Router.Get("/festivals/{objectID}", s.handleRequest(handler.GetFestival))
-	s.Router.Get("/festivals/{objectID}/events", s.handleRequest(handler.GetFestivalEvents))
-	s.Router.Get("/festivals/{objectID}/image", s.handleRequest(handler.GetFestivalImage))
-	s.Router.Get("/festivals/{objectID}/links", s.handleRequest(handler.GetFestivalLinks))
-	s.Router.Get("/festivals/{objectID}/place", s.handleRequest(handler.GetFestivalPlace))
-	s.Router.Get("/festivals/{objectID}/tags", s.handleRequest(handler.GetFestivalTags))
+	s.Router.Get("/festivals", s.handleFestivalsAPIRequest(handler.GetFestivals))
+	s.Router.Get("/festivals/{objectID}", s.handleFestivalsAPIRequest(handler.GetFestival))
+	s.Router.Get("/festivals/{objectID}/events", s.handleFestivalsAPIRequest(handler.GetFestivalEvents))
+	s.Router.Get("/festivals/{objectID}/image", s.handleFestivalsAPIRequest(handler.GetFestivalImage))
+	s.Router.Get("/festivals/{objectID}/links", s.handleFestivalsAPIRequest(handler.GetFestivalLinks))
+	s.Router.Get("/festivals/{objectID}/place", s.handleFestivalsAPIRequest(handler.GetFestivalPlace))
+	s.Router.Get("/festivals/{objectID}/tags", s.handleFestivalsAPIRequest(handler.GetFestivalTags))
 
-	s.Router.Get("/artists", s.handleRequest(handler.GetArtists))
-	s.Router.Get("/artists/{objectID}", s.handleRequest(handler.GetArtist))
-	s.Router.Get("/artists/{objectID}/image", s.handleRequest(handler.GetArtistImage))
-	s.Router.Get("/artists/{objectID}/links", s.handleRequest(handler.GetArtistLinks))
-	s.Router.Get("/artists/{objectID}/tags", s.handleRequest(handler.GetArtistTags))
+	s.Router.Get("/artists", s.handleFestivalsAPIRequest(handler.GetArtists))
+	s.Router.Get("/artists/{objectID}", s.handleFestivalsAPIRequest(handler.GetArtist))
+	s.Router.Get("/artists/{objectID}/image", s.handleFestivalsAPIRequest(handler.GetArtistImage))
+	s.Router.Get("/artists/{objectID}/links", s.handleFestivalsAPIRequest(handler.GetArtistLinks))
+	s.Router.Get("/artists/{objectID}/tags", s.handleFestivalsAPIRequest(handler.GetArtistTags))
 
-	s.Router.Get("/locations", s.handleRequest(handler.GetLocations))
-	s.Router.Get("/locations/{objectID}", s.handleRequest(handler.GetLocation))
-	s.Router.Get("/locations/{objectID}/image", s.handleRequest(handler.GetLocationImage))
-	s.Router.Get("/locations/{objectID}/links", s.handleRequest(handler.GetLocationLinks))
-	s.Router.Get("/locations/{objectID}/place", s.handleRequest(handler.GetLocationPlace))
+	s.Router.Get("/locations", s.handleFestivalsAPIRequest(handler.GetLocations))
+	s.Router.Get("/locations/{objectID}", s.handleFestivalsAPIRequest(handler.GetLocation))
+	s.Router.Get("/locations/{objectID}/image", s.handleFestivalsAPIRequest(handler.GetLocationImage))
+	s.Router.Get("/locations/{objectID}/links", s.handleFestivalsAPIRequest(handler.GetLocationLinks))
+	s.Router.Get("/locations/{objectID}/place", s.handleFestivalsAPIRequest(handler.GetLocationPlace))
 
-	s.Router.Get("/events", s.handleRequest(handler.GetEvents))
-	s.Router.Get("/events/{objectID}", s.handleRequest(handler.GetEvent))
-	s.Router.Get("/events/{objectID}/festival", s.handleRequest(handler.GetEventFestival))
-	s.Router.Get("/events/{objectID}/image", s.handleRequest(handler.GetEventImage))
-	s.Router.Get("/events/{objectID}/artist", s.handleRequest(handler.GetEventArtist))
-	s.Router.Get("/events/{objectID}/location", s.handleRequest(handler.GetEventLocation))
+	s.Router.Get("/events", s.handleFestivalsAPIRequest(handler.GetEvents))
+	s.Router.Get("/events/{objectID}", s.handleFestivalsAPIRequest(handler.GetEvent))
+	s.Router.Get("/events/{objectID}/festival", s.handleFestivalsAPIRequest(handler.GetEventFestival))
+	s.Router.Get("/events/{objectID}/image", s.handleFestivalsAPIRequest(handler.GetEventImage))
+	s.Router.Get("/events/{objectID}/artist", s.handleFestivalsAPIRequest(handler.GetEventArtist))
+	s.Router.Get("/events/{objectID}/location", s.handleFestivalsAPIRequest(handler.GetEventLocation))
 
-	s.Router.Get("/images", s.handleRequest(handler.GetImages))
-	s.Router.Get("/images/{objectID}", s.handleRequest(handler.GetImage))
+	s.Router.Get("/images", s.handleFestivalsAPIRequest(handler.GetImages))
+	s.Router.Get("/images/{objectID}", s.handleFestivalsAPIRequest(handler.GetImage))
 
-	s.Router.Get("/links", s.handleRequest(handler.GetLinks))
-	s.Router.Get("/links/{objectID}", s.handleRequest(handler.GetLink))
+	s.Router.Get("/links", s.handleFestivalsAPIRequest(handler.GetLinks))
+	s.Router.Get("/links/{objectID}", s.handleFestivalsAPIRequest(handler.GetLink))
 
-	s.Router.Get("/places", s.handleRequest(handler.GetPlaces))
-	s.Router.Get("/places/{objectID}", s.handleRequest(handler.GetPlace))
+	s.Router.Get("/places", s.handleFestivalsAPIRequest(handler.GetPlaces))
+	s.Router.Get("/places/{objectID}", s.handleFestivalsAPIRequest(handler.GetPlace))
 
-	s.Router.Get("/tags", s.handleRequest(handler.GetTags))
-	s.Router.Get("/tags/{objectID}", s.handleRequest(handler.GetTag))
-	s.Router.Get("/tags/{objectID}/festivals", s.handleRequest(handler.GetTagFestivals))
+	s.Router.Get("/tags", s.handleFestivalsAPIRequest(handler.GetTags))
+	s.Router.Get("/tags/{objectID}", s.handleFestivalsAPIRequest(handler.GetTag))
+	s.Router.Get("/tags/{objectID}/festivals", s.handleFestivalsAPIRequest(handler.GetTagFestivals))
 
 	if !config.ReadOnly {
 
@@ -207,7 +207,7 @@ func (s *Server) Run(conf *config.Config) {
 // function prototype to inject DB instance in handleRequest()
 type RequestHandlerFunction func(db *sql.DB, w http.ResponseWriter, r *http.Request)
 
-func (s *Server) handleRequest(requestHandler RequestHandlerFunction) http.HandlerFunc {
+func (s *Server) handleFestivalsAPIRequest(requestHandler RequestHandlerFunction) http.HandlerFunc {
 
 	return authentication.IsEntitled(s.Config.APIKeys, func(w http.ResponseWriter, r *http.Request) {
 		requestHandler(s.DB, w, r)
