@@ -11,7 +11,7 @@ import (
 func respondJSON(w http.ResponseWriter, status int, payload interface{}) {
 
 	//TODO String comparison is not very elegant!
-	if CompareSensitive(fmt.Sprint(payload), "[]") {
+	if fmt.Sprint(payload) == "[]" {
 		payload = []interface{}{}
 	}
 

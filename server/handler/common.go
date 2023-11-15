@@ -348,21 +348,21 @@ func RelationshipNames(includes string) ([]string, error) {
 
 func AnonScan(entity string, rs *sql.Rows) (interface{}, error) {
 
-	if CompareSensitive(entity, "event") {
+	if entity == "event" {
 		return model.EventsScan(rs)
-	} else if CompareSensitive(entity, "festival") {
+	} else if entity == "festival" {
 		return model.FestivalsScan(rs)
-	} else if CompareSensitive(entity, "artist") {
+	} else if entity == "artist" {
 		return model.ArtistsScan(rs)
-	} else if CompareSensitive(entity, "location") {
+	} else if entity == "location" {
 		return model.LocationsScan(rs)
-	} else if CompareSensitive(entity, "image") {
+	} else if entity == "image" {
 		return model.ImagesScan(rs)
-	} else if CompareSensitive(entity, "link") {
+	} else if entity == "link" {
 		return model.LinksScan(rs)
-	} else if CompareSensitive(entity, "place") {
+	} else if entity == "place" {
 		return model.PlacesScan(rs)
-	} else if CompareSensitive(entity, "tag") {
+	} else if entity == "tag" {
 		return model.TagsScan(rs)
 	} else {
 		return nil, errors.New("scan row: tried to scan an unknown entity")
@@ -371,19 +371,19 @@ func AnonScan(entity string, rs *sql.Rows) (interface{}, error) {
 
 func AnonInclude(entity string, object interface{}, includes interface{}) (interface{}, error) {
 
-	if CompareSensitive(entity, "event") {
+	if entity == "event" {
 		realObject := object.(model.Event)
 		realObject.Include = includes
 		return realObject, nil
-	} else if CompareSensitive(entity, "festival") {
+	} else if entity == "festival" {
 		realObject := object.(model.Festival)
 		realObject.Include = includes
 		return realObject, nil
-	} else if CompareSensitive(entity, "artist") {
+	} else if entity == "artist" {
 		realObject := object.(model.Artist)
 		realObject.Include = includes
 		return realObject, nil
-	} else if CompareSensitive(entity, "location") {
+	} else if entity == "location" {
 		realObject := object.(model.Location)
 		realObject.Include = includes
 		return realObject, nil
@@ -394,21 +394,21 @@ func AnonInclude(entity string, object interface{}, includes interface{}) (inter
 
 func AnonID(entity string, object interface{}) (int, error) {
 
-	if CompareSensitive(entity, "event") {
+	if entity == "event" {
 		return object.(model.Event).ID, nil
-	} else if CompareSensitive(entity, "festival") {
+	} else if entity == "festival" {
 		return object.(model.Festival).ID, nil
-	} else if CompareSensitive(entity, "artist") {
+	} else if entity == "artist" {
 		return object.(model.Artist).ID, nil
-	} else if CompareSensitive(entity, "location") {
+	} else if entity == "location" {
 		return object.(model.Location).ID, nil
-	} else if CompareSensitive(entity, "image") {
+	} else if entity == "image" {
 		return object.(model.Image).ID, nil
-	} else if CompareSensitive(entity, "link") {
+	} else if entity == "link" {
 		return object.(model.Link).ID, nil
-	} else if CompareSensitive(entity, "place") {
+	} else if entity == "place" {
 		return object.(model.Place).ID, nil
-	} else if CompareSensitive(entity, "tag") {
+	} else if entity == "tag" {
 		return object.(model.Tag).ID, nil
 	} else {
 		return -1, errors.New("get id: tried to retrieve the ID of an unknown entity")
@@ -417,56 +417,56 @@ func AnonID(entity string, object interface{}) (int, error) {
 
 func AnonUnmarshal(entity string, body []byte) (interface{}, error) {
 
-	if CompareSensitive(entity, "event") {
+	if entity == "event" {
 		var objectToCreate model.Event
 		err := json.Unmarshal(body, &objectToCreate)
 		if err != nil {
 			return nil, err
 		}
 		return objectToCreate, nil
-	} else if CompareSensitive(entity, "festival") {
+	} else if entity == "festival" {
 		var objectToCreate model.Festival
 		err := json.Unmarshal(body, &objectToCreate)
 		if err != nil {
 			return nil, err
 		}
 		return objectToCreate, nil
-	} else if CompareSensitive(entity, "artist") {
+	} else if entity == "artist" {
 		var objectToCreate model.Artist
 		err := json.Unmarshal(body, &objectToCreate)
 		if err != nil {
 			return nil, err
 		}
 		return objectToCreate, nil
-	} else if CompareSensitive(entity, "location") {
+	} else if entity == "location" {
 		var objectToCreate model.Location
 		err := json.Unmarshal(body, &objectToCreate)
 		if err != nil {
 			return nil, err
 		}
 		return objectToCreate, nil
-	} else if CompareSensitive(entity, "image") {
+	} else if entity == "image" {
 		var objectToCreate model.Image
 		err := json.Unmarshal(body, &objectToCreate)
 		if err != nil {
 			return nil, err
 		}
 		return objectToCreate, nil
-	} else if CompareSensitive(entity, "link") {
+	} else if entity == "link" {
 		var objectToCreate model.Link
 		err := json.Unmarshal(body, &objectToCreate)
 		if err != nil {
 			return nil, err
 		}
 		return objectToCreate, nil
-	} else if CompareSensitive(entity, "place") {
+	} else if entity == "place" {
 		var objectToCreate model.Place
 		err := json.Unmarshal(body, &objectToCreate)
 		if err != nil {
 			return nil, err
 		}
 		return objectToCreate, nil
-	} else if CompareSensitive(entity, "tag") {
+	} else if entity == "tag" {
 		var objectToCreate model.Tag
 		err := json.Unmarshal(body, &objectToCreate)
 		if err != nil {
@@ -476,29 +476,4 @@ func AnonUnmarshal(entity string, body []byte) (interface{}, error) {
 	} else {
 		return nil, errors.New("unmarshal object: tried to unmarshal an unknown entity")
 	}
-}
-
-// taken from https://www.digitalocean.com/community/questions/how-to-efficiently-compare-strings-in-go
-func CompareSensitive(a, b string) bool {
-	// a quick optimization. If the two strings have a different
-	// length then they certainly are not the same
-	if len(a) != len(b) {
-		return false
-	}
-
-	for i := 0; i < len(a); i++ {
-		// if the characters already match then we don't need to
-		// alter their case. We can continue to the next rune
-		if a[i] == b[i] {
-			continue
-		}
-		if a[i] != b[i] {
-			// the lowercase characters do not match so these
-			// are considered a mismatch, break and return false
-			return false
-		}
-	}
-	// The string length has been traversed without a mismatch
-	// therefore the two match
-	return true
 }
