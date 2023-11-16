@@ -7,9 +7,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/Festivals-App/festivals-gateway/server/logger"
-	"github.com/Festivals-App/festivals-identity-server/authentication"
 	festivalspki "github.com/Festivals-App/festivals-pki"
+	servertools "github.com/Festivals-App/festivals-server-tools"
 	"github.com/Festivals-App/festivals-server/server/config"
 	"github.com/Festivals-App/festivals-server/server/handler"
 	"github.com/go-chi/chi/v5"
@@ -71,7 +70,7 @@ func (s *Server) setMiddleware() {
 	// tell the router which middleware to use
 	s.Router.Use(
 		// used to log the request to the console
-		logger.Middleware(logger.TraceLogger("/var/log/festivals-server/trace.log")),
+		servertools.Middleware(servertools.TraceLogger("/var/log/festivals-server/trace.log")),
 		// tries to recover after panics (?)
 		middleware.Recoverer,
 	)
@@ -209,14 +208,14 @@ type RequestHandlerFunction func(db *sql.DB, w http.ResponseWriter, r *http.Requ
 
 func (s *Server) handleFestivalsAPIRequest(requestHandler RequestHandlerFunction) http.HandlerFunc {
 
-	return authentication.IsEntitled(s.Config.APIKeys, func(w http.ResponseWriter, r *http.Request) {
+	return servertools.IsEntitled(s.Config.APIKeys, func(w http.ResponseWriter, r *http.Request) {
 		requestHandler(s.DB, w, r)
 	})
 }
 
 func (s *Server) handleAdminRequest(requestHandler RequestHandlerFunction) http.HandlerFunc {
 
-	return authentication.IsEntitled(s.Config.AdminKeys, func(w http.ResponseWriter, r *http.Request) {
+	return servertools.IsEntitled(s.Config.AdminKeys, func(w http.ResponseWriter, r *http.Request) {
 		requestHandler(s.DB, w, r)
 	})
 }

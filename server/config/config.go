@@ -1,10 +1,9 @@
 package config
 
 import (
-	"errors"
-	"io/fs"
 	"os"
 
+	servertools "github.com/Festivals-App/festivals-server-tools"
 	"github.com/pelletier/go-toml"
 
 	"github.com/rs/zerolog/log"
@@ -47,7 +46,7 @@ func DefaultConfig() *Config {
 	*/
 
 	// first we try to parse the config at the global configuration path
-	if fileExists("/etc/festivals-server.conf") {
+	if servertools.FileExists("/etc/festivals-server.conf") {
 		config := ParseConfig("/etc/festivals-server.conf")
 		if config != nil {
 			return config
@@ -125,15 +124,4 @@ func ParseConfig(cfgFile string) *Config {
 		},
 		ReadOnly: readonly,
 	}
-}
-
-// fileExists checks if a file exists and is not a directory before we
-// try using it to prevent further errors.
-// see: https://golangcode.com/check-if-a-file-exists/
-func fileExists(filename string) bool {
-	info, err := os.Stat(filename)
-	if errors.Is(err, fs.ErrNotExist) {
-		return false
-	}
-	return !info.IsDir()
 }
