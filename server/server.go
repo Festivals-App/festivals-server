@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"time"
 
 	festivalspki "github.com/Festivals-App/festivals-pki"
 	servertools "github.com/Festivals-App/festivals-server-tools"
@@ -193,9 +194,13 @@ func (s *Server) setRoutes(config *config.Config) {
 func (s *Server) Run(conf *config.Config) {
 
 	server := http.Server{
-		Addr:      conf.ServiceBindHost + ":" + strconv.Itoa(conf.ServicePort),
-		Handler:   s.Router,
-		TLSConfig: s.TLSConfig,
+		ReadTimeout:       10 * time.Second,
+		WriteTimeout:      15 * time.Second,
+		IdleTimeout:       60 * time.Second,
+		ReadHeaderTimeout: 5 * time.Second,
+		Addr:              conf.ServiceBindHost + ":" + strconv.Itoa(conf.ServicePort),
+		Handler:           s.Router,
+		TLSConfig:         s.TLSConfig,
 	}
 
 	if err := server.ListenAndServeTLS("", ""); err != nil {
