@@ -14,6 +14,7 @@ import (
 	"github.com/Festivals-App/festivals-server/server/handler"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/go-sql-driver/mysql"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/rs/zerolog/log"
 )
@@ -28,20 +29,44 @@ type Server struct {
 
 func NewServer(config *config.Config) *Server {
 	server := &Server{}
-	server.Initialize(config)
+	server.initialize(config)
 	return server
 }
 
 // Initialize the server with predefined configuration
-func (s *Server) Initialize(config *config.Config) {
+func (s *Server) initialize(config *config.Config) {
 
-	dbURI := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=%s&parseTime=True",
+	s.Config = config
+	s.Router = chi.NewRouter()
+
+	s.setDatabase()
+	s.setTLSHandling()
+	s.setMiddleware()
+	s.setRoutes(config)
+}
+
+var mysqlTLSConfigKey string = "org.festivals.mysql.tls"
+
+func (s *Server) setDatabase() {
+
+	tlsConfig := &tls.Config{
+		ClientAuth:     tls.RequireAndVerifyClientCert,
+		GetCertificate: festivalspki.LoadServerCertificateHandler(s.Config.TLSCert, s.Config.TLSKey, s.Config.TLSRootCert),
+	}
+
+	mysql.RegisterTLSConfig(mysqlTLSConfigKey, tlsConfig)
+
+	config := s.Config
+
+	dbURI := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=%s&parseTime=True&tls=%s",
 		config.DB.Username,
 		config.DB.Password,
 		config.DB.Host,
 		config.DB.Port,
 		config.DB.Name,
-		config.DB.Charset)
+		config.DB.Charset,
+		mysqlTLSConfigKey,
+	)
 	db, err := sql.Open(config.DB.Dialect, dbURI)
 
 	if err != nil {
@@ -49,12 +74,6 @@ func (s *Server) Initialize(config *config.Config) {
 	}
 
 	s.DB = db
-	s.Router = chi.NewRouter()
-	s.Config = config
-
-	s.setTLSHandling()
-	s.setMiddleware()
-	s.setRoutes(config)
 }
 
 func (s *Server) setTLSHandling() {

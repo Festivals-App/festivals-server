@@ -21,7 +21,6 @@ fi
 #
 mkdir -p /usr/local/festivals-server/install || { echo "Failed to create working directory. Exiting." ; exit 1; }
 cd /usr/local/festivals-server/install || { echo "Failed to access working directory. Exiting." ; exit 1; }
-
 echo "Installing festivals-server using port 10439."
 sleep 1
 
@@ -71,7 +70,6 @@ sleep 1
 ## Prepare log directory
 #
 mkdir /var/log/festivals-server || { echo "Failed to create log directory. Exiting." ; exit 1; }
-chown "$WEB_USER":"$WEB_USER" /var/log/festivals-server
 echo "Create log directory at '/var/log/festivals-server'."
 
 ## Prepare update workflow
@@ -120,6 +118,14 @@ elif ! [ "$(uname -s)" = "Darwin" ]; then
   echo "Systemd is missing and not on macOS. Exiting."
   exit 1
 fi
+
+## Set appropriate permissions
+#
+chown -R "$WEB_USER":"$WEB_USER" /usr/local/festivals-server
+chown -R "$WEB_USER":"$WEB_USER" /var/log/festivals-server
+chown "$WEB_USER":"$WEB_USER" /etc/festivals-server.conf
+echo "Seting appropriate permissions..."
+sleep 1
 
 # Remving unused files
 #
