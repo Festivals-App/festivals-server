@@ -51,9 +51,8 @@ func (s *Server) setDatabase() {
 
 	tlsConfig := &tls.Config{
 		ClientAuth:     tls.RequireAndVerifyClientCert,
-		GetCertificate: festivalspki.LoadServerCertificateHandler(s.Config.TLSCert, s.Config.TLSKey, s.Config.TLSRootCert),
+		GetCertificate: festivalspki.LoadServerCertificateHandler(s.Config.DB.ClientCert, s.Config.DB.ClientKey, s.Config.DB.ClientCA),
 	}
-
 	mysql.RegisterTLSConfig(mysqlTLSConfigKey, tlsConfig)
 
 	config := s.Config
@@ -70,14 +69,22 @@ func (s *Server) setDatabase() {
 	db, err := sql.Open(config.DB.Dialect, dbURI)
 
 	if err != nil {
+		log.Fatal().Err(err).Msg("Could not open database handle")
+	}
+	println("dbURI: " + dbURI)
+	err = db.Ping()
+	if err != nil {
 		log.Fatal().Err(err).Msg("Could not connect to database")
 	}
+
+	db.SetConnMaxLifetime(time.Minute * 3)
+	db.SetMaxOpenConns(10)
+	db.SetMaxIdleConns(10)
 
 	s.DB = db
 }
 
 func (s *Server) setTLSHandling() {
-
 	tlsConfig := &tls.Config{
 		ClientAuth:     tls.RequireAndVerifyClientCert,
 		GetCertificate: festivalspki.LoadServerCertificateHandler(s.Config.TLSCert, s.Config.TLSKey, s.Config.TLSRootCert),

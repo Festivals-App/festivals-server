@@ -18,7 +18,9 @@ host = "localhost"
 port = 3306
 username = "festivals.api.writer"
 password = "we4711"
-database-name = "festivals_api_database"
+festivaslapp-root-ca = "/usr/local/festivals-server/ca.crt"
+cert = "/usr/local/festivals-server/database-client.crt"
+key = "/usr/local/festivals-server/database-client.key"
 
 [heartbeat]
 endpoint = "localhost"
