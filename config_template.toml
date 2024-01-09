@@ -9,7 +9,7 @@ key = "TEST_API_KEY_001"
 read-only = false
 
 [tls]
-festivaslapp-root-ca = "/usr/local/festivals-server/ca.crt"
+festivalsapp-root-ca = "/usr/local/festivals-server/ca.crt"
 cert = "/usr/local/festivals-server/server.crt"
 key = "/usr/local/festivals-server/server.key"
 
@@ -18,7 +18,7 @@ host = "localhost"
 port = 3306
 username = "festivals.api.writer"
 password = "we4711"
-festivaslapp-root-ca = "/usr/local/festivals-server/ca.crt"
+festivalsapp-root-ca = "/usr/local/festivals-server/ca.crt"
 cert = "/usr/local/festivals-server/database-client.crt"
 key = "/usr/local/festivals-server/database-client.key"
 
