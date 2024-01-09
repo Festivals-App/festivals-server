@@ -78,7 +78,7 @@ func ParseConfig(cfgFile string) *Config {
 	servicePort := content.Get("service.port").(int64)
 	serviceKey := content.Get("service.key").(string)
 
-	tlsrootcert := content.Get("tls.festivaslapp-root-ca").(string)
+	tlsrootcert := content.Get("tls.festivalsapp-root-ca").(string)
 	tlscert := content.Get("tls.cert").(string)
 	tlskey := content.Get("tls.key").(string)
 
@@ -100,7 +100,7 @@ func ParseConfig(cfgFile string) *Config {
 	dbPort := content.Get("database.port").(int64)
 	dbUsername := content.Get("database.username").(string)
 	dbPassword := content.Get("database.password").(string)
-	dbClientCA := content.Get("database.festivaslapp-root-ca").(string)
+	dbClientCA := content.Get("database.festivalsapp-root-ca").(string)
 	dbClientCert := content.Get("database.cert").(string)
 	dbClientKey := content.Get("database.key").(string)
 	readonly := content.Get("service.read-only").(bool)
