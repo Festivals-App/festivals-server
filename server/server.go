@@ -49,13 +49,24 @@ var mysqlTLSConfigKey string = "org.festivals.mysql.tls"
 
 func (s *Server) setDatabase() {
 
+	config := s.Config
+
+	rootCertPool, err := festivalspki.LoadCertificatePool(config.DB.ClientCA)
+	if err != nil {
+		log.Fatal().Err(err).Msg("Faile to create pool with root CA file.")
+	}
+
+	certs, err := tls.LoadX509KeyPair(config.DB.ClientCert, config.DB.ClientKey)
+	if err != nil {
+		log.Fatal().Err(err).Msg("Faile to load database client certificate.")
+	}
+
 	tlsConfig := &tls.Config{
-		ClientAuth:     tls.RequireAndVerifyClientCert,
-		GetCertificate: festivalspki.LoadServerCertificateHandler(s.Config.DB.ClientCert, s.Config.DB.ClientKey, s.Config.DB.ClientCA),
+		ClientAuth:   tls.RequireAndVerifyClientCert,
+		RootCAs:      rootCertPool,
+		Certificates: []tls.Certificate{certs},
 	}
 	mysql.RegisterTLSConfig(mysqlTLSConfigKey, tlsConfig)
-
-	config := s.Config
 
 	dbURI := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=%s&parseTime=True&tls=%s",
 		config.DB.Username,
@@ -69,12 +80,12 @@ func (s *Server) setDatabase() {
 	db, err := sql.Open(config.DB.Dialect, dbURI)
 
 	if err != nil {
-		log.Fatal().Err(err).Msg("Could not open database handle")
+		log.Fatal().Err(err).Msg("Failed to open database handle.")
 	}
-	println("dbURI: " + dbURI)
+
 	err = db.Ping()
 	if err != nil {
-		log.Fatal().Err(err).Msg("Could not connect to database")
+		log.Fatal().Err(err).Msg("Failed to connect to database.")
 	}
 
 	db.SetConnMaxLifetime(time.Minute * 3)
