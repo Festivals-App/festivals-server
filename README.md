@@ -74,12 +74,6 @@ curl -o update.sh https://raw.githubusercontent.com/Festivals-App/festivals-serv
 chmod +x update.sh
 sudo ./update.sh
 ```
-Uninstalling
-```bash
-curl -o uninstall.sh https://raw.githubusercontent.com/Festivals-App/festivals-server/main/operation/uninstall.sh
-chmod +x uninstall.sh
-sudo ./uninstall.sh
-```
 To see if the server is running use:
 ```bash
 sudo sudo systemctl status festivals-server
