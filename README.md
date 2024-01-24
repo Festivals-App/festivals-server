@@ -18,7 +18,6 @@ A lightweight service providing a RESTful API, called **FestivalsAPI**. The Fest
 <p align="center">
   <a href="#development">Development</a> •
   <a href="#deployment">Deployment</a> •
-  <a href="#festivalsapi">FestivalsAPI</a> •
   <a href="#engage">Engage</a>
 </p>
 <hr/>
