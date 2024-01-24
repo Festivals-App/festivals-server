@@ -39,12 +39,11 @@ Running the festivals-server is pretty easy because Go binaries are able to run 
 on the target for which they are compiled. The only dependency is that the festivals-server expects either a config file at `/etc/festivals-server.conf`,
 the environment variables set or the template config file present in the directory it runs from.
 
-#### Build and Run manually
 ```bash
+# Build and Run manually
 cd /path/to/repository/festivals-server
 make build
 make run
-
 # Default API Endpoint : http://localhost:10439
 ```
 
