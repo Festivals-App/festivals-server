@@ -10,7 +10,7 @@
   <br/><br/>
 </h1>
 
-A lightweight go server app providing a RESTful API, called FestivalsAPI. The FestivalsAPI exposes all data functions needed by the FestivalsApp.
+A lightweight service providing a RESTful API, called **FestivalsAPI**. The FestivalsAPI exposes all data functions needed by the FestivalsApp.
 
 ![Figure 1: Architecture Overview Highlighted](https://github.com/Festivals-App/festivals-documentation/blob/main/images/architecture/overview_server.png "Figure 1: Architecture Overview Highlighted")
 
@@ -29,10 +29,10 @@ A lightweight go server app providing a RESTful API, called FestivalsAPI. The Fe
 The developement of the [FestivalsAPI](./DOCUMENTATION.md) and the festivals-server is heavily dependend on the [festivals-api-ios](https://github.com/Festivals-App/festivals-api-ios) 
 and the [festivals-database](https://github.com/Festivals-App/festivals-database) which provides the persistent storage to the FestivalsAPI. In my regular development workflow i first mock the needed behaviour in the API client library. When it works, i start implementing the changes in the festivals-server and after that in the festivals-database.
 
-### Testing
+#### Testing
 To test whether the festivals-server is working correctly i'm currently relying on downstream tests of the [festivals-api-ios](https://github.com/Festivals-App/festivals-api-ios).
 
-### Architecture
+#### Architecture
 To find out more about the architecture and technical information see the [ARCHITECTURE](./ARCHITECTURE.md) document.
 
 The general documentation for the Festivals App is in the [festivals-documentation](https://github.com/festivals-app/festivals-documentation) repository. 
