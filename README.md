@@ -19,20 +19,15 @@ A lightweight service providing a RESTful API, called **FestivalsAPI**. The Fest
   <a href="#development">Development</a> •
   <a href="#deployment">Deployment</a> •
   <a href="#festivalsapi">FestivalsAPI</a> •
-  <a href="#engage">Engage</a> •
-  <a href="#licensing">Licensing</a>
+  <a href="#engage">Engage</a>
 </p>
 <hr/>
 
 ## Development
 
 The developement of the [FestivalsAPI](./DOCUMENTATION.md) and the festivals-server is heavily dependend on the [festivals-api-ios](https://github.com/Festivals-App/festivals-api-ios) 
-and the [festivals-database](https://github.com/Festivals-App/festivals-database) which provides the persistent storage to the FestivalsAPI. In my regular development workflow i first mock the needed behaviour in the API client library. When it works, i start implementing the changes in the festivals-server and after that in the festivals-database.
+and the [festivals-database](https://github.com/Festivals-App/festivals-database) which provides the persistent storage to the FestivalsAPI. In my regular development workflow i first mock the needed behaviour in the API client library and then start implementing the changes in the festivals-server and after that in the festivals-database. To test whether the festivals-server is working correctly i'm currently relying on downstream tests of the festivals-api-ios.
 
-#### Testing
-To test whether the festivals-server is working correctly i'm currently relying on downstream tests of the [festivals-api-ios](https://github.com/Festivals-App/festivals-api-ios).
-
-#### Architecture
 To find out more about the architecture and technical information see the [ARCHITECTURE](./ARCHITECTURE.md) document.
 
 The general documentation for the Festivals App is in the [festivals-documentation](https://github.com/festivals-app/festivals-documentation) repository. 
