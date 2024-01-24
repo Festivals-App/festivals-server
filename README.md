@@ -52,20 +52,18 @@ make run
 The install, update and uninstall scripts should work with any system that uses *systemd* and *firewalld*.
 Additionally the scripts will somewhat work under macOS but won't configure the firewall or launch service.
 
-Installing
 ```bash
+#Installing
 curl -o install.sh https://raw.githubusercontent.com/Festivals-App/festivals-server/main/operation/install.sh
 chmod +x install.sh
 sudo ./install.sh
-```
-Updating
-```bash
+
+#Updating
 curl -o update.sh https://raw.githubusercontent.com/Festivals-App/festivals-server/main/operation/update.sh
 chmod +x update.sh
 sudo ./update.sh
-```
-To see if the server is running use:
-```bash
+
+#To see if the server is running use:
 sudo sudo systemctl status festivals-server
 ```
 
