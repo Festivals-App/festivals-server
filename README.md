@@ -39,15 +39,7 @@ Running the festivals-server is pretty easy because Go binaries are able to run 
 on the target for which they are compiled. The only dependency is that the festivals-server expects either a config file at `/etc/festivals-server.conf`,
 the environment variables set or the template config file present in the directory it runs from.
 
-```bash
-# Build and Run manually
-cd /path/to/repository/festivals-server
-make build
-make run
-# Default API Endpoint : http://localhost:10439
-```
-
-#### VM deployment
+#### VM
 The install, update and uninstall scripts should work with any system that uses *systemd* and *firewalld*.
 Additionally the scripts will somewhat work under macOS but won't configure the firewall or launch service.
 
@@ -64,6 +56,13 @@ sudo ./update.sh
 
 #To see if the server is running use:
 sudo sudo systemctl status festivals-server
+```
+
+#### Build and run using make
+```bash
+make build
+make run
+# Default API Endpoint : http://localhost:10439
 ```
 
 ## Engage
