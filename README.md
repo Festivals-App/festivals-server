@@ -38,7 +38,7 @@ To find out more about the architecture and technical information see the [ARCHI
 The general documentation for the Festivals App is in the [festivals-documentation](https://github.com/festivals-app/festivals-documentation) repository. 
 The documentation repository contains architecture information, general deployment documentation, templates and other helpful documents.
 
-### Requirements
+#### Requirements
 ```
 - [Golang](https://go.dev/) Version 1.21.5+
 - [Visual Studio Code](https://code.visualstudio.com/download) 1.85.2+
@@ -52,7 +52,7 @@ Running the festivals-server is pretty easy because Go binaries are able to run 
 on the target for which they are compiled. The only dependency is that the festivals-server expects either a config file at `/etc/festivals-server.conf`,
 the environment variables set or the template config file present in the directory it runs from.
 
-### Build and Run manually
+#### Build and Run manually
 ```bash
 cd /path/to/repository/festivals-server
 make build
@@ -61,7 +61,7 @@ make run
 # Default API Endpoint : http://localhost:10439
 ```
 
-### VM deployment
+#### VM deployment
 The install, update and uninstall scripts should work with any system that uses *systemd* and *firewalld*.
 Additionally the scripts will somewhat work under macOS but won't configure the firewall or launch service.
 
@@ -93,6 +93,6 @@ The following channels are available for discussions, feedback, and support requ
 | **General Discussion**   | <a href="https://github.com/festivals-app/festivals-documentation/issues/new/choose" title="General Discussion"><img src="https://img.shields.io/github/issues/festivals-app/festivals-documentation/question.svg?style=flat-square"></a> </a>   |
 | **Other Requests**    | <a href="mailto:simon.cay.gaus@gmail.com" title="Email me"><img src="https://img.shields.io/badge/email-Simon-green?logo=mail.ru&style=flat-square&logoColor=white"></a>   |
 
-### Licensing
+#### Licensing
 
 Copyright (c) 2017-2024 Simon Gaus. Licensed under the [**GNU Lesser General Public License v3.0**](./LICENSE)
