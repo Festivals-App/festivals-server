@@ -1,7 +1,7 @@
 github.com/Festivals-App/festivals-pki v0.0.4 h1:g99v/0bJZFRC1xx3ZF21j6rKg0CBYyTxjGG5cDojO7o=
 github.com/Festivals-App/festivals-pki v0.0.4/go.mod h1:KBEm824Amuqww5pRhT76e8L+Ih8nS59vUbuincfu7RQ=
-github.com/Festivals-App/festivals-server-tools v0.0.2 h1:EkKRPueBTQtJCExJtGheZIgwkl946Zl0JmwcqfiKYZk=
-github.com/Festivals-App/festivals-server-tools v0.0.2/go.mod h1:5pGXOae+ZZ0WBtyrlwAebQ/OIp0bYXgxvNO1AVvW5dQ=
+github.com/Festivals-App/festivals-server-tools v0.0.3 h1:s1OY4fO1+3QluV5MsDmZ934Q59H7IrBrxtWT6B8CPAs=
+github.com/Festivals-App/festivals-server-tools v0.0.3/go.mod h1:wbJqNDOkZQCVppO4iDncPhCIcijgmU0HRtYzn5vA9dY=
 github.com/coreos/go-systemd/v22 v22.5.0/go.mod h1:Y58oyj3AT4RCenI/lSvhwexgC+NSVTIJ3seZv2GcEnc=
 github.com/go-chi/chi/v5 v5.0.11 h1:BnpYbFZ3T3S1WMpD79r7R5ThWX40TaFB7L31Y8xqSwA=
 github.com/go-chi/chi/v5 v5.0.11/go.mod h1:DslCQbL2OYiznFReuXYUmQ2hGd1aDpCnlMNITLSKoi8=
