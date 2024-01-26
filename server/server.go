@@ -251,6 +251,7 @@ type RequestHandlerFunction func(db *sql.DB, w http.ResponseWriter, r *http.Requ
 func (s *Server) handleFestivalsAPIRequest(requestHandler RequestHandlerFunction) http.HandlerFunc {
 
 	return servertools.IsEntitled(s.Config.APIKeys, func(w http.ResponseWriter, r *http.Request) {
+		r.Close = true
 		requestHandler(s.DB, w, r)
 	})
 }
@@ -258,6 +259,7 @@ func (s *Server) handleFestivalsAPIRequest(requestHandler RequestHandlerFunction
 func (s *Server) handleAdminRequest(requestHandler RequestHandlerFunction) http.HandlerFunc {
 
 	return servertools.IsEntitled(s.Config.AdminKeys, func(w http.ResponseWriter, r *http.Request) {
+		r.Close = true
 		requestHandler(s.DB, w, r)
 	})
 }
@@ -265,6 +267,7 @@ func (s *Server) handleAdminRequest(requestHandler RequestHandlerFunction) http.
 func (s *Server) handleRequestWithoutValidation(requestHandler RequestHandlerFunction) http.HandlerFunc {
 
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		r.Close = true
 		requestHandler(s.DB, w, r)
 	})
 }
