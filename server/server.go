@@ -88,9 +88,10 @@ func (s *Server) setDatabase() {
 		log.Fatal().Err(err).Msg("Failed to connect to database.")
 	}
 
-	db.SetConnMaxLifetime(time.Minute * 3)
-	db.SetMaxOpenConns(10)
-	db.SetMaxIdleConns(10)
+	db.SetConnMaxIdleTime(time.Minute * 1)
+	db.SetConnMaxLifetime(time.Minute * 5)
+	//db.SetMaxOpenConns(10)
+	//db.SetMaxIdleConns(10)
 
 	s.DB = db
 }
