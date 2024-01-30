@@ -36,7 +36,8 @@ To find out more about the architecture and technical information see the [ARCHI
 ## Deployment
 Running the festivals-server is pretty easy because Go binaries are able to run without system dependencies 
 on the target for which they are compiled. The only dependency is that the festivals-server expects either a config file at `/etc/festivals-server.conf`,
-the environment variables set or the template config file present in the directory it runs from.
+the environment variables set or the template config file present in the directory it runs from. You also need to provide all needed certificates 
+in the right format, see [festivals-pki](https://github.com/Festivals-App/festivals-pki).
 
 #### VM
 The install, update and uninstall scripts should work with any system that uses *systemd* and *firewalld*.
