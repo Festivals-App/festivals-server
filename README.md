@@ -54,7 +54,7 @@ chmod +x update.sh
 sudo ./update.sh
 
 #To see if the server is running use:
-sudo sudo systemctl status festivals-server
+sudo systemctl status festivals-server
 ```
 
 #### Build and run using make
