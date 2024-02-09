@@ -25,9 +25,10 @@
 
 ### Authentication
 
-To use the API you need to provide an API key with your requests HTTP header:
+To use the API you need to provide an API key via a custom header or a JWT with your requests authorization header:
 ```
-'Api-Key':'YOUR_API_KEY_GOES_HERE'
+Api-Key:<api-key>
+Authorization: Bearer <jwt>
 ```
 
 ### Requests
@@ -152,6 +153,7 @@ Info object
 ------------------------------------------------------------------------------------
 #### GET `/info`
         
+ * Authorization: JWT
  * Returns
       * Returns the info object 
       * Codes `200`/`40x`/`50x`
@@ -160,6 +162,7 @@ Info object
 ------------------------------------------------------------------------------------
 #### GET `/version`
 
+ * Authorization: JWT
  * Returns
       * The version of the server application.
       * Codes `200`/`40x`/`50x`
@@ -168,6 +171,7 @@ Info object
 ------------------------------------------------------------------------------------
 #### GET `/health`
 
+ * Authorization: JWT
  * Returns
       * Always returns HTTP status code 200
       * Code `200`
@@ -193,7 +197,9 @@ A simple object that represents a festival.
 #### GET `/festivals`
 
 Get all festivals.
-    
+
+ * Authorization: API Key
+ 
  * Query Parameter:  
       `name`: Filter result by name  
       `ids` : Filter result by IDs
@@ -213,6 +219,8 @@ Get all festivals.
 
 Create a new festival
     
+* Authorization: JWT
+  
 * Examples:  
     `POST https://localhost:8080/festivals`  
     `BODY: {OBJECT}`
@@ -227,7 +235,9 @@ Create a new festival
 
 Get the festival with the given `objectID`.
 
-* Query Parameter:  
+ * Authorization: API Key
+ 
+ * Query Parameter:  
     `include`: Include relationships {`image`|`links`|`place`|`tags`|`events`}  
         
             Note: You need to specify the relationship not the associated object type.
@@ -246,6 +256,8 @@ Get the festival with the given `objectID`.
 
 Update the festival with the given `objectID`.
 
+ * Authorization: JWT
+  
  * Examples:  
     `PATCH https://localhost:8080/festivals/1`  
     BODY: `{OBJECT}`
@@ -260,6 +272,8 @@ Update the festival with the given `objectID`.
 
 Delete the festival with the given `objectID`.
  
+ * Authorization: JWT
+  
  * Examples:  
     `DELETE https://localhost:8080/festivals/1`
     
@@ -271,8 +285,10 @@ Delete the festival with the given `objectID`.
  ------------------------------------------------------------------------------------
 #### GET `/festivals/{objectID}/{image|links|place|tags|events}`
 
-Get the objects that are described by the`{relationship}`.
+Get the objects that are described by the `{relationship}`.
 
+ * Authorization: API Key
+ 
  * Examples:  
     `GET https://localhost:8080/festivals/1/image`  
             
@@ -286,8 +302,10 @@ Get the objects that are described by the`{relationship}`.
 ------------------------------------------------------------------------------------
 #### POST `/festivals/{objectID}/{image|links|place|tags|events}/{resourceID}`
 
-Adds the object with the given`{resourceID}`to the relationship for the festival with the given`{objectID}`.
-
+Adds the object with the given `{resourceID}` to the relationship for the festival with the given `{objectID}`.
+ 
+ * Authorization: JWT
+  
  * Examples:  
     `POST https://localhost:8080/festivals/1/image/1`   
     
@@ -301,8 +319,10 @@ Adds the object with the given`{resourceID}`to the relationship for the festival
 ------------------------------------------------------------------------------------
 #### DELETE `/festivals/{objectID}/{image|links|place|tags|events}/{resourceID}`
 
-Removes the object with the given`{resourceID}`from the relationship for the festival with the given`{objectID}`.
-
+Removes the object with the given `{resourceID}` from the relationship for the festival with the given`{objectID}`.
+ 
+ * Authorization: JWT
+  
  * Examples:  
     `DELETE https://localhost:8080/festivals/1/image/1`   
     
@@ -330,7 +350,9 @@ A simple object that represents an artist.
 #### GET `/artists`
 
 Get all artists.
-    
+
+ * Authorization: API Key
+ 
  * Query Parameter:  
       `name`: Filter result by name  
       `ids` : Filter result by IDs
@@ -349,12 +371,14 @@ Get all artists.
 #### POST `/artists`
 
 Create a new artist
-    
-* Examples:  
+ 
+ * Authorization: JWT
+   
+ * Examples:  
     `POST https://localhost:8080/artists`  
     `BODY: {OBJECT}`
     
-* Returns
+ * Returns
     * Returns the created artist on success.
     * Codes `201`/`40x`/`50x`
     * `data` or `error` field
@@ -364,7 +388,9 @@ Create a new artist
 
 Get the artist with the given `objectID`.
 
-* Query Parameter:  
+ * Authorization: API Key
+ 
+ * Query Parameter:  
     `include`: Include relationships {`image`|`links`|`tags`}  
         
             Note: You need to specify the relationship not the associated object type.
@@ -382,7 +408,9 @@ Get the artist with the given `objectID`.
 #### PATCH `/artists/{objectID}`
 
 Update the artist with the given `objectID`.
-
+ 
+ * Authorization: JWT
+  
  * Examples:  
     `PATCH https://localhost:8080/artists/1`  
     BODY: `{OBJECT}`
@@ -397,6 +425,8 @@ Update the artist with the given `objectID`.
 
 Delete the artist with the given `objectID`.
  
+ * Authorization: JWT
+  
  * Examples:  
     `DELETE https://localhost:8080/artists/1`
     
@@ -408,8 +438,10 @@ Delete the artist with the given `objectID`.
 ------------------------------------------------------------------------------------
 #### GET `/artists/{objectID}/{image|links|place|tags}`
 
-Get the objects that are described by the`{relationship}`.
+Get the objects that are described by the `{relationship}`.
 
+ * Authorization: API Key
+ 
  * Examples:  
     `GET https://localhost:8080/artists/1/image`  
             
@@ -424,7 +456,9 @@ Get the objects that are described by the`{relationship}`.
 #### POST `/artists/{objectID}/{image|links|tags}/{resourceID}`
 
 Adds the object with the given`{resourceID}`to the relationship for the artist with the given`{objectID}`.
-
+ 
+ * Authorization: JWT
+  
  * Examples:  
     `POST https://localhost:8080/artists/1/image/1`   
     
@@ -439,7 +473,9 @@ Adds the object with the given`{resourceID}`to the relationship for the artist w
 #### DELETE `/artists/{objectID}/{image|links|tags}/{resourceID}`
 
 Removes the object with the given`{resourceID}`from the relationship for the artist with the given`{objectID}`.
-
+ 
+ * Authorization: JWT
+  
  * Examples:  
     `DELETE https://localhost:8080/artists/1/image/1`   
     
@@ -469,7 +505,9 @@ A simple object that represents a location.
 #### GET `/locations`
 
 Get all locations.
-    
+
+ * Authorization: API Key
+ 
  * Query Parameter:  
       `name`: Filter result by name  
       `ids` : Filter result by IDs
@@ -488,12 +526,14 @@ Get all locations.
 #### POST `/locations`
 
 Create a new location
-    
-* Examples:  
+ 
+ * Authorization: JWT
+  
+ *  Examples:  
     `POST https://localhost:8080/locations`  
     `BODY: {OBJECT}`
     
-* Returns
+ * Returns
     * Returns the created location on success.
     * Codes `201`/`40x`/`50x`
     * `data` or `error` field
@@ -503,7 +543,9 @@ Create a new location
 
 Get the location with the given `objectID`.
 
-* Query Parameter:  
+ * Authorization: API Key
+ 
+ * Query Parameter:  
     `include`: Include relationships {`image`|`links`|`place`}  
         
             Note: You need to specify the relationship not the associated object type.
@@ -521,7 +563,9 @@ Get the location with the given `objectID`.
 #### PATCH `/locations/{objectID}`
 
 Update the location with the given `objectID`.
-
+ 
+ * Authorization: JWT
+  
  * Examples:  
     `PATCH https://localhost:8080/locations/1`  
     BODY: `{OBJECT}`
@@ -536,6 +580,8 @@ Update the location with the given `objectID`.
 
 Delete the location with the given `objectID`.
  
+ * Authorization: JWT
+  
  * Examples:  
     `DELETE https://localhost:8080/locations/1`
     
@@ -549,6 +595,8 @@ Delete the location with the given `objectID`.
 
 Get the objects that are described by the`{relationship}`.
 
+ * Authorization: API Key
+ 
  * Examples:  
     `GET https://localhost:8080/locations/1/image`  
             
@@ -563,7 +611,9 @@ Get the objects that are described by the`{relationship}`.
 #### POST `/locations/{objectID}/{image|links|place}/{resourceID}`
 
 Adds the object with the given`{resourceID}`to the relationship for the location with the given`{objectID}`.
-
+ 
+ * Authorization: JWT
+  
  * Examples:  
     `POST https://localhost:8080/locations/1/image/1`   
     
@@ -578,7 +628,9 @@ Adds the object with the given`{resourceID}`to the relationship for the location
 #### DELETE `/locations/{objectID}/{image|links|place}/{resourceID}`
 
 Removes the object with the given`{resourceID}`from the relationship for the location with the given`{objectID}`.
-
+ 
+ * Authorization: JWT
+  
  * Examples:  
     `DELETE https://localhost:8080/locations/1/image/1`   
     
@@ -609,7 +661,9 @@ A simple object that represents an event.
 #### GET `/events`
 
 Get all events.
-    
+
+ * Authorization: API Key
+  
  * Query Parameter:  
       `ids` : Filter result by IDs
 
@@ -626,12 +680,14 @@ Get all events.
 #### POST `/events`
 
 Create a new event
-    
-* Examples:    
+ 
+ * Authorization: JWT
+  
+ * Examples:    
     `POST https://localhost:8080/events`  
     `BODY: {OBJECT}`
     
-* Returns
+ * Returns
     * Returns the created event on success.
     * Codes `201`/`40x`/`50x`
     * `data` or `error` field
@@ -641,6 +697,8 @@ Create a new event
 
 Get the event with the given `objectID`.
 
+ * Authorization: API Key
+ 
 * Query Parameter:  
     `include`: Include relationships {`image`|`artist`|`location`}  
         
@@ -659,7 +717,9 @@ Get the event with the given `objectID`.
 #### PATCH `/events/{objectID}`
 
 Update the event with the given `objectID`.
-
+ 
+ * Authorization: JWT
+  
  * Examples:  
     `PATCH https://localhost:8080/events/1`  
     BODY: `{OBJECT}`
@@ -674,6 +734,8 @@ Update the event with the given `objectID`.
 
 Delete the event with the given `objectID`.
  
+ * Authorization: JWT
+  
  * Examples:  
     `DELETE https://localhost:8080/events/1`
     
@@ -687,6 +749,8 @@ Delete the event with the given `objectID`.
 
 Get the objects that are described by the`{relationship}`.
 
+ * Authorization: API Key
+ 
  * Examples:  
     `GET https://localhost:8080/events/1/artist`  
             
@@ -701,7 +765,9 @@ Get the objects that are described by the`{relationship}`.
 #### POST `/events/{objectID}/{image|artist|location}/{resourceID}`
 
 Adds the object with the given`{resourceID}`to the relationship for the event with the given`{objectID}`.
-
+ 
+ * Authorization: JWT
+  
  * Examples:  
     `POST https://localhost:8080/events/1/artist/1`   
     
@@ -716,7 +782,9 @@ Adds the object with the given`{resourceID}`to the relationship for the event wi
 #### DELETE `/events/{objectID}/{image|artist|location}/{resourceID}`
 
 Removes the object with the given`{resourceID}`from the relationship for the event with the given`{objectID}`.
-
+ 
+ * Authorization: JWT
+  
  * Examples:  
     `DELETE https://localhost:8080/events/1/artist/1`   
     
@@ -744,7 +812,9 @@ A simple object that represents an image.
 #### GET `/images`
 
 Get all images.
-    
+
+ * Authorization: API Key
+ 
  * Query Parameter:  
       `ids` : Filter result by IDs
 
@@ -761,12 +831,14 @@ Get all images.
 #### POST `/images`
 
 Create a new image
-    
-* Examples:  
+ 
+ * Authorization: JWT
+  
+ * Examples:  
     `POST https://localhost:8080/images`  
     `BODY: {OBJECT}`
     
-* Returns
+ * Returns
     * Returns the created image on success.
     * Codes `201`/`40x`/`50x`
     * `data` or `error` field
@@ -776,6 +848,8 @@ Create a new image
 
 Get the image with the given `objectID`.
 
+ * Authorization: API Key
+ 
  * Examples:  
     `GET https://localhost:8080/images/1`
       
@@ -788,7 +862,9 @@ Get the image with the given `objectID`.
 #### PATCH `/images/{objectID}`
 
 Update the image with the given `objectID`.
-
+ 
+ * Authorization: JWT
+  
  * Examples:  
     `PATCH https://localhost:8080/images/1`  
     BODY: `{OBJECT}`
@@ -803,6 +879,8 @@ Update the image with the given `objectID`.
 
 Delete the image with the given `objectID`.
  
+ * Authorization: JWT
+  
  * Examples:  
     `DELETE https://localhost:8080/images/1`
     
@@ -855,7 +933,9 @@ EVTServiceTypeUnknown                       = 7
 #### GET `/links`
 
 Get all links.
-    
+
+ * Authorization: API Key
+ 
  * Query Parameter:  
       `ids` : Filter result by IDs
 
@@ -869,15 +949,17 @@ Get all links.
       * `data` or `error` field
 
 ------------------------------------------------------------------------------------
-#### GET `/links`
+#### POST `/links`
 
 Create a new link
-    
-* Examples:  
+ 
+ * Authorization: JWT
+  
+ * Examples:  
     `POST https://localhost:8080/links`  
     `BODY: {OBJECT}`
     
-* Returns
+ * Returns
     * Returns the created image on success.
     * Codes `201`/`40x`/`50x`
     * `data` or `error` field
@@ -887,6 +969,8 @@ Create a new link
 
 Get the link with the given `objectID`.
 
+ * Authorization: API Key
+ 
  * Examples:  
     `GET https://localhost:8080/links/1`
       
@@ -899,7 +983,9 @@ Get the link with the given `objectID`.
 #### PATCH `/links/{objectID}`
 
 Update the link with the given `objectID`.
-
+ 
+ * Authorization: JWT
+  
  * Examples:  
     `PATCH https://localhost:8080/links/1`  
     BODY: `{OBJECT}`
@@ -914,6 +1000,8 @@ Update the link with the given `objectID`.
 
 Delete the link with the given `objectID`.
  
+ * Authorization: JWT
+  
  * Examples:  
     `DELETE https://localhost:8080/links/1`
     
@@ -945,7 +1033,9 @@ A simple object that represents a place.
 #### GET `/places`
 
 Get all places.
-    
+
+ * Authorization: API Key
+ 
  * Query Parameter:  
       `ids` : Filter result by IDs
 
@@ -962,7 +1052,9 @@ Get all places.
 #### POST `/places`
 
 Create a new place
-    
+ 
+ * Authorization: JWT
+  
 * Examples:  
     `POST https://localhost:8080/places`  
     `BODY: {OBJECT}`
@@ -977,6 +1069,8 @@ Create a new place
 
 Get the place with the given `objectID`.
 
+ * Authorization: API Key
+ 
  * Examples:  
     `GET https://localhost:8080/places/1`
       
@@ -989,7 +1083,9 @@ Get the place with the given `objectID`.
 #### PATCH `/places/{objectID}`
 
 Update the place with the given `objectID`.
-
+ 
+ * Authorization: JWT
+  
  * Examples:  
     `PATCH https://localhost:8080/places/1`  
     BODY: `{OBJECT}`
@@ -1004,6 +1100,8 @@ Update the place with the given `objectID`.
 
 Delete the place with the given `objectID`.
  
+ * Authorization: JWT
+  
  * Examples:  
     `DELETE https://localhost:8080/places/1`
     
@@ -1028,6 +1126,8 @@ A simple object that represents a tag.
 
 Get all tags.
 
+ * Authorization: API Key
+ 
  * Query Parameter:  
       `name`: Filter result by name  
       `ids` : Filter result by IDs
@@ -1046,12 +1146,14 @@ Get all tags.
 #### POST `/tags`
 
 Create a new tag
-    
-* Examples:  
+ 
+ * Authorization: JWT
+  
+ * Examples:  
     `POST https://localhost:8080/tags`  
     `BODY: {OBJECT}`
     
-* Returns
+ * Returns
     * Returns the created tag on success.
     * Codes `201`/`40x`/`50x`
     * `data` or `error` field
@@ -1061,6 +1163,8 @@ Create a new tag
 
 Get the tag with the given `objectID`.
 
+ * Authorization: API Key
+ 
  * Examples:  
     `GET https://localhost:8080/tags/1`
       
@@ -1073,7 +1177,9 @@ Get the tag with the given `objectID`.
 #### PATCH `/tags/{objectID}`
 
 Update the tag with the given `objectID`.
-
+ 
+ * Authorization: JWT
+  
  * Examples:  
     `PATCH https://localhost:8080/tags/1`  
     BODY: `{OBJECT}`
@@ -1088,6 +1194,8 @@ Update the tag with the given `objectID`.
 
 Delete the tag with the given `objectID`.
  
+ * Authorization: JWT
+  
  * Examples:  
     `DELETE https://localhost:8080/tags/1`
     
@@ -1096,4 +1204,4 @@ Delete the tag with the given `objectID`.
      * Codes `204`/`40x`/`50x`
      * `data` or `error` field
      
-     
+------------------------------------------------------------------------------------
