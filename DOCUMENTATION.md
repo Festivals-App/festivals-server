@@ -93,10 +93,13 @@ The `error` field will always contain a string with the error message.
 ## Overview
 
 [Status](#server-status)
-* GET            `/info`
-* GET            `/version`
-* GET            `/health`
-
+* GET              `/info`
+* GET              `/version`
+* POST             `/update`
+* GET              `/health`
+* GET              `/log`
+* GET              `/log/trace`
+* 
 [Festivals](#festival-objects)
 * GET, POST             `/festivals` optional `name,ids
 * GET, PATCH, DELETE    `/festivals/{objectID}`
@@ -167,6 +170,17 @@ Info object
       * The version of the server application.
       * Codes `200`/`40x`/`50x`
       * server version as a string `text/plain`
+  
+------------------------------------------------------------------------------------
+#### POST `/update`
+
+Updates to the newest release on github and restarts the service.
+
+ * Authorization: JWT
+ * Returns
+      * The version of the server application.
+      * Codes `202`/`40x`/`50x`
+      * server version as a string `text/plain`
 
 ------------------------------------------------------------------------------------
 #### GET `/health`
@@ -176,6 +190,30 @@ Info object
       * Always returns HTTP status code 200
       * Code `200`
       * empty `text/plain`
+
+------------------------------------------------------------------------------------
+#### GET `/log`
+
+Returns the service log.
+
+ * Authorization: JWT
+ 
+ * Returns
+      * Returns a string
+      * Codes `200`/`40x`/`50x`
+      * empty or `text/plain`
+
+------------------------------------------------------------------------------------
+#### GET `/log/trace`
+
+Returns the service trace log.
+
+ * Authorization: JWT
+ 
+ * Returns
+      * Returns a string
+      * Codes `200`/`40x`/`50x`
+      * empty or `text/plain`
 
 ------------------------------------------------------------------------------------
 ## Festival Objects
