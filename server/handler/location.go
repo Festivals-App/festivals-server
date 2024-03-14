@@ -3,8 +3,13 @@ package handler
 import (
 	"database/sql"
 	"net/http"
+	"slices"
+	"strconv"
+	"time"
 
+	token "github.com/Festivals-App/festivals-identity-server/jwt"
 	servertools "github.com/Festivals-App/festivals-server-tools"
+	"github.com/Festivals-App/festivals-server/server/model"
 	"github.com/rs/zerolog/log"
 )
 
@@ -63,100 +68,243 @@ func GetLocationPlace(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	servertools.RespondJSON(w, http.StatusOK, places)
 }
 
-func SetImageForLocation(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func SetImageForLocation(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+
+	if claims.UserRole != token.ADMIN {
+		objectID, err := ObjectID(r)
+		if err != nil {
+			log.Error().Err(err).Msg("Failed to parse object id to SetImageForLocation.")
+			servertools.RespondError(w, http.StatusBadRequest, http.StatusText(http.StatusBadRequest))
+			return
+		}
+		if !slices.Contains(claims.UserLocations, objectID) {
+			log.Error().Msg("User is not authorized to SetImageForLocation.")
+			servertools.UnauthorizedResponse(w)
+			return
+		}
+	}
 
 	err := SetAssociation(db, r, "location", "image")
 	if err != nil {
 		log.Error().Err(err).Msg("failed to set image for location")
-		servertools.RespondError(w, http.StatusBadRequest, "failed to set image for location")
+		servertools.RespondError(w, http.StatusBadRequest, http.StatusText(http.StatusBadRequest))
 		return
 	}
 	servertools.RespondJSON(w, http.StatusOK, []interface{}{})
 }
 
-func SetLinkForLocation(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func SetLinkForLocation(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+
+	if claims.UserRole != token.ADMIN {
+		objectID, err := ObjectID(r)
+		if err != nil {
+			log.Error().Err(err).Msg("Failed to parse object id to SetLinkForLocation.")
+			servertools.RespondError(w, http.StatusBadRequest, http.StatusText(http.StatusBadRequest))
+			return
+		}
+		if !slices.Contains(claims.UserLocations, objectID) {
+			log.Error().Msg("User is not authorized to SetLinkForLocation.")
+			servertools.UnauthorizedResponse(w)
+			return
+		}
+	}
 
 	err := SetAssociation(db, r, "location", "link")
 	if err != nil {
 		log.Error().Err(err).Msg("")
-		servertools.RespondError(w, http.StatusBadRequest, "")
+		servertools.RespondError(w, http.StatusBadRequest, http.StatusText(http.StatusBadRequest))
 		return
 	}
 	servertools.RespondJSON(w, http.StatusOK, []interface{}{})
 }
 
-func SetPlaceForLocation(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func SetPlaceForLocation(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+
+	if claims.UserRole != token.ADMIN {
+		objectID, err := ObjectID(r)
+		if err != nil {
+			log.Error().Err(err).Msg("Failed to parse object id to SetPlaceForLocation.")
+			servertools.RespondError(w, http.StatusBadRequest, http.StatusText(http.StatusBadRequest))
+			return
+		}
+		if !slices.Contains(claims.UserLocations, objectID) {
+			log.Error().Msg("User is not authorized to SetPlaceForLocation.")
+			servertools.UnauthorizedResponse(w)
+			return
+		}
+	}
 
 	err := SetAssociation(db, r, "location", "place")
 	if err != nil {
 		log.Error().Err(err).Msg("failed to set place for location")
-		servertools.RespondError(w, http.StatusBadRequest, "failed to set place for location")
+		servertools.RespondError(w, http.StatusBadRequest, http.StatusText(http.StatusBadRequest))
 		return
 	}
 	servertools.RespondJSON(w, http.StatusOK, []interface{}{})
 }
 
-func RemoveImageForLocation(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func RemoveImageForLocation(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+
+	if claims.UserRole != token.ADMIN {
+		objectID, err := ObjectID(r)
+		if err != nil {
+			log.Error().Err(err).Msg("Failed to parse object id to RemoveImageForLocation.")
+			servertools.RespondError(w, http.StatusBadRequest, http.StatusText(http.StatusBadRequest))
+			return
+		}
+		if !slices.Contains(claims.UserLocations, objectID) {
+			log.Error().Msg("User is not authorized to RemoveImageForLocation.")
+			servertools.UnauthorizedResponse(w)
+			return
+		}
+	}
 
 	err := RemoveAssociation(db, r, "location", "image")
 	if err != nil {
 		log.Error().Err(err).Msg("failed to remove image of location")
-		servertools.RespondError(w, http.StatusBadRequest, "failed to remove image of location")
+		servertools.RespondError(w, http.StatusBadRequest, http.StatusText(http.StatusBadRequest))
 		return
 	}
 	servertools.RespondJSON(w, http.StatusOK, []interface{}{})
 }
 
-func RemoveLinkForLocation(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func RemoveLinkForLocation(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+
+	if claims.UserRole != token.ADMIN {
+		objectID, err := ObjectID(r)
+		if err != nil {
+			log.Error().Err(err).Msg("Failed to parse object id to RemoveLinkForLocation.")
+			servertools.RespondError(w, http.StatusBadRequest, http.StatusText(http.StatusBadRequest))
+			return
+		}
+		if !slices.Contains(claims.UserLocations, objectID) {
+			log.Error().Msg("User is not authorized to RemoveLinkForLocation.")
+			servertools.UnauthorizedResponse(w)
+			return
+		}
+	}
 
 	err := RemoveAssociation(db, r, "location", "link")
 	if err != nil {
 		log.Error().Err(err).Msg("failed to remove image from location")
-		servertools.RespondError(w, http.StatusBadRequest, "failed to remove image from location")
+		servertools.RespondError(w, http.StatusBadRequest, http.StatusText(http.StatusBadRequest))
 		return
 	}
 	servertools.RespondJSON(w, http.StatusOK, []interface{}{})
 }
 
-func RemovePlaceForLocation(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func RemovePlaceForLocation(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+
+	if claims.UserRole != token.ADMIN {
+		objectID, err := ObjectID(r)
+		if err != nil {
+			log.Error().Err(err).Msg("Failed to parse object id to RemovePlaceForLocation.")
+			servertools.RespondError(w, http.StatusBadRequest, http.StatusText(http.StatusBadRequest))
+			return
+		}
+		if !slices.Contains(claims.UserLocations, objectID) {
+			log.Error().Msg("User is not authorized to RemovePlaceForLocation.")
+			servertools.UnauthorizedResponse(w)
+			return
+		}
+	}
 
 	err := RemoveAssociation(db, r, "location", "place")
 	if err != nil {
 		log.Error().Err(err).Msg("failed to remove place of location")
-		servertools.RespondError(w, http.StatusBadRequest, "failed to remove place of location")
+		servertools.RespondError(w, http.StatusBadRequest, http.StatusText(http.StatusBadRequest))
 		return
 	}
 	servertools.RespondJSON(w, http.StatusOK, []interface{}{})
 }
 
-func CreateLocation(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func CreateLocation(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
+	if claims.UserRole != token.CREATOR && claims.UserRole != token.ADMIN {
+		log.Error().Msg("User is not authorized to create a location.")
+		servertools.UnauthorizedResponse(w)
+		return
+	}
 	locations, err := Create(db, r, "location")
 	if err != nil {
 		log.Error().Err(err).Msg("failed to create location")
-		servertools.RespondError(w, http.StatusBadRequest, "failed to create location")
+		servertools.RespondError(w, http.StatusBadRequest, http.StatusText(http.StatusBadRequest))
+		return
+	}
+
+	if len(locations) != 1 {
+		log.Error().Err(err).Msg("failed to retrieve location after creation")
+		servertools.RespondError(w, http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError))
+		return
+	}
+
+	err = registerLocationForUser(claims.UserID, strconv.Itoa(locations[0].(model.Location).ID), claims.Issuer, validator.Endpoint, validator.Client)
+	if err != nil {
+		retryToRegisterLocation(locations, validator, claims, w)
+		return
+	}
+
+	servertools.RespondJSON(w, http.StatusOK, locations)
+}
+
+func retryToRegisterLocation(locations []interface{}, validator *token.ValidationService, claims *token.UserClaims, w http.ResponseWriter) {
+
+	time.Sleep(10 * time.Second)
+
+	err := registerLocationForUser(claims.UserID, strconv.Itoa(locations[0].(model.Location).ID), claims.Issuer, validator.Endpoint, validator.Client)
+	if err != nil {
+		log.Error().Err(err).Msg("failed to retry to register location for user")
+		servertools.RespondError(w, http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError))
 		return
 	}
 	servertools.RespondJSON(w, http.StatusOK, locations)
 }
 
-func UpdateLocation(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func UpdateLocation(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+
+	if claims.UserRole != token.ADMIN {
+		objectID, err := ObjectID(r)
+		if err != nil {
+			log.Error().Err(err).Msg("Failed to parse object id to UpdateLocation.")
+			servertools.RespondError(w, http.StatusBadRequest, http.StatusText(http.StatusBadRequest))
+			return
+		}
+		if !slices.Contains(claims.UserLocations, objectID) {
+			log.Error().Msg("User is not authorized to UpdateLocation.")
+			servertools.UnauthorizedResponse(w)
+			return
+		}
+	}
 
 	locations, err := Update(db, r, "location")
 	if err != nil {
 		log.Error().Err(err).Msg("failed to update location")
-		servertools.RespondError(w, http.StatusBadRequest, "failed to update location")
+		servertools.RespondError(w, http.StatusBadRequest, http.StatusText(http.StatusBadRequest))
 		return
 	}
 	servertools.RespondJSON(w, http.StatusOK, locations)
 }
 
-func DeleteLocation(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func DeleteLocation(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+
+	if claims.UserRole != token.ADMIN {
+		objectID, err := ObjectID(r)
+		if err != nil {
+			log.Error().Err(err).Msg("Failed to parse object id to DeleteLocation.")
+			servertools.RespondError(w, http.StatusBadRequest, http.StatusText(http.StatusBadRequest))
+			return
+		}
+		if !slices.Contains(claims.UserLocations, objectID) {
+			log.Error().Msg("User is not authorized to DeleteLocation.")
+			servertools.UnauthorizedResponse(w)
+			return
+		}
+	}
 
 	err := Delete(db, r, "location")
 	if err != nil {
 		log.Error().Err(err).Msg("failed to delete location")
-		servertools.RespondError(w, http.StatusBadRequest, "failed to delete location")
+		servertools.RespondError(w, http.StatusBadRequest, http.StatusText(http.StatusBadRequest))
 		return
 	}
 	servertools.RespondJSON(w, http.StatusOK, nil)

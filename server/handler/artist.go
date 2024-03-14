@@ -3,8 +3,13 @@ package handler
 import (
 	"database/sql"
 	"net/http"
+	"slices"
+	"strconv"
+	"time"
 
+	token "github.com/Festivals-App/festivals-identity-server/jwt"
 	servertools "github.com/Festivals-App/festivals-server-tools"
+	"github.com/Festivals-App/festivals-server/server/model"
 	"github.com/rs/zerolog/log"
 )
 
@@ -63,7 +68,21 @@ func GetArtistTags(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	servertools.RespondJSON(w, http.StatusOK, tags)
 }
 
-func SetImageForArtist(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func SetImageForArtist(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+
+	if claims.UserRole != token.ADMIN {
+		objectID, err := ObjectID(r)
+		if err != nil {
+			log.Error().Err(err).Msg("Failed to parse object id to SetImageForArtist.")
+			servertools.RespondError(w, http.StatusBadRequest, http.StatusText(http.StatusBadRequest))
+			return
+		}
+		if !slices.Contains(claims.UserArtists, objectID) {
+			log.Error().Msg("User is not authorized to SetImageForArtist.")
+			servertools.UnauthorizedResponse(w)
+			return
+		}
+	}
 
 	err := SetAssociation(db, r, "artist", "image")
 	if err != nil {
@@ -74,7 +93,21 @@ func SetImageForArtist(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	servertools.RespondJSON(w, http.StatusOK, []interface{}{})
 }
 
-func SetLinkForArtist(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func SetLinkForArtist(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+
+	if claims.UserRole != token.ADMIN {
+		objectID, err := ObjectID(r)
+		if err != nil {
+			log.Error().Err(err).Msg("Failed to parse object id to SetLinkForArtist.")
+			servertools.RespondError(w, http.StatusBadRequest, http.StatusText(http.StatusBadRequest))
+			return
+		}
+		if !slices.Contains(claims.UserArtists, objectID) {
+			log.Error().Msg("User is not authorized to SetLinkForArtist.")
+			servertools.UnauthorizedResponse(w)
+			return
+		}
+	}
 
 	err := SetAssociation(db, r, "artist", "link")
 	if err != nil {
@@ -85,7 +118,21 @@ func SetLinkForArtist(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	servertools.RespondJSON(w, http.StatusOK, []interface{}{})
 }
 
-func SetTagForArtist(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func SetTagForArtist(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+
+	if claims.UserRole != token.ADMIN {
+		objectID, err := ObjectID(r)
+		if err != nil {
+			log.Error().Err(err).Msg("Failed to parse object id to SetTagForArtist.")
+			servertools.RespondError(w, http.StatusBadRequest, http.StatusText(http.StatusBadRequest))
+			return
+		}
+		if !slices.Contains(claims.UserArtists, objectID) {
+			log.Error().Msg("User is not authorized to SetTagForArtist.")
+			servertools.UnauthorizedResponse(w)
+			return
+		}
+	}
 
 	err := SetAssociation(db, r, "artist", "tag")
 	if err != nil {
@@ -96,7 +143,21 @@ func SetTagForArtist(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	servertools.RespondJSON(w, http.StatusOK, []interface{}{})
 }
 
-func RemoveImageForArtist(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func RemoveImageForArtist(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+
+	if claims.UserRole != token.ADMIN {
+		objectID, err := ObjectID(r)
+		if err != nil {
+			log.Error().Err(err).Msg("Failed to parse object id to RemoveImageForArtist.")
+			servertools.RespondError(w, http.StatusBadRequest, http.StatusText(http.StatusBadRequest))
+			return
+		}
+		if !slices.Contains(claims.UserArtists, objectID) {
+			log.Error().Msg("User is not authorized to RemoveImageForArtist.")
+			servertools.UnauthorizedResponse(w)
+			return
+		}
+	}
 
 	err := RemoveAssociation(db, r, "artist", "image")
 	if err != nil {
@@ -107,7 +168,21 @@ func RemoveImageForArtist(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	servertools.RespondJSON(w, http.StatusOK, []interface{}{})
 }
 
-func RemoveLinkForArtist(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func RemoveLinkForArtist(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+
+	if claims.UserRole != token.ADMIN {
+		objectID, err := ObjectID(r)
+		if err != nil {
+			log.Error().Err(err).Msg("Failed to parse object id to RemoveLinkForArtist.")
+			servertools.RespondError(w, http.StatusBadRequest, http.StatusText(http.StatusBadRequest))
+			return
+		}
+		if !slices.Contains(claims.UserArtists, objectID) {
+			log.Error().Msg("User is not authorized to RemoveLinkForArtist.")
+			servertools.UnauthorizedResponse(w)
+			return
+		}
+	}
 
 	err := RemoveAssociation(db, r, "artist", "link")
 	if err != nil {
@@ -118,7 +193,21 @@ func RemoveLinkForArtist(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	servertools.RespondJSON(w, http.StatusOK, []interface{}{})
 }
 
-func RemoveTagForArtist(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func RemoveTagForArtist(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+
+	if claims.UserRole != token.ADMIN {
+		objectID, err := ObjectID(r)
+		if err != nil {
+			log.Error().Err(err).Msg("Failed to parse object id to RemoveTagForArtist.")
+			servertools.RespondError(w, http.StatusBadRequest, http.StatusText(http.StatusBadRequest))
+			return
+		}
+		if !slices.Contains(claims.UserArtists, objectID) {
+			log.Error().Msg("User is not authorized to RemoveTagForArtist.")
+			servertools.UnauthorizedResponse(w)
+			return
+		}
+	}
 
 	err := RemoveAssociation(db, r, "artist", "tag")
 	if err != nil {
@@ -129,18 +218,65 @@ func RemoveTagForArtist(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	servertools.RespondJSON(w, http.StatusOK, []interface{}{})
 }
 
-func CreateArtist(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func CreateArtist(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
-	artist, err := Create(db, r, "artist")
-	if err != nil {
-		log.Error().Err(err).Msg("failed to create artist")
-		servertools.RespondError(w, http.StatusInternalServerError, "failed to create artist")
+	if claims.UserRole != token.CREATOR && claims.UserRole != token.ADMIN {
+		log.Error().Msg("User is not authorized to create a tag.")
+		servertools.UnauthorizedResponse(w)
 		return
 	}
-	servertools.RespondJSON(w, http.StatusOK, artist)
+
+	artists, err := Create(db, r, "artist")
+	if err != nil {
+		log.Error().Err(err).Msg("failed to create artist")
+		servertools.RespondError(w, http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError))
+		return
+	}
+
+	if len(artists) != 1 {
+		log.Error().Err(err).Msg("failed to retrieve artist after creation")
+		servertools.RespondError(w, http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError))
+		return
+	}
+
+	err = registerArtistForUser(claims.UserID, strconv.Itoa(artists[0].(model.Artist).ID), claims.Issuer, validator.Endpoint, validator.Client)
+	if err != nil {
+		retryToRegisterArtist(artists, validator, claims, w)
+		return
+	}
+
+	servertools.RespondJSON(w, http.StatusOK, artists)
 }
 
-func UpdateArtist(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func retryToRegisterArtist(artists []interface{}, validator *token.ValidationService, claims *token.UserClaims, w http.ResponseWriter) {
+
+	time.Sleep(10 * time.Second)
+
+	err := registerArtistForUser(claims.UserID, strconv.Itoa(artists[0].(model.Artist).ID), claims.Issuer, validator.Endpoint, validator.Client)
+	if err != nil {
+		log.Error().Err(err).Msg("failed to retry to register artist for user")
+		servertools.RespondError(w, http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError))
+		return
+	}
+
+	servertools.RespondJSON(w, http.StatusOK, artists)
+}
+
+func UpdateArtist(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+
+	if claims.UserRole != token.ADMIN {
+		objectID, err := ObjectID(r)
+		if err != nil {
+			log.Error().Err(err).Msg("Failed to parse object id to UpdateArtist.")
+			servertools.RespondError(w, http.StatusBadRequest, http.StatusText(http.StatusBadRequest))
+			return
+		}
+		if !slices.Contains(claims.UserArtists, objectID) {
+			log.Error().Msg("User is not authorized to UpdateArtist.")
+			servertools.UnauthorizedResponse(w)
+			return
+		}
+	}
 
 	artists, err := Update(db, r, "artist")
 	if err != nil {
@@ -151,12 +287,26 @@ func UpdateArtist(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	servertools.RespondJSON(w, http.StatusOK, artists)
 }
 
-func DeleteArtist(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func DeleteArtist(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+
+	if claims.UserRole != token.ADMIN {
+		objectID, err := ObjectID(r)
+		if err != nil {
+			log.Error().Err(err).Msg("Failed to parse object id to DeleteArtist.")
+			servertools.RespondError(w, http.StatusBadRequest, http.StatusText(http.StatusBadRequest))
+			return
+		}
+		if !slices.Contains(claims.UserArtists, objectID) {
+			log.Error().Msg("User is not authorized to DeleteArtist.")
+			servertools.UnauthorizedResponse(w)
+			return
+		}
+	}
 
 	err := Delete(db, r, "artist")
 	if err != nil {
 		log.Error().Err(err).Msg("failed to delte artist")
-		servertools.RespondError(w, http.StatusInternalServerError, "failed to delte artist")
+		servertools.RespondError(w, http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError))
 		return
 	}
 	servertools.RespondJSON(w, http.StatusOK, nil)

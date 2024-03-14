@@ -3,8 +3,13 @@ package handler
 import (
 	"database/sql"
 	"net/http"
+	"slices"
+	"strconv"
+	"time"
 
+	token "github.com/Festivals-App/festivals-identity-server/jwt"
 	servertools "github.com/Festivals-App/festivals-server-tools"
+	"github.com/Festivals-App/festivals-server/server/model"
 	"github.com/rs/zerolog/log"
 )
 
@@ -30,7 +35,13 @@ func GetPlace(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	servertools.RespondJSON(w, http.StatusOK, places)
 }
 
-func CreatePlace(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func CreatePlace(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+
+	if claims.UserRole != token.CREATOR && claims.UserRole != token.ADMIN {
+		log.Error().Msg("User is not authorized to create a tag.")
+		servertools.UnauthorizedResponse(w)
+		return
+	}
 
 	places, err := Create(db, r, "place")
 	if err != nil {
@@ -38,10 +49,50 @@ func CreatePlace(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 		servertools.RespondError(w, http.StatusBadRequest, "failed to create place")
 		return
 	}
+
+	if len(places) != 1 {
+		log.Error().Err(err).Msg("failed to retrieve place after creation")
+		servertools.RespondError(w, http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError))
+		return
+	}
+
+	err = registerPlaceForUser(claims.UserID, strconv.Itoa(places[0].(model.Place).ID), claims.Issuer, validator.Endpoint, validator.Client)
+	if err != nil {
+		retryToRegisterPlace(places, validator, claims, w)
+		return
+	}
+
 	servertools.RespondJSON(w, http.StatusOK, places)
 }
 
-func UpdatePlace(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func retryToRegisterPlace(places []interface{}, validator *token.ValidationService, claims *token.UserClaims, w http.ResponseWriter) {
+
+	time.Sleep(10 * time.Second)
+
+	err := registerPlaceForUser(claims.UserID, strconv.Itoa(places[0].(model.Place).ID), claims.Issuer, validator.Endpoint, validator.Client)
+	if err != nil {
+		log.Error().Err(err).Msg("failed to retry to register place for user")
+		servertools.RespondError(w, http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError))
+		return
+	}
+	servertools.RespondJSON(w, http.StatusOK, places)
+}
+
+func UpdatePlace(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+
+	if claims.UserRole != token.ADMIN {
+		objectID, err := ObjectID(r)
+		if err != nil {
+			log.Error().Err(err).Msg("Failed to parse object id to UpdatePlace.")
+			servertools.RespondError(w, http.StatusBadRequest, http.StatusText(http.StatusBadRequest))
+			return
+		}
+		if !slices.Contains(claims.UserPlaces, objectID) {
+			log.Error().Msg("User is not authorized to UpdatePlace.")
+			servertools.UnauthorizedResponse(w)
+			return
+		}
+	}
 
 	places, err := Update(db, r, "place")
 	if err != nil {
@@ -52,7 +103,27 @@ func UpdatePlace(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	servertools.RespondJSON(w, http.StatusOK, places)
 }
 
-func DeletePlace(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func DeletePlace(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+
+	if claims.UserRole != token.ADMIN {
+		objectID, err := ObjectID(r)
+		if err != nil {
+			log.Error().Err(err).Msg("Failed to parse object id to DeletePlace.")
+			servertools.RespondError(w, http.StatusBadRequest, http.StatusText(http.StatusBadRequest))
+			return
+		}
+		if !slices.Contains(claims.UserPlaces, objectID) {
+			log.Error().Msg("User is not authorized to DeletePlace.")
+			servertools.UnauthorizedResponse(w)
+			return
+		}
+	}
+
+	if claims.UserRole != token.ADMIN {
+		log.Error().Msg("User is not authorized to create a tag.")
+		servertools.UnauthorizedResponse(w)
+		return
+	}
 
 	err := Delete(db, r, "place")
 	if err != nil {

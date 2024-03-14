@@ -3,8 +3,13 @@ package handler
 import (
 	"database/sql"
 	"net/http"
+	"slices"
+	"strconv"
+	"time"
 
+	token "github.com/Festivals-App/festivals-identity-server/jwt"
 	servertools "github.com/Festivals-App/festivals-server-tools"
+	"github.com/Festivals-App/festivals-server/server/model"
 	"github.com/rs/zerolog/log"
 )
 
@@ -41,7 +46,13 @@ func GetTagFestivals(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	servertools.RespondJSON(w, http.StatusOK, images)
 }
 
-func CreateTag(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func CreateTag(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+
+	if claims.UserRole != token.CREATOR && claims.UserRole != token.ADMIN {
+		log.Error().Msg("User is not authorized to create a tag.")
+		servertools.UnauthorizedResponse(w)
+		return
+	}
 
 	tags, err := Create(db, r, "tag")
 	if err != nil {
@@ -49,10 +60,50 @@ func CreateTag(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 		servertools.RespondError(w, http.StatusBadRequest, "failed to create tag")
 		return
 	}
+
+	if len(tags) != 1 {
+		log.Error().Err(err).Msg("failed to retrieve tag after creation")
+		servertools.RespondError(w, http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError))
+		return
+	}
+
+	err = registerTagForUser(claims.UserID, strconv.Itoa(tags[0].(model.Tag).ID), claims.Issuer, validator.Endpoint, validator.Client)
+	if err != nil {
+		retryToRegisterTag(tags, validator, claims, w)
+		return
+	}
+
 	servertools.RespondJSON(w, http.StatusOK, tags)
 }
 
-func UpdateTag(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func retryToRegisterTag(tags []interface{}, validator *token.ValidationService, claims *token.UserClaims, w http.ResponseWriter) {
+
+	time.Sleep(10 * time.Second)
+
+	err := registerTagForUser(claims.UserID, strconv.Itoa(tags[0].(model.Tag).ID), claims.Issuer, validator.Endpoint, validator.Client)
+	if err != nil {
+		log.Error().Err(err).Msg("failed to retry to register tag for user")
+		servertools.RespondError(w, http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError))
+		return
+	}
+	servertools.RespondJSON(w, http.StatusOK, tags)
+}
+
+func UpdateTag(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+
+	if claims.UserRole != token.ADMIN {
+		objectID, err := ObjectID(r)
+		if err != nil {
+			log.Error().Err(err).Msg("Failed to parse object id to UpdateTag.")
+			servertools.RespondError(w, http.StatusBadRequest, http.StatusText(http.StatusBadRequest))
+			return
+		}
+		if !slices.Contains(claims.UserTags, objectID) {
+			log.Error().Msg("User is not authorized to UpdateTag.")
+			servertools.UnauthorizedResponse(w)
+			return
+		}
+	}
 
 	tags, err := Update(db, r, "tag")
 	if err != nil {
@@ -63,7 +114,21 @@ func UpdateTag(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	servertools.RespondJSON(w, http.StatusOK, tags)
 }
 
-func DeleteTag(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func DeleteTag(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+
+	if claims.UserRole != token.ADMIN {
+		objectID, err := ObjectID(r)
+		if err != nil {
+			log.Error().Err(err).Msg("Failed to parse object id to DeleteTag.")
+			servertools.RespondError(w, http.StatusBadRequest, http.StatusText(http.StatusBadRequest))
+			return
+		}
+		if !slices.Contains(claims.UserTags, objectID) {
+			log.Error().Msg("User is not authorized to DeleteTag.")
+			servertools.UnauthorizedResponse(w)
+			return
+		}
+	}
 
 	err := Delete(db, r, "tag")
 	if err != nil {

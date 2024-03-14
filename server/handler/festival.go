@@ -3,8 +3,12 @@ package handler
 import (
 	"database/sql"
 	"net/http"
+	"strconv"
+	"time"
 
+	token "github.com/Festivals-App/festivals-identity-server/jwt"
 	servertools "github.com/Festivals-App/festivals-server-tools"
+	"github.com/Festivals-App/festivals-server/server/model"
 	"github.com/rs/zerolog/log"
 )
 
@@ -85,7 +89,7 @@ func GetFestivalTags(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	servertools.RespondJSON(w, http.StatusOK, tags)
 }
 
-func SetEventForFestival(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func SetEventForFestival(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	err := SetAssociation(db, r, "festival", "event")
 	if err != nil {
@@ -96,7 +100,7 @@ func SetEventForFestival(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	servertools.RespondJSON(w, http.StatusOK, []interface{}{})
 }
 
-func SetImageForFestival(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func SetImageForFestival(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	err := SetAssociation(db, r, "festival", "image")
 	if err != nil {
@@ -107,7 +111,7 @@ func SetImageForFestival(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	servertools.RespondJSON(w, http.StatusOK, []interface{}{})
 }
 
-func SetLinkForFestival(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func SetLinkForFestival(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	err := SetAssociation(db, r, "festival", "link")
 	if err != nil {
@@ -118,7 +122,7 @@ func SetLinkForFestival(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	servertools.RespondJSON(w, http.StatusOK, []interface{}{})
 }
 
-func SetPlaceForFestival(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func SetPlaceForFestival(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	err := SetAssociation(db, r, "festival", "place")
 	if err != nil {
@@ -129,7 +133,7 @@ func SetPlaceForFestival(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	servertools.RespondJSON(w, http.StatusOK, []interface{}{})
 }
 
-func SetTagForFestival(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func SetTagForFestival(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	err := SetAssociation(db, r, "festival", "tag")
 	if err != nil {
@@ -140,7 +144,7 @@ func SetTagForFestival(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	servertools.RespondJSON(w, http.StatusOK, []interface{}{})
 }
 
-func RemoveImageForFestival(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func RemoveImageForFestival(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	err := RemoveAssociation(db, r, "festival", "image")
 	if err != nil {
@@ -151,7 +155,7 @@ func RemoveImageForFestival(db *sql.DB, w http.ResponseWriter, r *http.Request) 
 	servertools.RespondJSON(w, http.StatusOK, []interface{}{})
 }
 
-func RemoveLinkForFestival(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func RemoveLinkForFestival(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	err := RemoveAssociation(db, r, "festival", "link")
 	if err != nil {
@@ -162,7 +166,7 @@ func RemoveLinkForFestival(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	servertools.RespondJSON(w, http.StatusOK, []interface{}{})
 }
 
-func RemovePlaceForFestival(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func RemovePlaceForFestival(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	err := RemoveAssociation(db, r, "festival", "place")
 	if err != nil {
@@ -173,7 +177,7 @@ func RemovePlaceForFestival(db *sql.DB, w http.ResponseWriter, r *http.Request) 
 	servertools.RespondJSON(w, http.StatusOK, []interface{}{})
 }
 
-func RemoveTagForFestival(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func RemoveTagForFestival(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	err := RemoveAssociation(db, r, "festival", "tag")
 	if err != nil {
@@ -184,18 +188,50 @@ func RemoveTagForFestival(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	servertools.RespondJSON(w, http.StatusOK, []interface{}{})
 }
 
-func CreateFestival(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func CreateFestival(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
-	festival, err := Create(db, r, "festival")
+	if claims.UserRole != token.CREATOR && claims.UserRole != token.ADMIN {
+		log.Error().Msg("User is not authorized to create a tag.")
+		servertools.UnauthorizedResponse(w)
+		return
+	}
+
+	festivals, err := Create(db, r, "festival")
 	if err != nil {
 		log.Error().Err(err).Msg("failed to create festival")
 		servertools.RespondError(w, http.StatusBadRequest, "failed to create festival")
 		return
 	}
-	servertools.RespondJSON(w, http.StatusOK, festival)
+
+	if len(festivals) != 1 {
+		log.Error().Err(err).Msg("failed to retrieve festival after creation")
+		servertools.RespondError(w, http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError))
+		return
+	}
+
+	err = registerFestivalForUser(claims.UserID, strconv.Itoa(festivals[0].(model.Festival).ID), claims.Issuer, validator.Endpoint, validator.Client)
+	if err != nil {
+		retryToRegisterFestival(festivals, validator, claims, w)
+		return
+	}
+
+	servertools.RespondJSON(w, http.StatusOK, festivals)
 }
 
-func UpdateFestival(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func retryToRegisterFestival(festivals []interface{}, validator *token.ValidationService, claims *token.UserClaims, w http.ResponseWriter) {
+
+	time.Sleep(10 * time.Second)
+
+	err := registerFestivalForUser(claims.UserID, strconv.Itoa(festivals[0].(model.Festival).ID), claims.Issuer, validator.Endpoint, validator.Client)
+	if err != nil {
+		log.Error().Err(err).Msg("failed to retry to register festival for user")
+		servertools.RespondError(w, http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError))
+		return
+	}
+	servertools.RespondJSON(w, http.StatusOK, festivals)
+}
+
+func UpdateFestival(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	festivals, err := Update(db, r, "festival")
 	if err != nil {
@@ -206,7 +242,7 @@ func UpdateFestival(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	servertools.RespondJSON(w, http.StatusOK, festivals)
 }
 
-func DeleteFestival(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func DeleteFestival(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	err := Delete(db, r, "festival")
 	if err != nil {

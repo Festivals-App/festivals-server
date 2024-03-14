@@ -3,8 +3,13 @@ package handler
 import (
 	"database/sql"
 	"net/http"
+	"slices"
+	"strconv"
+	"time"
 
+	token "github.com/Festivals-App/festivals-identity-server/jwt"
 	servertools "github.com/Festivals-App/festivals-server-tools"
+	"github.com/Festivals-App/festivals-server/server/model"
 	"github.com/rs/zerolog/log"
 )
 
@@ -74,7 +79,21 @@ func GetEventLocation(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	servertools.RespondJSON(w, http.StatusOK, locations)
 }
 
-func SetImageForEvent(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func SetImageForEvent(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+
+	if claims.UserRole != token.ADMIN {
+		objectID, err := ObjectID(r)
+		if err != nil {
+			log.Error().Err(err).Msg("Failed to parse object id to SetImageForEvent.")
+			servertools.RespondError(w, http.StatusBadRequest, http.StatusText(http.StatusBadRequest))
+			return
+		}
+		if !slices.Contains(claims.UserEvents, objectID) {
+			log.Error().Msg("User is not authorized to SetImageForEvent.")
+			servertools.UnauthorizedResponse(w)
+			return
+		}
+	}
 
 	err := SetAssociation(db, r, "event", "image")
 	if err != nil {
@@ -85,7 +104,21 @@ func SetImageForEvent(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	servertools.RespondJSON(w, http.StatusOK, []interface{}{})
 }
 
-func SetArtistForEvent(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func SetArtistForEvent(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+
+	if claims.UserRole != token.ADMIN {
+		objectID, err := ObjectID(r)
+		if err != nil {
+			log.Error().Err(err).Msg("Failed to parse object id to SetArtistForEvent.")
+			servertools.RespondError(w, http.StatusBadRequest, http.StatusText(http.StatusBadRequest))
+			return
+		}
+		if !slices.Contains(claims.UserEvents, objectID) {
+			log.Error().Msg("User is not authorized to SetArtistForEvent.")
+			servertools.UnauthorizedResponse(w)
+			return
+		}
+	}
 
 	err := SetAssociation(db, r, "event", "artist")
 	if err != nil {
@@ -96,7 +129,21 @@ func SetArtistForEvent(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	servertools.RespondJSON(w, http.StatusOK, []interface{}{})
 }
 
-func SetLocationForEvent(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func SetLocationForEvent(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+
+	if claims.UserRole != token.ADMIN {
+		objectID, err := ObjectID(r)
+		if err != nil {
+			log.Error().Err(err).Msg("Failed to parse object id to SetLocationForEvent.")
+			servertools.RespondError(w, http.StatusBadRequest, http.StatusText(http.StatusBadRequest))
+			return
+		}
+		if !slices.Contains(claims.UserEvents, objectID) {
+			log.Error().Msg("User is not authorized to SetLocationForEvent.")
+			servertools.UnauthorizedResponse(w)
+			return
+		}
+	}
 
 	err := SetAssociation(db, r, "event", "location")
 	if err != nil {
@@ -107,7 +154,21 @@ func SetLocationForEvent(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	servertools.RespondJSON(w, http.StatusOK, []interface{}{})
 }
 
-func RemoveImageForEvent(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func RemoveImageForEvent(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+
+	if claims.UserRole != token.ADMIN {
+		objectID, err := ObjectID(r)
+		if err != nil {
+			log.Error().Err(err).Msg("Failed to parse object id to RemoveImageForEvent.")
+			servertools.RespondError(w, http.StatusBadRequest, http.StatusText(http.StatusBadRequest))
+			return
+		}
+		if !slices.Contains(claims.UserEvents, objectID) {
+			log.Error().Msg("User is not authorized to RemoveImageForEvent.")
+			servertools.UnauthorizedResponse(w)
+			return
+		}
+	}
 
 	err := RemoveAssociation(db, r, "event", "image")
 	if err != nil {
@@ -118,7 +179,21 @@ func RemoveImageForEvent(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	servertools.RespondJSON(w, http.StatusOK, []interface{}{})
 }
 
-func RemoveArtistForEvent(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func RemoveArtistForEvent(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+
+	if claims.UserRole != token.ADMIN {
+		objectID, err := ObjectID(r)
+		if err != nil {
+			log.Error().Err(err).Msg("Failed to parse object id to RemoveArtistForEvent.")
+			servertools.RespondError(w, http.StatusBadRequest, http.StatusText(http.StatusBadRequest))
+			return
+		}
+		if !slices.Contains(claims.UserEvents, objectID) {
+			log.Error().Msg("User is not authorized to RemoveArtistForEvent.")
+			servertools.UnauthorizedResponse(w)
+			return
+		}
+	}
 
 	err := RemoveAssociation(db, r, "event", "artist")
 	if err != nil {
@@ -129,7 +204,21 @@ func RemoveArtistForEvent(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	servertools.RespondJSON(w, http.StatusOK, []interface{}{})
 }
 
-func RemoveLocationForEvent(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func RemoveLocationForEvent(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+
+	if claims.UserRole != token.ADMIN {
+		objectID, err := ObjectID(r)
+		if err != nil {
+			log.Error().Err(err).Msg("Failed to parse object id to RemoveLocationForEvent.")
+			servertools.RespondError(w, http.StatusBadRequest, http.StatusText(http.StatusBadRequest))
+			return
+		}
+		if !slices.Contains(claims.UserEvents, objectID) {
+			log.Error().Msg("User is not authorized to RemoveLocationForEvent.")
+			servertools.UnauthorizedResponse(w)
+			return
+		}
+	}
 
 	err := RemoveAssociation(db, r, "event", "location")
 	if err != nil {
@@ -140,34 +229,94 @@ func RemoveLocationForEvent(db *sql.DB, w http.ResponseWriter, r *http.Request) 
 	servertools.RespondJSON(w, http.StatusOK, []interface{}{})
 }
 
-func CreateEvent(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func CreateEvent(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+
+	if claims.UserRole != token.CREATOR && claims.UserRole != token.ADMIN {
+		log.Error().Msg("User is not authorized to create a tag.")
+		servertools.UnauthorizedResponse(w)
+		return
+	}
 
 	events, err := Create(db, r, "event")
 	if err != nil {
 		log.Error().Err(err).Msg("failed to create event")
-		servertools.RespondError(w, http.StatusBadRequest, "failed to create event")
+		servertools.RespondError(w, http.StatusBadRequest, http.StatusText(http.StatusBadRequest))
+		return
+	}
+
+	if len(events) != 1 {
+		log.Error().Err(err).Msg("failed to retrieve event after creation")
+		servertools.RespondError(w, http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError))
+		return
+	}
+
+	err = registerEventForUser(claims.UserID, strconv.Itoa(events[0].(model.Event).ID), claims.Issuer, validator.Endpoint, validator.Client)
+	if err != nil {
+		retryToRegisterEvent(events, validator, claims, w)
+		return
+	}
+
+	servertools.RespondJSON(w, http.StatusOK, events)
+}
+
+func retryToRegisterEvent(events []interface{}, validator *token.ValidationService, claims *token.UserClaims, w http.ResponseWriter) {
+
+	time.Sleep(10 * time.Second)
+
+	err := registerEventForUser(claims.UserID, strconv.Itoa(events[0].(model.Event).ID), claims.Issuer, validator.Endpoint, validator.Client)
+	if err != nil {
+		log.Error().Err(err).Msg("failed to retry to register event for user")
+		servertools.RespondError(w, http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError))
 		return
 	}
 	servertools.RespondJSON(w, http.StatusOK, events)
 }
 
-func UpdateEvent(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func UpdateEvent(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+
+	if claims.UserRole != token.ADMIN {
+		objectID, err := ObjectID(r)
+		if err != nil {
+			log.Error().Err(err).Msg("Failed to parse object id to UpdateEvent.")
+			servertools.RespondError(w, http.StatusBadRequest, http.StatusText(http.StatusBadRequest))
+			return
+		}
+		if !slices.Contains(claims.UserImages, objectID) {
+			log.Error().Msg("User is not authorized to UpdateEvent.")
+			servertools.UnauthorizedResponse(w)
+			return
+		}
+	}
 
 	events, err := Update(db, r, "event")
 	if err != nil {
 		log.Error().Err(err).Msg("failed to update event")
-		servertools.RespondError(w, http.StatusBadRequest, "failed to update event")
+		servertools.RespondError(w, http.StatusBadRequest, http.StatusText(http.StatusBadRequest))
 		return
 	}
 	servertools.RespondJSON(w, http.StatusOK, events)
 }
 
-func DeleteEvent(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func DeleteEvent(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+
+	if claims.UserRole != token.ADMIN {
+		objectID, err := ObjectID(r)
+		if err != nil {
+			log.Error().Err(err).Msg("Failed to parse object id to DeleteEvent.")
+			servertools.RespondError(w, http.StatusBadRequest, http.StatusText(http.StatusBadRequest))
+			return
+		}
+		if !slices.Contains(claims.UserImages, objectID) {
+			log.Error().Msg("User is not authorized to DeleteEvent.")
+			servertools.UnauthorizedResponse(w)
+			return
+		}
+	}
 
 	err := Delete(db, r, "event")
 	if err != nil {
 		log.Error().Err(err).Msg("failed to delete event")
-		servertools.RespondError(w, http.StatusBadRequest, "failed to delete event")
+		servertools.RespondError(w, http.StatusBadRequest, http.StatusText(http.StatusBadRequest))
 		return
 	}
 	servertools.RespondJSON(w, http.StatusOK, nil)
