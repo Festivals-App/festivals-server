@@ -53,7 +53,7 @@ func (s *Server) setValidation() {
 
 	config := s.Config
 
-	val := token.NewValidationService(config.IdentityEndpoint, config.TLSCert, config.TLSKey, config.ServiceKey)
+	val := token.NewValidationService(config.IdentityEndpoint, config.TLSCert, config.TLSKey, config.ServiceKey, false)
 	if val == nil {
 		log.Fatal().Msg("Failed to create validator.")
 	}
