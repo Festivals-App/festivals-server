@@ -42,14 +42,14 @@ func (s *Server) initialize(config *config.Config) {
 	s.Config = config
 	s.Router = chi.NewRouter()
 
-	s.setValidation()
+	s.setIdentityService()
 	s.setDatabase()
 	s.setTLSHandling()
 	s.setMiddleware()
 	s.setRoutes(config)
 }
 
-func (s *Server) setValidation() {
+func (s *Server) setIdentityService() {
 
 	config := s.Config
 
