@@ -249,7 +249,7 @@ func CreateLocation(validator *token.ValidationService, claims *token.UserClaims
 
 func retryToRegisterLocation(locations []interface{}, validator *token.ValidationService, claims *token.UserClaims, w http.ResponseWriter) {
 
-	time.Sleep(10 * time.Second)
+	time.Sleep(2 * time.Second)
 
 	err := registerLocationForUser(claims.UserID, strconv.Itoa(locations[0].(model.Location).ID), claims.Issuer, validator.Endpoint, validator.Client)
 	if err != nil {
