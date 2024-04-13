@@ -42,7 +42,7 @@ func registerTagForUser(userID string, tagID string, endpoint string, serviceKey
 
 func registerEntityForUser(userID string, entity string, entityID string, endpoint string, serviceKey string, client *http.Client) error {
 
-	requestString := endpoint + "/users/" + userID + "/" + entity + "/" + entityID
+	requestString := "https://" + endpoint + "/users/" + userID + "/" + entity + "/" + entityID
 	log.Info().Msg("requestString: '" + requestString + "'  endpoint value: '" + endpoint + "'")
 	request, err := http.NewRequest(http.MethodPost, requestString, nil)
 	if err != nil {
