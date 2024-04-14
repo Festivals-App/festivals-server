@@ -9,6 +9,7 @@ import (
 
 	token "github.com/Festivals-App/festivals-identity-server/jwt"
 	servertools "github.com/Festivals-App/festivals-server-tools"
+	"github.com/Festivals-App/festivals-server/server/config"
 	"github.com/Festivals-App/festivals-server/server/model"
 	"github.com/rs/zerolog/log"
 )
@@ -79,7 +80,7 @@ func GetEventLocation(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	servertools.RespondJSON(w, http.StatusOK, locations)
 }
 
-func SetImageForEvent(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func SetImageForEvent(validator *token.ValidationService, claims *token.UserClaims, config *config.Config, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	if claims.UserRole != token.ADMIN {
 		objectID, err := ObjectID(r)
@@ -104,7 +105,7 @@ func SetImageForEvent(validator *token.ValidationService, claims *token.UserClai
 	servertools.RespondJSON(w, http.StatusOK, []interface{}{})
 }
 
-func SetArtistForEvent(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func SetArtistForEvent(validator *token.ValidationService, claims *token.UserClaims, config *config.Config, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	if claims.UserRole != token.ADMIN {
 		objectID, err := ObjectID(r)
@@ -129,7 +130,7 @@ func SetArtistForEvent(validator *token.ValidationService, claims *token.UserCla
 	servertools.RespondJSON(w, http.StatusOK, []interface{}{})
 }
 
-func SetLocationForEvent(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func SetLocationForEvent(validator *token.ValidationService, claims *token.UserClaims, config *config.Config, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	if claims.UserRole != token.ADMIN {
 		objectID, err := ObjectID(r)
@@ -154,7 +155,7 @@ func SetLocationForEvent(validator *token.ValidationService, claims *token.UserC
 	servertools.RespondJSON(w, http.StatusOK, []interface{}{})
 }
 
-func RemoveImageForEvent(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func RemoveImageForEvent(validator *token.ValidationService, claims *token.UserClaims, config *config.Config, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	if claims.UserRole != token.ADMIN {
 		objectID, err := ObjectID(r)
@@ -179,7 +180,7 @@ func RemoveImageForEvent(validator *token.ValidationService, claims *token.UserC
 	servertools.RespondJSON(w, http.StatusOK, []interface{}{})
 }
 
-func RemoveArtistForEvent(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func RemoveArtistForEvent(validator *token.ValidationService, claims *token.UserClaims, config *config.Config, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	if claims.UserRole != token.ADMIN {
 		objectID, err := ObjectID(r)
@@ -204,7 +205,7 @@ func RemoveArtistForEvent(validator *token.ValidationService, claims *token.User
 	servertools.RespondJSON(w, http.StatusOK, []interface{}{})
 }
 
-func RemoveLocationForEvent(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func RemoveLocationForEvent(validator *token.ValidationService, claims *token.UserClaims, config *config.Config, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	if claims.UserRole != token.ADMIN {
 		objectID, err := ObjectID(r)
@@ -229,7 +230,7 @@ func RemoveLocationForEvent(validator *token.ValidationService, claims *token.Us
 	servertools.RespondJSON(w, http.StatusOK, []interface{}{})
 }
 
-func CreateEvent(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func CreateEvent(validator *token.ValidationService, claims *token.UserClaims, config *config.Config, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	if claims.UserRole != token.CREATOR && claims.UserRole != token.ADMIN {
 		log.Error().Msg("User is not authorized to create a tag.")
@@ -250,20 +251,20 @@ func CreateEvent(validator *token.ValidationService, claims *token.UserClaims, d
 		return
 	}
 
-	err = registerEventForUser(claims.UserID, strconv.Itoa(events[0].(model.Event).ID), claims.Issuer, validator.Endpoint, validator.Client)
+	err = registerEventForUser(claims.UserID, strconv.Itoa(events[0].(model.Event).ID), "https://"+claims.Issuer+":22580", config.ServiceKey, validator.Client)
 	if err != nil {
-		retryToRegisterEvent(events, validator, claims, w)
+		retryToRegisterEvent(events, validator, claims, config, w)
 		return
 	}
 
 	servertools.RespondJSON(w, http.StatusOK, events)
 }
 
-func retryToRegisterEvent(events []interface{}, validator *token.ValidationService, claims *token.UserClaims, w http.ResponseWriter) {
+func retryToRegisterEvent(events []interface{}, validator *token.ValidationService, claims *token.UserClaims, config *config.Config, w http.ResponseWriter) {
 
 	time.Sleep(10 * time.Second)
 
-	err := registerEventForUser(claims.UserID, strconv.Itoa(events[0].(model.Event).ID), claims.Issuer, validator.Endpoint, validator.Client)
+	err := registerEventForUser(claims.UserID, strconv.Itoa(events[0].(model.Event).ID), "https://"+claims.Issuer+":22580", config.ServiceKey, validator.Client)
 	if err != nil {
 		log.Error().Err(err).Msg("failed to retry to register event for user")
 		servertools.RespondError(w, http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError))
@@ -272,7 +273,7 @@ func retryToRegisterEvent(events []interface{}, validator *token.ValidationServi
 	servertools.RespondJSON(w, http.StatusOK, events)
 }
 
-func UpdateEvent(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func UpdateEvent(validator *token.ValidationService, claims *token.UserClaims, config *config.Config, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	if claims.UserRole != token.ADMIN {
 		objectID, err := ObjectID(r)
@@ -297,7 +298,7 @@ func UpdateEvent(validator *token.ValidationService, claims *token.UserClaims, d
 	servertools.RespondJSON(w, http.StatusOK, events)
 }
 
-func DeleteEvent(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func DeleteEvent(validator *token.ValidationService, claims *token.UserClaims, config *config.Config, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	if claims.UserRole != token.ADMIN {
 		objectID, err := ObjectID(r)

@@ -9,6 +9,7 @@ import (
 
 	token "github.com/Festivals-App/festivals-identity-server/jwt"
 	servertools "github.com/Festivals-App/festivals-server-tools"
+	"github.com/Festivals-App/festivals-server/server/config"
 	"github.com/Festivals-App/festivals-server/server/model"
 	"github.com/rs/zerolog/log"
 )
@@ -68,7 +69,7 @@ func GetLocationPlace(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	servertools.RespondJSON(w, http.StatusOK, places)
 }
 
-func SetImageForLocation(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func SetImageForLocation(validator *token.ValidationService, claims *token.UserClaims, config *config.Config, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	if claims.UserRole != token.ADMIN {
 		objectID, err := ObjectID(r)
@@ -93,7 +94,7 @@ func SetImageForLocation(validator *token.ValidationService, claims *token.UserC
 	servertools.RespondJSON(w, http.StatusOK, []interface{}{})
 }
 
-func SetLinkForLocation(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func SetLinkForLocation(validator *token.ValidationService, claims *token.UserClaims, config *config.Config, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	if claims.UserRole != token.ADMIN {
 		objectID, err := ObjectID(r)
@@ -118,7 +119,7 @@ func SetLinkForLocation(validator *token.ValidationService, claims *token.UserCl
 	servertools.RespondJSON(w, http.StatusOK, []interface{}{})
 }
 
-func SetPlaceForLocation(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func SetPlaceForLocation(validator *token.ValidationService, claims *token.UserClaims, config *config.Config, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	if claims.UserRole != token.ADMIN {
 		objectID, err := ObjectID(r)
@@ -143,7 +144,7 @@ func SetPlaceForLocation(validator *token.ValidationService, claims *token.UserC
 	servertools.RespondJSON(w, http.StatusOK, []interface{}{})
 }
 
-func RemoveImageForLocation(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func RemoveImageForLocation(validator *token.ValidationService, claims *token.UserClaims, config *config.Config, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	if claims.UserRole != token.ADMIN {
 		objectID, err := ObjectID(r)
@@ -168,7 +169,7 @@ func RemoveImageForLocation(validator *token.ValidationService, claims *token.Us
 	servertools.RespondJSON(w, http.StatusOK, []interface{}{})
 }
 
-func RemoveLinkForLocation(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func RemoveLinkForLocation(validator *token.ValidationService, claims *token.UserClaims, config *config.Config, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	if claims.UserRole != token.ADMIN {
 		objectID, err := ObjectID(r)
@@ -193,7 +194,7 @@ func RemoveLinkForLocation(validator *token.ValidationService, claims *token.Use
 	servertools.RespondJSON(w, http.StatusOK, []interface{}{})
 }
 
-func RemovePlaceForLocation(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func RemovePlaceForLocation(validator *token.ValidationService, claims *token.UserClaims, config *config.Config, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	if claims.UserRole != token.ADMIN {
 		objectID, err := ObjectID(r)
@@ -218,7 +219,7 @@ func RemovePlaceForLocation(validator *token.ValidationService, claims *token.Us
 	servertools.RespondJSON(w, http.StatusOK, []interface{}{})
 }
 
-func CreateLocation(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func CreateLocation(validator *token.ValidationService, claims *token.UserClaims, config *config.Config, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	if claims.UserRole != token.CREATOR && claims.UserRole != token.ADMIN {
 		log.Error().Msg("User is not authorized to create a location.")
@@ -238,20 +239,20 @@ func CreateLocation(validator *token.ValidationService, claims *token.UserClaims
 		return
 	}
 
-	err = registerLocationForUser(claims.UserID, strconv.Itoa(locations[0].(model.Location).ID), claims.Issuer, validator.Endpoint, validator.Client)
+	err = registerLocationForUser(claims.UserID, strconv.Itoa(locations[0].(model.Location).ID), "https://"+claims.Issuer+":22580", config.ServiceKey, validator.Client)
 	if err != nil {
-		retryToRegisterLocation(locations, validator, claims, w)
+		retryToRegisterLocation(locations, validator, claims, config, w)
 		return
 	}
 
 	servertools.RespondJSON(w, http.StatusOK, locations)
 }
 
-func retryToRegisterLocation(locations []interface{}, validator *token.ValidationService, claims *token.UserClaims, w http.ResponseWriter) {
+func retryToRegisterLocation(locations []interface{}, validator *token.ValidationService, claims *token.UserClaims, config *config.Config, w http.ResponseWriter) {
 
 	time.Sleep(2 * time.Second)
 
-	err := registerLocationForUser(claims.UserID, strconv.Itoa(locations[0].(model.Location).ID), claims.Issuer, validator.Endpoint, validator.Client)
+	err := registerLocationForUser(claims.UserID, strconv.Itoa(locations[0].(model.Location).ID), "https://"+claims.Issuer+":22580", config.ServiceKey, validator.Client)
 	if err != nil {
 		log.Error().Err(err).Msg("failed to retry to register location for user")
 		servertools.RespondError(w, http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError))
@@ -260,7 +261,7 @@ func retryToRegisterLocation(locations []interface{}, validator *token.Validatio
 	servertools.RespondJSON(w, http.StatusOK, locations)
 }
 
-func UpdateLocation(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func UpdateLocation(validator *token.ValidationService, claims *token.UserClaims, config *config.Config, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	if claims.UserRole != token.ADMIN {
 		objectID, err := ObjectID(r)
@@ -285,7 +286,7 @@ func UpdateLocation(validator *token.ValidationService, claims *token.UserClaims
 	servertools.RespondJSON(w, http.StatusOK, locations)
 }
 
-func DeleteLocation(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func DeleteLocation(validator *token.ValidationService, claims *token.UserClaims, config *config.Config, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	if claims.UserRole != token.ADMIN {
 		objectID, err := ObjectID(r)

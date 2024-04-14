@@ -9,6 +9,7 @@ import (
 
 	token "github.com/Festivals-App/festivals-identity-server/jwt"
 	servertools "github.com/Festivals-App/festivals-server-tools"
+	"github.com/Festivals-App/festivals-server/server/config"
 	"github.com/Festivals-App/festivals-server/server/model"
 	"github.com/rs/zerolog/log"
 )
@@ -35,7 +36,7 @@ func GetLink(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	servertools.RespondJSON(w, http.StatusOK, links)
 }
 
-func CreateLink(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func CreateLink(validator *token.ValidationService, claims *token.UserClaims, config *config.Config, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	if claims.UserRole != token.CREATOR && claims.UserRole != token.ADMIN {
 		log.Error().Msg("User is not authorized to create a tag.")
@@ -56,20 +57,21 @@ func CreateLink(validator *token.ValidationService, claims *token.UserClaims, db
 		return
 	}
 
-	err = registerLinkForUser(claims.UserID, strconv.Itoa(links[0].(model.Link).ID), claims.Issuer, validator.Endpoint, validator.Client)
+	err = registerLinkForUser(claims.UserID, strconv.Itoa(links[0].(model.Link).ID), "https://"+claims.Issuer+":22580", config.ServiceKey, validator.Client)
 	if err != nil {
-		retryToRegisterLink(links, validator, claims, w)
+		log.Error().Err(err).Msg("Failed to register link for user. Retrying.")
+		retryToRegisterLink(links, validator, claims, config, w)
 		return
 	}
 
 	servertools.RespondJSON(w, http.StatusOK, links)
 }
 
-func retryToRegisterLink(links []interface{}, validator *token.ValidationService, claims *token.UserClaims, w http.ResponseWriter) {
+func retryToRegisterLink(links []interface{}, validator *token.ValidationService, claims *token.UserClaims, config *config.Config, w http.ResponseWriter) {
 
 	time.Sleep(10 * time.Second)
 
-	err := registerLinkForUser(claims.UserID, strconv.Itoa(links[0].(model.Link).ID), claims.Issuer, validator.Endpoint, validator.Client)
+	err := registerLinkForUser(claims.UserID, strconv.Itoa(links[0].(model.Link).ID), "https://"+claims.Issuer+":22580", config.ServiceKey, validator.Client)
 	if err != nil {
 		log.Error().Err(err).Msg("failed to retry to register link for user")
 		servertools.RespondError(w, http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError))
@@ -78,7 +80,7 @@ func retryToRegisterLink(links []interface{}, validator *token.ValidationService
 	servertools.RespondJSON(w, http.StatusOK, links)
 }
 
-func UpdateLink(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func UpdateLink(validator *token.ValidationService, claims *token.UserClaims, config *config.Config, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	if claims.UserRole != token.ADMIN {
 		objectID, err := ObjectID(r)
@@ -103,7 +105,7 @@ func UpdateLink(validator *token.ValidationService, claims *token.UserClaims, db
 	servertools.RespondJSON(w, http.StatusOK, links)
 }
 
-func DeleteLink(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func DeleteLink(validator *token.ValidationService, claims *token.UserClaims, config *config.Config, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	if claims.UserRole != token.ADMIN {
 		objectID, err := ObjectID(r)

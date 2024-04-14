@@ -5,7 +5,6 @@ import (
 	"net/http"
 
 	"github.com/google/uuid"
-	"github.com/rs/zerolog/log"
 )
 
 func registerFestivalForUser(userID string, festivalID string, endpoint string, serviceKey string, client *http.Client) error {
@@ -42,8 +41,7 @@ func registerTagForUser(userID string, tagID string, endpoint string, serviceKey
 
 func registerEntityForUser(userID string, entity string, entityID string, endpoint string, serviceKey string, client *http.Client) error {
 
-	requestString := "https://" + endpoint + "/users/" + userID + "/" + entity + "/" + entityID
-	log.Info().Msg("requestString: '" + requestString + "'  endpoint value: '" + endpoint + "'")
+	requestString := endpoint + "/users/" + userID + "/" + entity + "/" + entityID
 	request, err := http.NewRequest(http.MethodPost, requestString, nil)
 	if err != nil {
 		return err

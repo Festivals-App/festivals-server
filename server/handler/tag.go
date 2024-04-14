@@ -9,6 +9,7 @@ import (
 
 	token "github.com/Festivals-App/festivals-identity-server/jwt"
 	servertools "github.com/Festivals-App/festivals-server-tools"
+	"github.com/Festivals-App/festivals-server/server/config"
 	"github.com/Festivals-App/festivals-server/server/model"
 	"github.com/rs/zerolog/log"
 )
@@ -46,7 +47,7 @@ func GetTagFestivals(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	servertools.RespondJSON(w, http.StatusOK, images)
 }
 
-func CreateTag(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func CreateTag(validator *token.ValidationService, claims *token.UserClaims, config *config.Config, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	if claims.UserRole != token.CREATOR && claims.UserRole != token.ADMIN {
 		log.Error().Msg("User is not authorized to create a tag.")
@@ -67,20 +68,20 @@ func CreateTag(validator *token.ValidationService, claims *token.UserClaims, db 
 		return
 	}
 
-	err = registerTagForUser(claims.UserID, strconv.Itoa(tags[0].(model.Tag).ID), claims.Issuer, validator.Endpoint, validator.Client)
+	err = registerTagForUser(claims.UserID, strconv.Itoa(tags[0].(model.Tag).ID), "https://"+claims.Issuer+":22580", config.ServiceKey, validator.Client)
 	if err != nil {
-		retryToRegisterTag(tags, validator, claims, w)
+		retryToRegisterTag(tags, validator, claims, config, w)
 		return
 	}
 
 	servertools.RespondJSON(w, http.StatusOK, tags)
 }
 
-func retryToRegisterTag(tags []interface{}, validator *token.ValidationService, claims *token.UserClaims, w http.ResponseWriter) {
+func retryToRegisterTag(tags []interface{}, validator *token.ValidationService, claims *token.UserClaims, config *config.Config, w http.ResponseWriter) {
 
 	time.Sleep(10 * time.Second)
 
-	err := registerTagForUser(claims.UserID, strconv.Itoa(tags[0].(model.Tag).ID), claims.Issuer, validator.Endpoint, validator.Client)
+	err := registerTagForUser(claims.UserID, strconv.Itoa(tags[0].(model.Tag).ID), "https://"+claims.Issuer+":22580", config.ServiceKey, validator.Client)
 	if err != nil {
 		log.Error().Err(err).Msg("failed to retry to register tag for user")
 		servertools.RespondError(w, http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError))
@@ -89,7 +90,7 @@ func retryToRegisterTag(tags []interface{}, validator *token.ValidationService, 
 	servertools.RespondJSON(w, http.StatusOK, tags)
 }
 
-func UpdateTag(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func UpdateTag(validator *token.ValidationService, claims *token.UserClaims, config *config.Config, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	if claims.UserRole != token.ADMIN {
 		objectID, err := ObjectID(r)
@@ -114,7 +115,7 @@ func UpdateTag(validator *token.ValidationService, claims *token.UserClaims, db 
 	servertools.RespondJSON(w, http.StatusOK, tags)
 }
 
-func DeleteTag(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func DeleteTag(validator *token.ValidationService, claims *token.UserClaims, config *config.Config, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	if claims.UserRole != token.ADMIN {
 		objectID, err := ObjectID(r)

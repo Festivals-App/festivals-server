@@ -6,11 +6,12 @@ import (
 
 	token "github.com/Festivals-App/festivals-identity-server/jwt"
 	servertools "github.com/Festivals-App/festivals-server-tools"
+	"github.com/Festivals-App/festivals-server/server/config"
 	"github.com/Festivals-App/festivals-server/server/status"
 	"github.com/rs/zerolog/log"
 )
 
-func GetVersion(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func GetVersion(validator *token.ValidationService, claims *token.UserClaims, config *config.Config, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	if claims.UserRole != token.ADMIN {
 		log.Error().Msg("User is not authorized to get server version.")
@@ -20,7 +21,7 @@ func GetVersion(validator *token.ValidationService, claims *token.UserClaims, db
 	servertools.RespondString(w, http.StatusOK, status.VersionString())
 }
 
-func GetInfo(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func GetInfo(validator *token.ValidationService, claims *token.UserClaims, config *config.Config, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	if claims.UserRole != token.ADMIN {
 		log.Error().Msg("User is not authorized to get server info.")
@@ -30,7 +31,7 @@ func GetInfo(validator *token.ValidationService, claims *token.UserClaims, db *s
 	servertools.RespondJSON(w, http.StatusOK, status.InfoString())
 }
 
-func GetHealth(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func GetHealth(validator *token.ValidationService, claims *token.UserClaims, config *config.Config, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	if claims.UserRole != token.ADMIN {
 		log.Error().Msg("User is not authorized to get server health.")

@@ -9,6 +9,7 @@ import (
 
 	token "github.com/Festivals-App/festivals-identity-server/jwt"
 	servertools "github.com/Festivals-App/festivals-server-tools"
+	"github.com/Festivals-App/festivals-server/server/config"
 	"github.com/Festivals-App/festivals-server/server/model"
 	"github.com/rs/zerolog/log"
 )
@@ -35,7 +36,7 @@ func GetPlace(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	servertools.RespondJSON(w, http.StatusOK, places)
 }
 
-func CreatePlace(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func CreatePlace(validator *token.ValidationService, claims *token.UserClaims, config *config.Config, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	if claims.UserRole != token.CREATOR && claims.UserRole != token.ADMIN {
 		log.Error().Msg("User is not authorized to create a tag.")
@@ -56,20 +57,20 @@ func CreatePlace(validator *token.ValidationService, claims *token.UserClaims, d
 		return
 	}
 
-	err = registerPlaceForUser(claims.UserID, strconv.Itoa(places[0].(model.Place).ID), claims.Issuer, validator.Endpoint, validator.Client)
+	err = registerPlaceForUser(claims.UserID, strconv.Itoa(places[0].(model.Place).ID), "https://"+claims.Issuer+":22580", config.ServiceKey, validator.Client)
 	if err != nil {
-		retryToRegisterPlace(places, validator, claims, w)
+		retryToRegisterPlace(places, validator, claims, config, w)
 		return
 	}
 
 	servertools.RespondJSON(w, http.StatusOK, places)
 }
 
-func retryToRegisterPlace(places []interface{}, validator *token.ValidationService, claims *token.UserClaims, w http.ResponseWriter) {
+func retryToRegisterPlace(places []interface{}, validator *token.ValidationService, claims *token.UserClaims, config *config.Config, w http.ResponseWriter) {
 
 	time.Sleep(10 * time.Second)
 
-	err := registerPlaceForUser(claims.UserID, strconv.Itoa(places[0].(model.Place).ID), claims.Issuer, validator.Endpoint, validator.Client)
+	err := registerPlaceForUser(claims.UserID, strconv.Itoa(places[0].(model.Place).ID), "https://"+claims.Issuer+":22580", config.ServiceKey, validator.Client)
 	if err != nil {
 		log.Error().Err(err).Msg("failed to retry to register place for user")
 		servertools.RespondError(w, http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError))
@@ -78,7 +79,7 @@ func retryToRegisterPlace(places []interface{}, validator *token.ValidationServi
 	servertools.RespondJSON(w, http.StatusOK, places)
 }
 
-func UpdatePlace(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func UpdatePlace(validator *token.ValidationService, claims *token.UserClaims, config *config.Config, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	if claims.UserRole != token.ADMIN {
 		objectID, err := ObjectID(r)
@@ -103,7 +104,7 @@ func UpdatePlace(validator *token.ValidationService, claims *token.UserClaims, d
 	servertools.RespondJSON(w, http.StatusOK, places)
 }
 
-func DeletePlace(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func DeletePlace(validator *token.ValidationService, claims *token.UserClaims, config *config.Config, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	if claims.UserRole != token.ADMIN {
 		objectID, err := ObjectID(r)

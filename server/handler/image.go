@@ -9,6 +9,7 @@ import (
 
 	token "github.com/Festivals-App/festivals-identity-server/jwt"
 	servertools "github.com/Festivals-App/festivals-server-tools"
+	"github.com/Festivals-App/festivals-server/server/config"
 	"github.com/Festivals-App/festivals-server/server/model"
 	"github.com/rs/zerolog/log"
 )
@@ -35,7 +36,7 @@ func GetImage(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	servertools.RespondJSON(w, http.StatusOK, images)
 }
 
-func CreateImage(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func CreateImage(validator *token.ValidationService, claims *token.UserClaims, config *config.Config, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	if claims.UserRole != token.CREATOR && claims.UserRole != token.ADMIN {
 		log.Error().Msg("User is not authorized to create a tag.")
@@ -56,20 +57,20 @@ func CreateImage(validator *token.ValidationService, claims *token.UserClaims, d
 		return
 	}
 
-	err = registerImageForUser(claims.UserID, strconv.Itoa(images[0].(model.Image).ID), claims.Issuer, validator.Endpoint, validator.Client)
+	err = registerImageForUser(claims.UserID, strconv.Itoa(images[0].(model.Image).ID), "https://"+claims.Issuer+":22580", config.ServiceKey, validator.Client)
 	if err != nil {
-		retryToRegisterImage(images, validator, claims, w)
+		retryToRegisterImage(images, validator, claims, config, w)
 		return
 	}
 
 	servertools.RespondJSON(w, http.StatusOK, images)
 }
 
-func retryToRegisterImage(images []interface{}, validator *token.ValidationService, claims *token.UserClaims, w http.ResponseWriter) {
+func retryToRegisterImage(images []interface{}, validator *token.ValidationService, claims *token.UserClaims, config *config.Config, w http.ResponseWriter) {
 
 	time.Sleep(10 * time.Second)
 
-	err := registerImageForUser(claims.UserID, strconv.Itoa(images[0].(model.Image).ID), claims.Issuer, validator.Endpoint, validator.Client)
+	err := registerImageForUser(claims.UserID, strconv.Itoa(images[0].(model.Image).ID), "https://"+claims.Issuer+":22580", config.ServiceKey, validator.Client)
 	if err != nil {
 		log.Error().Err(err).Msg("failed to retry to register image for user")
 		servertools.RespondError(w, http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError))
@@ -78,7 +79,7 @@ func retryToRegisterImage(images []interface{}, validator *token.ValidationServi
 	servertools.RespondJSON(w, http.StatusOK, images)
 }
 
-func UpdateImage(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func UpdateImage(validator *token.ValidationService, claims *token.UserClaims, config *config.Config, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	if claims.UserRole != token.ADMIN {
 		objectID, err := ObjectID(r)
@@ -103,7 +104,7 @@ func UpdateImage(validator *token.ValidationService, claims *token.UserClaims, d
 	servertools.RespondJSON(w, http.StatusOK, images)
 }
 
-func DeleteImage(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func DeleteImage(validator *token.ValidationService, claims *token.UserClaims, config *config.Config, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	if claims.UserRole != token.ADMIN {
 		objectID, err := ObjectID(r)

@@ -282,7 +282,7 @@ func (s *Server) handleAPIRequest(requestHandler APIKeyAuthenticatedHandlerFunct
 	})
 }
 
-type JWTAuthenticatedHandlerFunction func(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request)
+type JWTAuthenticatedHandlerFunction func(validator *token.ValidationService, claims *token.UserClaims, config *config.Config, db *sql.DB, w http.ResponseWriter, r *http.Request)
 
 func (s *Server) handleRequest(requestHandler JWTAuthenticatedHandlerFunction) http.HandlerFunc {
 
@@ -293,6 +293,6 @@ func (s *Server) handleRequest(requestHandler JWTAuthenticatedHandlerFunction) h
 			servertools.UnauthorizedResponse(w)
 			return
 		}
-		requestHandler(s.Validator, claims, s.DB, w, r)
+		requestHandler(s.Validator, claims, s.Config, s.DB, w, r)
 	})
 }

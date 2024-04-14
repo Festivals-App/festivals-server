@@ -9,6 +9,7 @@ import (
 
 	token "github.com/Festivals-App/festivals-identity-server/jwt"
 	servertools "github.com/Festivals-App/festivals-server-tools"
+	"github.com/Festivals-App/festivals-server/server/config"
 	"github.com/Festivals-App/festivals-server/server/model"
 	"github.com/rs/zerolog/log"
 )
@@ -68,7 +69,7 @@ func GetArtistTags(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	servertools.RespondJSON(w, http.StatusOK, tags)
 }
 
-func SetImageForArtist(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func SetImageForArtist(validator *token.ValidationService, claims *token.UserClaims, config *config.Config, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	if claims.UserRole != token.ADMIN {
 		objectID, err := ObjectID(r)
@@ -93,7 +94,7 @@ func SetImageForArtist(validator *token.ValidationService, claims *token.UserCla
 	servertools.RespondJSON(w, http.StatusOK, []interface{}{})
 }
 
-func SetLinkForArtist(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func SetLinkForArtist(validator *token.ValidationService, claims *token.UserClaims, config *config.Config, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	if claims.UserRole != token.ADMIN {
 		objectID, err := ObjectID(r)
@@ -118,7 +119,7 @@ func SetLinkForArtist(validator *token.ValidationService, claims *token.UserClai
 	servertools.RespondJSON(w, http.StatusOK, []interface{}{})
 }
 
-func SetTagForArtist(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func SetTagForArtist(validator *token.ValidationService, claims *token.UserClaims, config *config.Config, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	if claims.UserRole != token.ADMIN {
 		objectID, err := ObjectID(r)
@@ -143,7 +144,7 @@ func SetTagForArtist(validator *token.ValidationService, claims *token.UserClaim
 	servertools.RespondJSON(w, http.StatusOK, []interface{}{})
 }
 
-func RemoveImageForArtist(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func RemoveImageForArtist(validator *token.ValidationService, claims *token.UserClaims, config *config.Config, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	if claims.UserRole != token.ADMIN {
 		objectID, err := ObjectID(r)
@@ -168,7 +169,7 @@ func RemoveImageForArtist(validator *token.ValidationService, claims *token.User
 	servertools.RespondJSON(w, http.StatusOK, []interface{}{})
 }
 
-func RemoveLinkForArtist(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func RemoveLinkForArtist(validator *token.ValidationService, claims *token.UserClaims, config *config.Config, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	if claims.UserRole != token.ADMIN {
 		objectID, err := ObjectID(r)
@@ -193,7 +194,7 @@ func RemoveLinkForArtist(validator *token.ValidationService, claims *token.UserC
 	servertools.RespondJSON(w, http.StatusOK, []interface{}{})
 }
 
-func RemoveTagForArtist(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func RemoveTagForArtist(validator *token.ValidationService, claims *token.UserClaims, config *config.Config, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	if claims.UserRole != token.ADMIN {
 		objectID, err := ObjectID(r)
@@ -218,7 +219,7 @@ func RemoveTagForArtist(validator *token.ValidationService, claims *token.UserCl
 	servertools.RespondJSON(w, http.StatusOK, []interface{}{})
 }
 
-func CreateArtist(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func CreateArtist(validator *token.ValidationService, claims *token.UserClaims, config *config.Config, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	if claims.UserRole != token.CREATOR && claims.UserRole != token.ADMIN {
 		log.Error().Msg("User is not authorized to create a tag.")
@@ -239,20 +240,20 @@ func CreateArtist(validator *token.ValidationService, claims *token.UserClaims, 
 		return
 	}
 
-	err = registerArtistForUser(claims.UserID, strconv.Itoa(artists[0].(model.Artist).ID), claims.Issuer, validator.Endpoint, validator.Client)
+	err = registerArtistForUser(claims.UserID, strconv.Itoa(artists[0].(model.Artist).ID), "https://"+claims.Issuer+":22580", config.ServiceKey, validator.Client)
 	if err != nil {
-		retryToRegisterArtist(artists, validator, claims, w)
+		retryToRegisterArtist(artists, validator, claims, config, w)
 		return
 	}
 
 	servertools.RespondJSON(w, http.StatusOK, artists)
 }
 
-func retryToRegisterArtist(artists []interface{}, validator *token.ValidationService, claims *token.UserClaims, w http.ResponseWriter) {
+func retryToRegisterArtist(artists []interface{}, validator *token.ValidationService, claims *token.UserClaims, config *config.Config, w http.ResponseWriter) {
 
 	time.Sleep(10 * time.Second)
 
-	err := registerArtistForUser(claims.UserID, strconv.Itoa(artists[0].(model.Artist).ID), claims.Issuer, validator.Endpoint, validator.Client)
+	err := registerArtistForUser(claims.UserID, strconv.Itoa(artists[0].(model.Artist).ID), "https://"+claims.Issuer+":22580", config.ServiceKey, validator.Client)
 	if err != nil {
 		log.Error().Err(err).Msg("failed to retry to register artist for user")
 		servertools.RespondError(w, http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError))
@@ -262,7 +263,7 @@ func retryToRegisterArtist(artists []interface{}, validator *token.ValidationSer
 	servertools.RespondJSON(w, http.StatusOK, artists)
 }
 
-func UpdateArtist(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func UpdateArtist(validator *token.ValidationService, claims *token.UserClaims, config *config.Config, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	if claims.UserRole != token.ADMIN {
 		objectID, err := ObjectID(r)
@@ -287,7 +288,7 @@ func UpdateArtist(validator *token.ValidationService, claims *token.UserClaims, 
 	servertools.RespondJSON(w, http.StatusOK, artists)
 }
 
-func DeleteArtist(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func DeleteArtist(validator *token.ValidationService, claims *token.UserClaims, config *config.Config, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	if claims.UserRole != token.ADMIN {
 		objectID, err := ObjectID(r)

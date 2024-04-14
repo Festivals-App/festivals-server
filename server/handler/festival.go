@@ -8,6 +8,7 @@ import (
 
 	token "github.com/Festivals-App/festivals-identity-server/jwt"
 	servertools "github.com/Festivals-App/festivals-server-tools"
+	"github.com/Festivals-App/festivals-server/server/config"
 	"github.com/Festivals-App/festivals-server/server/model"
 	"github.com/rs/zerolog/log"
 )
@@ -89,7 +90,7 @@ func GetFestivalTags(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	servertools.RespondJSON(w, http.StatusOK, tags)
 }
 
-func SetEventForFestival(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func SetEventForFestival(validator *token.ValidationService, claims *token.UserClaims, config *config.Config, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	err := SetAssociation(db, r, "festival", "event")
 	if err != nil {
@@ -100,7 +101,7 @@ func SetEventForFestival(validator *token.ValidationService, claims *token.UserC
 	servertools.RespondJSON(w, http.StatusOK, []interface{}{})
 }
 
-func SetImageForFestival(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func SetImageForFestival(validator *token.ValidationService, claims *token.UserClaims, config *config.Config, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	err := SetAssociation(db, r, "festival", "image")
 	if err != nil {
@@ -111,7 +112,7 @@ func SetImageForFestival(validator *token.ValidationService, claims *token.UserC
 	servertools.RespondJSON(w, http.StatusOK, []interface{}{})
 }
 
-func SetLinkForFestival(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func SetLinkForFestival(validator *token.ValidationService, claims *token.UserClaims, config *config.Config, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	err := SetAssociation(db, r, "festival", "link")
 	if err != nil {
@@ -122,7 +123,7 @@ func SetLinkForFestival(validator *token.ValidationService, claims *token.UserCl
 	servertools.RespondJSON(w, http.StatusOK, []interface{}{})
 }
 
-func SetPlaceForFestival(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func SetPlaceForFestival(validator *token.ValidationService, claims *token.UserClaims, config *config.Config, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	err := SetAssociation(db, r, "festival", "place")
 	if err != nil {
@@ -133,7 +134,7 @@ func SetPlaceForFestival(validator *token.ValidationService, claims *token.UserC
 	servertools.RespondJSON(w, http.StatusOK, []interface{}{})
 }
 
-func SetTagForFestival(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func SetTagForFestival(validator *token.ValidationService, claims *token.UserClaims, config *config.Config, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	err := SetAssociation(db, r, "festival", "tag")
 	if err != nil {
@@ -144,7 +145,7 @@ func SetTagForFestival(validator *token.ValidationService, claims *token.UserCla
 	servertools.RespondJSON(w, http.StatusOK, []interface{}{})
 }
 
-func RemoveImageForFestival(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func RemoveImageForFestival(validator *token.ValidationService, claims *token.UserClaims, config *config.Config, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	err := RemoveAssociation(db, r, "festival", "image")
 	if err != nil {
@@ -155,7 +156,7 @@ func RemoveImageForFestival(validator *token.ValidationService, claims *token.Us
 	servertools.RespondJSON(w, http.StatusOK, []interface{}{})
 }
 
-func RemoveLinkForFestival(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func RemoveLinkForFestival(validator *token.ValidationService, claims *token.UserClaims, config *config.Config, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	err := RemoveAssociation(db, r, "festival", "link")
 	if err != nil {
@@ -166,7 +167,7 @@ func RemoveLinkForFestival(validator *token.ValidationService, claims *token.Use
 	servertools.RespondJSON(w, http.StatusOK, []interface{}{})
 }
 
-func RemovePlaceForFestival(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func RemovePlaceForFestival(validator *token.ValidationService, claims *token.UserClaims, config *config.Config, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	err := RemoveAssociation(db, r, "festival", "place")
 	if err != nil {
@@ -177,7 +178,7 @@ func RemovePlaceForFestival(validator *token.ValidationService, claims *token.Us
 	servertools.RespondJSON(w, http.StatusOK, []interface{}{})
 }
 
-func RemoveTagForFestival(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func RemoveTagForFestival(validator *token.ValidationService, claims *token.UserClaims, config *config.Config, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	err := RemoveAssociation(db, r, "festival", "tag")
 	if err != nil {
@@ -188,7 +189,7 @@ func RemoveTagForFestival(validator *token.ValidationService, claims *token.User
 	servertools.RespondJSON(w, http.StatusOK, []interface{}{})
 }
 
-func CreateFestival(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func CreateFestival(validator *token.ValidationService, claims *token.UserClaims, config *config.Config, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	if claims.UserRole != token.CREATOR && claims.UserRole != token.ADMIN {
 		log.Error().Msg("User is not authorized to create a tag.")
@@ -209,20 +210,20 @@ func CreateFestival(validator *token.ValidationService, claims *token.UserClaims
 		return
 	}
 
-	err = registerFestivalForUser(claims.UserID, strconv.Itoa(festivals[0].(model.Festival).ID), claims.Issuer, validator.Endpoint, validator.Client)
+	err = registerFestivalForUser(claims.UserID, strconv.Itoa(festivals[0].(model.Festival).ID), "https://"+claims.Issuer+":22580", config.ServiceKey, validator.Client)
 	if err != nil {
-		retryToRegisterFestival(festivals, validator, claims, w)
+		retryToRegisterFestival(festivals, validator, claims, config, w)
 		return
 	}
 
 	servertools.RespondJSON(w, http.StatusOK, festivals)
 }
 
-func retryToRegisterFestival(festivals []interface{}, validator *token.ValidationService, claims *token.UserClaims, w http.ResponseWriter) {
+func retryToRegisterFestival(festivals []interface{}, validator *token.ValidationService, claims *token.UserClaims, config *config.Config, w http.ResponseWriter) {
 
-	time.Sleep(10 * time.Second)
+	time.Sleep(2 * time.Second)
 
-	err := registerFestivalForUser(claims.UserID, strconv.Itoa(festivals[0].(model.Festival).ID), claims.Issuer, validator.Endpoint, validator.Client)
+	err := registerFestivalForUser(claims.UserID, strconv.Itoa(festivals[0].(model.Festival).ID), claims.Issuer, config.ServiceKey, validator.Client)
 	if err != nil {
 		log.Error().Err(err).Msg("failed to retry to register festival for user")
 		servertools.RespondError(w, http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError))
@@ -231,7 +232,7 @@ func retryToRegisterFestival(festivals []interface{}, validator *token.Validatio
 	servertools.RespondJSON(w, http.StatusOK, festivals)
 }
 
-func UpdateFestival(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func UpdateFestival(validator *token.ValidationService, claims *token.UserClaims, config *config.Config, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	festivals, err := Update(db, r, "festival")
 	if err != nil {
@@ -242,7 +243,7 @@ func UpdateFestival(validator *token.ValidationService, claims *token.UserClaims
 	servertools.RespondJSON(w, http.StatusOK, festivals)
 }
 
-func DeleteFestival(validator *token.ValidationService, claims *token.UserClaims, db *sql.DB, w http.ResponseWriter, r *http.Request) {
+func DeleteFestival(validator *token.ValidationService, claims *token.UserClaims, config *config.Config, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	err := Delete(db, r, "festival")
 	if err != nil {
