@@ -240,10 +240,12 @@ func CreateArtist(validator *token.ValidationService, claims *token.UserClaims, 
 		return
 	}
 
-	err = registerArtistForUser(claims.UserID, strconv.Itoa(artists[0].(model.Artist).ID), "https://"+claims.Issuer+":22580", config.ServiceKey, validator.Client)
-	if err != nil {
-		retryToRegisterArtist(artists, validator, claims, config, w)
-		return
+	if claims.UserRole != token.ADMIN {
+		err = registerArtistForUser(claims.UserID, strconv.Itoa(artists[0].(model.Artist).ID), "https://"+claims.Issuer+":22580", config.ServiceKey, validator.Client)
+		if err != nil {
+			retryToRegisterArtist(artists, validator, claims, config, w)
+			return
+		}
 	}
 
 	servertools.RespondJSON(w, http.StatusOK, artists)

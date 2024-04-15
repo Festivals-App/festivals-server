@@ -68,10 +68,12 @@ func CreateTag(validator *token.ValidationService, claims *token.UserClaims, con
 		return
 	}
 
-	err = registerTagForUser(claims.UserID, strconv.Itoa(tags[0].(model.Tag).ID), "https://"+claims.Issuer+":22580", config.ServiceKey, validator.Client)
-	if err != nil {
-		retryToRegisterTag(tags, validator, claims, config, w)
-		return
+	if claims.UserRole != token.ADMIN {
+		err = registerTagForUser(claims.UserID, strconv.Itoa(tags[0].(model.Tag).ID), "https://"+claims.Issuer+":22580", config.ServiceKey, validator.Client)
+		if err != nil {
+			retryToRegisterTag(tags, validator, claims, config, w)
+			return
+		}
 	}
 
 	servertools.RespondJSON(w, http.StatusOK, tags)

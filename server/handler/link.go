@@ -57,11 +57,13 @@ func CreateLink(validator *token.ValidationService, claims *token.UserClaims, co
 		return
 	}
 
-	err = registerLinkForUser(claims.UserID, strconv.Itoa(links[0].(model.Link).ID), "https://"+claims.Issuer+":22580", config.ServiceKey, validator.Client)
-	if err != nil {
-		log.Error().Err(err).Msg("Failed to register link for user. Retrying.")
-		retryToRegisterLink(links, validator, claims, config, w)
-		return
+	if claims.UserRole != token.ADMIN {
+		err = registerLinkForUser(claims.UserID, strconv.Itoa(links[0].(model.Link).ID), "https://"+claims.Issuer+":22580", config.ServiceKey, validator.Client)
+		if err != nil {
+			log.Error().Err(err).Msg("Failed to register link for user. Retrying.")
+			retryToRegisterLink(links, validator, claims, config, w)
+			return
+		}
 	}
 
 	servertools.RespondJSON(w, http.StatusOK, links)

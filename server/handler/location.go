@@ -239,10 +239,12 @@ func CreateLocation(validator *token.ValidationService, claims *token.UserClaims
 		return
 	}
 
-	err = registerLocationForUser(claims.UserID, strconv.Itoa(locations[0].(model.Location).ID), "https://"+claims.Issuer+":22580", config.ServiceKey, validator.Client)
-	if err != nil {
-		retryToRegisterLocation(locations, validator, claims, config, w)
-		return
+	if claims.UserRole != token.ADMIN {
+		err = registerLocationForUser(claims.UserID, strconv.Itoa(locations[0].(model.Location).ID), "https://"+claims.Issuer+":22580", config.ServiceKey, validator.Client)
+		if err != nil {
+			retryToRegisterLocation(locations, validator, claims, config, w)
+			return
+		}
 	}
 
 	servertools.RespondJSON(w, http.StatusOK, locations)

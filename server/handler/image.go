@@ -57,10 +57,12 @@ func CreateImage(validator *token.ValidationService, claims *token.UserClaims, c
 		return
 	}
 
-	err = registerImageForUser(claims.UserID, strconv.Itoa(images[0].(model.Image).ID), "https://"+claims.Issuer+":22580", config.ServiceKey, validator.Client)
-	if err != nil {
-		retryToRegisterImage(images, validator, claims, config, w)
-		return
+	if claims.UserRole != token.ADMIN {
+		err = registerImageForUser(claims.UserID, strconv.Itoa(images[0].(model.Image).ID), "https://"+claims.Issuer+":22580", config.ServiceKey, validator.Client)
+		if err != nil {
+			retryToRegisterImage(images, validator, claims, config, w)
+			return
+		}
 	}
 
 	servertools.RespondJSON(w, http.StatusOK, images)

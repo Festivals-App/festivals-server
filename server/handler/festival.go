@@ -210,10 +210,12 @@ func CreateFestival(validator *token.ValidationService, claims *token.UserClaims
 		return
 	}
 
-	err = registerFestivalForUser(claims.UserID, strconv.Itoa(festivals[0].(model.Festival).ID), "https://"+claims.Issuer+":22580", config.ServiceKey, validator.Client)
-	if err != nil {
-		retryToRegisterFestival(festivals, validator, claims, config, w)
-		return
+	if claims.UserRole != token.ADMIN {
+		err = registerFestivalForUser(claims.UserID, strconv.Itoa(festivals[0].(model.Festival).ID), "https://"+claims.Issuer+":22580", config.ServiceKey, validator.Client)
+		if err != nil {
+			retryToRegisterFestival(festivals, validator, claims, config, w)
+			return
+		}
 	}
 
 	servertools.RespondJSON(w, http.StatusOK, festivals)

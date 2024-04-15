@@ -250,11 +250,12 @@ func CreateEvent(validator *token.ValidationService, claims *token.UserClaims, c
 		servertools.RespondError(w, http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError))
 		return
 	}
-
-	err = registerEventForUser(claims.UserID, strconv.Itoa(events[0].(model.Event).ID), "https://"+claims.Issuer+":22580", config.ServiceKey, validator.Client)
-	if err != nil {
-		retryToRegisterEvent(events, validator, claims, config, w)
-		return
+	if claims.UserRole != token.ADMIN {
+		err = registerEventForUser(claims.UserID, strconv.Itoa(events[0].(model.Event).ID), "https://"+claims.Issuer+":22580", config.ServiceKey, validator.Client)
+		if err != nil {
+			retryToRegisterEvent(events, validator, claims, config, w)
+			return
+		}
 	}
 
 	servertools.RespondJSON(w, http.StatusOK, events)

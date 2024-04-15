@@ -57,10 +57,12 @@ func CreatePlace(validator *token.ValidationService, claims *token.UserClaims, c
 		return
 	}
 
-	err = registerPlaceForUser(claims.UserID, strconv.Itoa(places[0].(model.Place).ID), "https://"+claims.Issuer+":22580", config.ServiceKey, validator.Client)
-	if err != nil {
-		retryToRegisterPlace(places, validator, claims, config, w)
-		return
+	if claims.UserRole != token.ADMIN {
+		err = registerPlaceForUser(claims.UserID, strconv.Itoa(places[0].(model.Place).ID), "https://"+claims.Issuer+":22580", config.ServiceKey, validator.Client)
+		if err != nil {
+			retryToRegisterPlace(places, validator, claims, config, w)
+			return
+		}
 	}
 
 	servertools.RespondJSON(w, http.StatusOK, places)
