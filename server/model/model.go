@@ -55,12 +55,14 @@ type Event struct {
 	Type        int         `json:"event_type" db:"event_type"`
 	Start       int         `json:"event_start" db:"event_start"`
 	End         int         `json:"event_end" db:"event_end"`
+	IsScheduled bool        `json:"event_is_scheduled" db:"event_is_scheduled"`
+	HasTimeslot bool        `json:"event_has_timeslot" db:"event_has_timeslot"`
 	Include     interface{} `json:"include,omitempty"`
 }
 
 func EventsScan(rs *sql.Rows) (Event, error) {
 	var e Event
-	return e, rs.Scan(&e.ID, &e.Version, &e.Name, &e.Description, &e.Type, &e.Start, &e.End)
+	return e, rs.Scan(&e.ID, &e.Version, &e.Name, &e.Description, &e.Type, &e.Start, &e.End, &e.IsScheduled, &e.HasTimeslot)
 }
 
 type Image struct {
