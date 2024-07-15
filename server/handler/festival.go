@@ -92,7 +92,14 @@ func GetFestivalTags(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 func SetEventForFestival(validator *token.ValidationService, claims *token.UserClaims, config *config.Config, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
-	err := SetAssociation(db, r, "festival", "event")
+	err := IsAuthorizedToUseHandler(claims, claims.UserFestivals, r)
+	if err != nil {
+		log.Error().Msg("User not authorized to use SetEventForFestival on the given festival")
+		servertools.UnauthorizedResponse(w)
+		return
+	}
+
+	err = SetAssociation(db, r, "festival", "event")
 	if err != nil {
 		log.Error().Err(err).Msg("failed to set event for festival")
 		servertools.RespondError(w, http.StatusBadRequest, "failed to set event for festival")
@@ -103,7 +110,14 @@ func SetEventForFestival(validator *token.ValidationService, claims *token.UserC
 
 func SetImageForFestival(validator *token.ValidationService, claims *token.UserClaims, config *config.Config, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
-	err := SetAssociation(db, r, "festival", "image")
+	err := IsAuthorizedToUseHandler(claims, claims.UserFestivals, r)
+	if err != nil {
+		log.Error().Msg("User not authorized to use SetImageForFestival on the given festival")
+		servertools.UnauthorizedResponse(w)
+		return
+	}
+
+	err = SetAssociation(db, r, "festival", "image")
 	if err != nil {
 		log.Error().Err(err).Msg("failed to set image for festival")
 		servertools.RespondError(w, http.StatusBadRequest, "failed to set image for festival")
@@ -114,7 +128,14 @@ func SetImageForFestival(validator *token.ValidationService, claims *token.UserC
 
 func SetLinkForFestival(validator *token.ValidationService, claims *token.UserClaims, config *config.Config, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
-	err := SetAssociation(db, r, "festival", "link")
+	err := IsAuthorizedToUseHandler(claims, claims.UserFestivals, r)
+	if err != nil {
+		log.Error().Msg("User not authorized to use SetLinkForFestival on the given festival")
+		servertools.UnauthorizedResponse(w)
+		return
+	}
+
+	err = SetAssociation(db, r, "festival", "link")
 	if err != nil {
 		log.Error().Err(err).Msg("failed to set link for festival")
 		servertools.RespondError(w, http.StatusBadRequest, "failed to set link for festival")
@@ -125,7 +146,14 @@ func SetLinkForFestival(validator *token.ValidationService, claims *token.UserCl
 
 func SetPlaceForFestival(validator *token.ValidationService, claims *token.UserClaims, config *config.Config, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
-	err := SetAssociation(db, r, "festival", "place")
+	err := IsAuthorizedToUseHandler(claims, claims.UserFestivals, r)
+	if err != nil {
+		log.Error().Msg("User not authorized to use SetPlaceForFestival on the given festival")
+		servertools.UnauthorizedResponse(w)
+		return
+	}
+
+	err = SetAssociation(db, r, "festival", "place")
 	if err != nil {
 		log.Error().Err(err).Msg("failed to set place for festival")
 		servertools.RespondError(w, http.StatusBadRequest, "failed to set place for festival")
@@ -136,7 +164,14 @@ func SetPlaceForFestival(validator *token.ValidationService, claims *token.UserC
 
 func SetTagForFestival(validator *token.ValidationService, claims *token.UserClaims, config *config.Config, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
-	err := SetAssociation(db, r, "festival", "tag")
+	err := IsAuthorizedToUseHandler(claims, claims.UserFestivals, r)
+	if err != nil {
+		log.Error().Msg("User not authorized to use SetTagForFestival on the given festival")
+		servertools.UnauthorizedResponse(w)
+		return
+	}
+
+	err = SetAssociation(db, r, "festival", "tag")
 	if err != nil {
 		log.Error().Err(err).Msg("failed to set tag for festival")
 		servertools.RespondError(w, http.StatusBadRequest, "failed to set tag for festival")
@@ -147,7 +182,14 @@ func SetTagForFestival(validator *token.ValidationService, claims *token.UserCla
 
 func RemoveImageForFestival(validator *token.ValidationService, claims *token.UserClaims, config *config.Config, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
-	err := RemoveAssociation(db, r, "festival", "image")
+	err := IsAuthorizedToUseHandler(claims, claims.UserFestivals, r)
+	if err != nil {
+		log.Error().Msg("User not authorized to use RemoveImageForFestival on the given festival")
+		servertools.UnauthorizedResponse(w)
+		return
+	}
+
+	err = RemoveAssociation(db, r, "festival", "image")
 	if err != nil {
 		log.Error().Err(err).Msg("failed to remove image from festival")
 		servertools.RespondError(w, http.StatusBadRequest, "failed to remove image from festival")
@@ -158,7 +200,14 @@ func RemoveImageForFestival(validator *token.ValidationService, claims *token.Us
 
 func RemoveLinkForFestival(validator *token.ValidationService, claims *token.UserClaims, config *config.Config, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
-	err := RemoveAssociation(db, r, "festival", "link")
+	err := IsAuthorizedToUseHandler(claims, claims.UserFestivals, r)
+	if err != nil {
+		log.Error().Msg("User not authorized to use RemoveLinkForFestival on the given festival")
+		servertools.UnauthorizedResponse(w)
+		return
+	}
+
+	err = RemoveAssociation(db, r, "festival", "link")
 	if err != nil {
 		log.Error().Err(err).Msg("failed to remove link from festival")
 		servertools.RespondError(w, http.StatusBadRequest, "failed to remove link from festival")
@@ -169,7 +218,14 @@ func RemoveLinkForFestival(validator *token.ValidationService, claims *token.Use
 
 func RemovePlaceForFestival(validator *token.ValidationService, claims *token.UserClaims, config *config.Config, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
-	err := RemoveAssociation(db, r, "festival", "place")
+	err := IsAuthorizedToUseHandler(claims, claims.UserFestivals, r)
+	if err != nil {
+		log.Error().Msg("User not authorized to use RemovePlaceForFestival on the given festival")
+		servertools.UnauthorizedResponse(w)
+		return
+	}
+
+	err = RemoveAssociation(db, r, "festival", "place")
 	if err != nil {
 		log.Error().Err(err).Msg("failed to remove place from festival")
 		servertools.RespondError(w, http.StatusBadRequest, "failed to remove place from festival")
@@ -180,7 +236,14 @@ func RemovePlaceForFestival(validator *token.ValidationService, claims *token.Us
 
 func RemoveTagForFestival(validator *token.ValidationService, claims *token.UserClaims, config *config.Config, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
-	err := RemoveAssociation(db, r, "festival", "tag")
+	err := IsAuthorizedToUseHandler(claims, claims.UserFestivals, r)
+	if err != nil {
+		log.Error().Msg("User not authorized to use RemoveTagForFestival on the given festival")
+		servertools.UnauthorizedResponse(w)
+		return
+	}
+
+	err = RemoveAssociation(db, r, "festival", "tag")
 	if err != nil {
 		log.Error().Err(err).Msg("failed to remove tag from festival")
 		servertools.RespondError(w, http.StatusBadRequest, "failed to remove tag from festival")
@@ -192,7 +255,7 @@ func RemoveTagForFestival(validator *token.ValidationService, claims *token.User
 func CreateFestival(validator *token.ValidationService, claims *token.UserClaims, config *config.Config, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	if claims.UserRole != token.CREATOR && claims.UserRole != token.ADMIN {
-		log.Error().Msg("User is not authorized to create a tag.")
+		log.Error().Msg("User is not authorized to create a festival.")
 		servertools.UnauthorizedResponse(w)
 		return
 	}
@@ -236,6 +299,13 @@ func retryToRegisterFestival(festivals []interface{}, validator *token.Validatio
 
 func UpdateFestival(validator *token.ValidationService, claims *token.UserClaims, config *config.Config, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
+	err := IsAuthorizedToUseHandler(claims, claims.UserFestivals, r)
+	if err != nil {
+		log.Error().Msg("User not authorized to use UpdateFestival on the given festival")
+		servertools.UnauthorizedResponse(w)
+		return
+	}
+
 	festivals, err := Update(db, r, "festival")
 	if err != nil {
 		log.Error().Err(err).Msg("failed to update festival")
@@ -247,7 +317,14 @@ func UpdateFestival(validator *token.ValidationService, claims *token.UserClaims
 
 func DeleteFestival(validator *token.ValidationService, claims *token.UserClaims, config *config.Config, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
-	err := Delete(db, r, "festival")
+	err := IsAuthorizedToUseHandler(claims, claims.UserFestivals, r)
+	if err != nil {
+		log.Error().Msg("User not authorized to use DeleteFestival on the given festival")
+		servertools.UnauthorizedResponse(w)
+		return
+	}
+
+	err = Delete(db, r, "festival")
 	if err != nil {
 		log.Error().Err(err).Msg("failed to delete festival")
 		servertools.RespondError(w, http.StatusBadRequest, "failed to delete festival")

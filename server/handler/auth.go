@@ -3,9 +3,24 @@ package handler
 import (
 	"errors"
 	"net/http"
+	"slices"
 
+	token "github.com/Festivals-App/festivals-identity-server/jwt"
 	"github.com/google/uuid"
 )
+
+func IsAuthorizedToUseHandler(claims *token.UserClaims, userObjectIDs []int, r *http.Request) error {
+	if claims.UserRole != token.ADMIN {
+		objectID, err := ObjectID(r)
+		if err != nil {
+			return err
+		}
+		if !slices.Contains(userObjectIDs, objectID) {
+			return errors.New("user is not authorized to use handler")
+		}
+	}
+	return nil
+}
 
 func registerFestivalForUser(userID string, festivalID string, endpoint string, serviceKey string, client *http.Client) error {
 	return registerEntityForUser(userID, "festival", festivalID, endpoint, serviceKey, client)

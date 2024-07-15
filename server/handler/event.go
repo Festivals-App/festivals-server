@@ -233,7 +233,7 @@ func RemoveLocationForEvent(validator *token.ValidationService, claims *token.Us
 func CreateEvent(validator *token.ValidationService, claims *token.UserClaims, config *config.Config, db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	if claims.UserRole != token.CREATOR && claims.UserRole != token.ADMIN {
-		log.Error().Msg("User is not authorized to create a tag.")
+		log.Error().Msg("User is not authorized to create an event.")
 		servertools.UnauthorizedResponse(w)
 		return
 	}
