@@ -45,7 +45,7 @@ You also need to provide certificates in the right format and location:
 - The default path to the root CA certificate is          `/usr/local/festivals-server/ca.crt`
 - The default path to the server certificate is           `/usr/local/festivals-server/server.crt`
 - The default path to the corresponding key is            `/usr/local/festivals-server/server.key`
-- The default path to the databse client certificate is   `/usr/local/festivals-server/database-client.crt`
+- The default path to the database client certificate is  `/usr/local/festivals-server/database-client.crt`
 - The default path to the corresponding key is            `/usr/local/festivals-server/database-client.key`
 
 Where the root CA certificate is required to validate incoming requests, the server certificate and key is required to make outgoing connections
