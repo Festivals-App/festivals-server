@@ -39,14 +39,6 @@ type DBConfig struct {
 
 func DefaultConfig() *Config {
 
-	/// TODO Add support for config from environment variable
-	/*
-		httpPort := os.Getenv("HTTP_PORT")
-		if httpPort == "" {
-			httpPort = "8080"
-		}
-	*/
-
 	// first we try to parse the config at the global configuration path
 	if servertools.FileExists("/etc/festivals-server.conf") {
 		config := ParseConfig("/etc/festivals-server.conf")

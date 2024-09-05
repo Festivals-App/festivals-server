@@ -28,21 +28,28 @@ The developement of the FestivalsAPI [(see documentation)](./DOCUMENTATION.md) a
 
 To find out more about the architecture and technical information see the [ARCHITECTURE](./ARCHITECTURE.md) document. The general documentation for the Festivals App is in the [festivals-documentation](https://github.com/festivals-app/festivals-documentation) repository. The documentation repository contains architecture information, general deployment documentation, templates and other helpful documents.
 
-#### Requirements
+### Requirements
 
-- [Golang](https://go.dev/) Version 1.21.5+
-- [Visual Studio Code](https://code.visualstudio.com/download) 1.85.2+
+- [Golang](https://go.dev/) Version 1.23.0+
+- [Visual Studio Code](https://code.visualstudio.com/download) 1.92.2+
   - Plugin recommendations are managed via [workspace recommendations](https://code.visualstudio.com/docs/editor/extension-marketplace#_recommended-extensions).
 - [Bash script](https://en.wikipedia.org/wiki/Bash_(Unix_shell)) friendly environment
 
 ## Deployment
 
-Running the festivals-server is pretty easy because Go binaries are able to run without system dependencies
-on the target for which they are compiled. The only dependency is that the festivals-server expects either a config file at `/etc/festivals-server.conf`,
-the environment variables set or the template config file present in the directory it runs from. You also need to provide all needed certificates
-in the right format, see [festivals-pki](https://github.com/Festivals-App/festivals-pki).
+The Go binaries are able to run without system dependencies so there are not many requirements for the system to run the festivals-server binary.
+The config file needs to be placed at `/etc/festivals-server.conf` or the template config file needs to be present in the directory the binary runs in.
 
-#### VM
+You also need to provide certificates in the right format and location:
+The default path to the root CA certificate is          `/usr/local/festivals-server/ca.crt`
+The default path to the server certificate is           `/usr/local/festivals-server/server.crt`
+The default path to the corresponding key is            `/usr/local/festivals-server/server.key`
+The default path to the databse client certificate is   `/usr/local/festivals-server/database-client.crt`
+The default path to the corresponding key is            `/usr/local/festivals-server/database-client.key`
+
+For intructions on how to manage and create the certificates see the [festivals-pki](https://github.com/Festivals-App/festivals-pki) repository.
+
+### VM
 
 The install, update and uninstall scripts should work with any system that uses *systemd* and *firewalld*.
 Additionally the scripts will somewhat work under macOS but won't configure the firewall or launch service.
@@ -81,6 +88,6 @@ The following channels are available for discussions, feedback, and support requ
 | **General Discussion**   | <a href="https://github.com/festivals-app/festivals-documentation/issues/new/choose" title="General Discussion"><img src="https://img.shields.io/github/issues/festivals-app/festivals-documentation/question.svg?style=flat-square"></a> </a>   |
 | **Other Requests**    | <a href="mailto:simon.cay.gaus@gmail.com" title="Email me"><img src="https://img.shields.io/badge/email-Simon-green?logo=mail.ru&style=flat-square&logoColor=white"></a>   |
 
-#### Licensing
+### Licensing
 
 Copyright (c) 2017-2024 Simon Gaus. Licensed under the [**GNU Lesser General Public License v3.0**](./LICENSE)
