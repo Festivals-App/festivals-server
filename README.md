@@ -23,23 +23,27 @@ A lightweight service providing a RESTful API, called **FestivalsAPI**. The Fest
 <hr/>
 
 ## Development
+
 The developement of the FestivalsAPI [(see documentation)](./DOCUMENTATION.md) and the festivals-server is heavily dependend on the [festivals-api-ios](https://github.com/Festivals-App/festivals-api-ios) and the [festivals-database](https://github.com/Festivals-App/festivals-database) which provides the persistent storage to the FestivalsAPI. In my regular development workflow i first mock the needed behaviour in the API client library and then start implementing the changes in the festivals-server and after that in the festivals-database. To test whether the festivals-server is working correctly i'm currently relying on downstream tests of the festivals-api-ios framework.
 
 To find out more about the architecture and technical information see the [ARCHITECTURE](./ARCHITECTURE.md) document. The general documentation for the Festivals App is in the [festivals-documentation](https://github.com/festivals-app/festivals-documentation) repository. The documentation repository contains architecture information, general deployment documentation, templates and other helpful documents.
 
 #### Requirements
+
 - [Golang](https://go.dev/) Version 1.21.5+
 - [Visual Studio Code](https://code.visualstudio.com/download) 1.85.2+
-    * Plugin recommendations are managed via [workspace recommendations](https://code.visualstudio.com/docs/editor/extension-marketplace#_recommended-extensions).
+  - Plugin recommendations are managed via [workspace recommendations](https://code.visualstudio.com/docs/editor/extension-marketplace#_recommended-extensions).
 - [Bash script](https://en.wikipedia.org/wiki/Bash_(Unix_shell)) friendly environment
 
 ## Deployment
-Running the festivals-server is pretty easy because Go binaries are able to run without system dependencies 
+
+Running the festivals-server is pretty easy because Go binaries are able to run without system dependencies
 on the target for which they are compiled. The only dependency is that the festivals-server expects either a config file at `/etc/festivals-server.conf`,
-the environment variables set or the template config file present in the directory it runs from. You also need to provide all needed certificates 
+the environment variables set or the template config file present in the directory it runs from. You also need to provide all needed certificates
 in the right format, see [festivals-pki](https://github.com/Festivals-App/festivals-pki).
 
 #### VM
+
 The install, update and uninstall scripts should work with any system that uses *systemd* and *firewalld*.
 Additionally the scripts will somewhat work under macOS but won't configure the firewall or launch service.
 
@@ -59,6 +63,7 @@ sudo systemctl status festivals-server
 ```
 
 #### Build and run using make
+
 ```bash
 make build
 make run
@@ -66,6 +71,7 @@ make run
 ```
 
 ## Engage
+
 I welcome every contribution, whether it is a pull request or a fixed typo. The best place to discuss questions and suggestions regarding the festivals-server is the [issues](https://github.com/festivals-app/festivals-server/issues/) section. More general information and a good starting point if you want to get involved is the [festival-documentation](https://github.com/Festivals-App/festivals-documentation) repository.
 
 The following channels are available for discussions, feedback, and support requests:
@@ -76,4 +82,5 @@ The following channels are available for discussions, feedback, and support requ
 | **Other Requests**    | <a href="mailto:simon.cay.gaus@gmail.com" title="Email me"><img src="https://img.shields.io/badge/email-Simon-green?logo=mail.ru&style=flat-square&logoColor=white"></a>   |
 
 #### Licensing
+
 Copyright (c) 2017-2024 Simon Gaus. Licensed under the [**GNU Lesser General Public License v3.0**](./LICENSE)
