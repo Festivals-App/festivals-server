@@ -41,11 +41,12 @@ The Go binaries are able to run without system dependencies so there are not man
 The config file needs to be placed at `/etc/festivals-server.conf` or the template config file needs to be present in the directory the binary runs in.
 
 You also need to provide certificates in the right format and location:
-The default path to the root CA certificate is          `/usr/local/festivals-server/ca.crt`
-The default path to the server certificate is           `/usr/local/festivals-server/server.crt`
-The default path to the corresponding key is            `/usr/local/festivals-server/server.key`
-The default path to the databse client certificate is   `/usr/local/festivals-server/database-client.crt`
-The default path to the corresponding key is            `/usr/local/festivals-server/database-client.key`
+
+- The default path to the root CA certificate is          `/usr/local/festivals-server/ca.crt`
+- The default path to the server certificate is           `/usr/local/festivals-server/server.crt`
+- The default path to the corresponding key is            `/usr/local/festivals-server/server.key`
+- The default path to the databse client certificate is   `/usr/local/festivals-server/database-client.crt`
+- The default path to the corresponding key is            `/usr/local/festivals-server/database-client.key`
 
 For intructions on how to manage and create the certificates see the [festivals-pki](https://github.com/Festivals-App/festivals-pki) repository.
 
