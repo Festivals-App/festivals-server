@@ -34,7 +34,7 @@ Authorization: Bearer <jwt>
 
 ### Requests
 
-The Festivals API supports the HTTP `GET`, `POST`, `PATCH` and `DELETE` methods.
+The FestivalsAPI supports the HTTP `GET`, `POST`, `PATCH` and `DELETE` methods.
 
 #### Query Parameter
 
@@ -111,7 +111,7 @@ The `error` field will always contain a string with the error message.
   
 [Festivals](#festival-objects)
 
-* GET, POST             `/festivals` optional `name,ids
+* GET, POST             `/festivals` optional `name,ids` query parameter
 * GET, PATCH, DELETE    `/festivals/{objectID}`
 * GET                   `/festivals/{objectID}/{image|links|place|tags|events}`
 * POST, DELETE          `/festivals/{objectID}/{image|links|place|tags|events}/{resourceID}`
