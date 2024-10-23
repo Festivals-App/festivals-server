@@ -7,13 +7,15 @@
 
 <h1 align="center">
   <br/><br/>
-    Festivals App Server
+    FestivalsApp Server
   <br/><br/>
 </h1>
 
-A lightweight service providing a RESTful API, called **FestivalsAPI**. The FestivalsAPI exposes all data functions needed by the FestivalsApp.
+A lightweight service providing a RESTful API, called **FestivalsAPI**. The FestivalsAPI provides all the necessary data for the FestivalsApp, including festivals and events, as well as functionality to create and manage this data.
 
-![Figure 1: Architecture Overview Highlighted](https://github.com/Festivals-App/festivals-documentation/blob/main/images/architecture/overview_server.png "Figure 1: Architecture Overview Highlighted")
+![Figure 1: Architecture Overview Highlighted](https://github.com/Festivals-App/festivals-documentation/blob/main/images/architecture/architecture_overview_server.svg "Figure 1: Architecture Overview Highlighted")
+
+The FestivalsApp Server is designed to be accessed through a FestivalsApp Gateway and connects to a FestivalsApp Database, where the data is stored. A client wanting to call the FestivalsAPI needs a valid mTLS certificate 
 
 <hr/>
 <p align="center">
