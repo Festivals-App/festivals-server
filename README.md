@@ -15,8 +15,6 @@ A lightweight service providing a RESTful API, called **FestivalsAPI**. The Fest
 
 ![Figure 1: Architecture Overview Highlighted](https://github.com/Festivals-App/festivals-documentation/blob/main/images/architecture/architecture_overview_server.svg "Figure 1: Architecture Overview Highlighted")
 
-The FestivalsApp Server is designed to be accessed through a FestivalsApp Gateway and connects to a FestivalsApp Database, where the data is stored. A client wanting to call the FestivalsAPI needs a valid mTLS certificate 
-
 <hr/>
 <p align="center">
   <a href="#development">Development</a> •
@@ -33,8 +31,8 @@ To find out more about the architecture and technical information see the [ARCHI
 
 ### Requirements
 
-- [Golang](https://go.dev/) Version 1.23.02
-- [Visual Studio Code](https://code.visualstudio.com/download) 1.94.2+
+- [Golang](https://go.dev/) Version 1.23.5+
+- [Visual Studio Code](https://code.visualstudio.com/download) 1.96.0+
   - Plugin recommendations are managed via [workspace recommendations](https://code.visualstudio.com/docs/editor/extension-marketplace#_recommended-extensions).
 - [Bash script](https://en.wikipedia.org/wiki/Bash_(Unix_shell)) friendly environment
 
