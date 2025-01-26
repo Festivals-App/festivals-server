@@ -4,8 +4,8 @@ github.com/Festivals-App/festivals-identity-server v0.7.9 h1:1NpGcSsUhXjpaMN83Wp
 github.com/Festivals-App/festivals-identity-server v0.7.9/go.mod h1:Gcg91W+T94+/1EQr0+vm6lzVuSviS861dELsrUs2Q+Q=
 github.com/Festivals-App/festivals-pki v0.0.4 h1:g99v/0bJZFRC1xx3ZF21j6rKg0CBYyTxjGG5cDojO7o=
 github.com/Festivals-App/festivals-pki v0.0.4/go.mod h1:KBEm824Amuqww5pRhT76e8L+Ih8nS59vUbuincfu7RQ=
-github.com/Festivals-App/festivals-server-tools v0.0.4 h1:STGIYw/KUvmzNkO18c5bEE49fBGfEycjav3s3nxRs9I=
-github.com/Festivals-App/festivals-server-tools v0.0.4/go.mod h1:wbJqNDOkZQCVppO4iDncPhCIcijgmU0HRtYzn5vA9dY=
+github.com/Festivals-App/festivals-server-tools v0.0.5 h1:M5cPgCyVTzhHYCEt4uTeZ1LdXiJlZBhzD5NwWgQQUk4=
+github.com/Festivals-App/festivals-server-tools v0.0.5/go.mod h1:yO4DkfaZFfikxV9cYYENav9qVvBqehw+RK3a5kle2h0=
 github.com/coreos/go-systemd/v22 v22.5.0/go.mod h1:Y58oyj3AT4RCenI/lSvhwexgC+NSVTIJ3seZv2GcEnc=
 github.com/go-chi/chi/v5 v5.2.0 h1:Aj1EtB0qR2Rdo2dG4O94RIU35w2lvQSj6BRA4+qwFL0=
 github.com/go-chi/chi/v5 v5.2.0/go.mod h1:DslCQbL2OYiznFReuXYUmQ2hGd1aDpCnlMNITLSKoi8=
