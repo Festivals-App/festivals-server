@@ -1,0 +1,4 @@
+[festivals-server]
+title=festivals-server
+description=Exposing the FestivalsAPI providing the data for the FestivalsApp.
+ports=10439/tcp

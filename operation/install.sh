@@ -2,7 +2,7 @@
 #
 # Enables the firewall, installs the newest festivals-server and starts it as a service.
 #
-# (c)2020-2023 Simon Gaus
+# (c)2020-2025 Simon Gaus
 #
 
 # Test for web server user
@@ -91,7 +91,8 @@ fi
 #
 if command -v ufw > /dev/null; then
 
-  ufw allow 10439/tcp >/dev/null
+  mv ufw_app_profile /etc/ufw/applications.d/festivals-server
+  ufw allow festivals-server >/dev/null
   echo "Added festivals-server to ufw using port 10439."
   sleep 1
 
