@@ -55,7 +55,7 @@ For instructions on how to manage and create the certificates see the [festivals
 
 ### VM
 
-The install, update and uninstall scripts should work with any system that uses *systemd* and *firewalld*.
+The install, update and uninstall scripts should work with any system that uses *systemd* and *ufw*.
 Additionally the scripts will somewhat work under macOS but won't configure the firewall or launch service.
 
 ```bash
