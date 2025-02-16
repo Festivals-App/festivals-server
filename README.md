@@ -13,7 +13,7 @@
 
 A lightweight service providing a RESTful API, called **FestivalsAPI**. The FestivalsAPI provides all the necessary data for the FestivalsApp, including festivals and events, as well as functionality to create and manage this data.
 
-![Figure 1: Architecture Overview Highlighted](https://github.com/Festivals-App/festivals-documentation/blob/main/images/architecture/architecture_overview_server.svg "Figure 1: Architecture Overview Highlighted")
+![Figure 1: Architecture Overview Highlighted](https://github.com/Festivals-App/festivals-documentation/blob/main/images/architecture/export/architecture_overview_server.svg "Figure 1: Architecture Overview Highlighted")
 
 <hr/>
 <p align="center">
@@ -32,7 +32,7 @@ To find out more about the architecture and technical information see the [ARCHI
 ### Requirements
 
 - [Golang](https://go.dev/) Version 1.23.5+
-- [Visual Studio Code](https://code.visualstudio.com/download) 1.96.0+
+- [Visual Studio Code](https://code.visualstudio.com/download) 1.97.1+
   - Plugin recommendations are managed via [workspace recommendations](https://code.visualstudio.com/docs/editor/extension-marketplace#_recommended-extensions).
 - [Bash script](https://en.wikipedia.org/wiki/Bash_(Unix_shell)) friendly environment
 
