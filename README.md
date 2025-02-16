@@ -41,13 +41,13 @@ To find out more about the architecture and technical information see the [ARCHI
 The Go binaries are able to run without system dependencies so there are not many requirements for the system to run the festivals-server binary.
 The config file needs to be placed at `/etc/festivals-server.conf` or the template config file needs to be present in the directory the binary runs in.
 
-You also need to provide certificates in the right format and location:
+You must ensure that the certificates for the database node are in the correct format and placed in the appropriate location:
 
-- The default path to the root CA certificate is          `/usr/local/festivals-server/ca.crt`
-- The default path to the server certificate is           `/usr/local/festivals-server/server.crt`
-- The default path to the corresponding key is            `/usr/local/festivals-server/server.key`
-- The default path to the database client certificate is  `/usr/local/festivals-server/database-client.crt`
-- The default path to the corresponding key is            `/usr/local/festivals-server/database-client.key`
+  Default path to the root CA certificate           `/usr/local/festivals-server/ca.crt`
+  Default path to the server certificate            `/usr/local/festivals-server/server.crt`
+  Default path to the corresponding key             `/usr/local/festivals-server/server.key`
+  Default path to the database client certificate   `/usr/local/festivals-server/database-client.crt`
+  Default path to the corresponding key             `/usr/local/festivals-server/database-client.key`
 
 Where the root CA certificate is required to validate incoming requests, the server certificate and key is required to make outgoing connections
 and the database client certificate and key is required to make connections to the [festivals-database](https://github.com/Festivals-App/festivals-database) service.
@@ -55,7 +55,7 @@ For instructions on how to manage and create the certificates see the [festivals
 
 ### VM
 
-The install, update and uninstall scripts should work with any system that uses *systemd* and *ufw*.
+The install and update scripts should work with any system that uses *systemd* and *ufw*.
 Additionally the scripts will somewhat work under macOS but won't configure the firewall or launch service.
 
 ```bash
