@@ -43,11 +43,11 @@ The config file needs to be placed at `/etc/festivals-server.conf` or the templa
 
 You must ensure that the certificates for the database node are in the correct format and placed in the appropriate location:
 
-  Default path to the root CA certificate           `/usr/local/festivals-server/ca.crt`  
-  Default path to the server certificate            `/usr/local/festivals-server/server.crt`  
-  Default path to the corresponding key             `/usr/local/festivals-server/server.key`  
-  Default path to the database client certificate   `/usr/local/festivals-server/database-client.crt`  
-  Default path to the corresponding key             `/usr/local/festivals-server/database-client.key`  
+  > Default path to the root CA certificate           `/usr/local/festivals-server/ca.crt`  
+  > Default path to the server certificate            `/usr/local/festivals-server/server.crt`  
+  > Default path to the corresponding key             `/usr/local/festivals-server/server.key`  
+  > Default path to the database client certificate   `/usr/local/festivals-server/database-client.crt`  
+  > Default path to the corresponding key             `/usr/local/festivals-server/database-client.key`  
 
 Where the root CA certificate is required to validate incoming requests, the server certificate and key is required to make outgoing connections
 and the database client certificate and key is required to make connections to the [festivals-database](https://github.com/Festivals-App/festivals-database) service.
