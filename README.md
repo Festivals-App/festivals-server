@@ -39,15 +39,16 @@ To find out more about the architecture and technical information see the [ARCHI
 ## Deployment
 
 The Go binaries are able to run without system dependencies so there are not many requirements for the system to run the festivals-server binary.
-The config file needs to be placed at `/etc/festivals-server.conf` or the template config file needs to be present in the directory the binary runs in.
 
-You must ensure that the certificates for the database node are in the correct format and placed in the appropriate location:
+  > The config file is placed at `/etc/festivals-server.conf`.
 
-  > Default path to the root CA certificate           `/usr/local/festivals-server/ca.crt`  
-  > Default path to the server certificate            `/usr/local/festivals-server/server.crt`  
-  > Default path to the corresponding key             `/usr/local/festivals-server/server.key`  
-  > Default path to the database client certificate   `/usr/local/festivals-server/database-client.crt`  
-  > Default path to the corresponding key             `/usr/local/festivals-server/database-client.key`  
+You must ensure that the certificates for the festivals-server are in the correct format and placed in the appropriate location:
+
+  > Root CA certificate           `/usr/local/festivals-server/ca.crt`  
+  > Server certificate            `/usr/local/festivals-server/server.crt`  
+  > Server key                    `/usr/local/festivals-server/server.key`  
+  > Database client certificate   `/usr/local/festivals-server/database-client.crt`  
+  > Database client key           `/usr/local/festivals-server/database-client.key`  
 
 Where the root CA certificate is required to validate incoming requests, the server certificate and key is required to make outgoing connections
 and the database client certificate and key is required to make connections to the [festivals-database](https://github.com/Festivals-App/festivals-database) service.
@@ -68,9 +69,6 @@ sudo ./install.sh
 curl -o update.sh https://raw.githubusercontent.com/Festivals-App/festivals-server/main/operation/update.sh
 chmod +x update.sh
 sudo ./update.sh
-
-#To see if the server is running use:
-sudo systemctl status festivals-server
 ```
 
 #### Build and run using make
@@ -83,14 +81,15 @@ make run
 
 ## Engage
 
-I welcome every contribution, whether it is a pull request or a fixed typo. The best place to discuss questions and suggestions regarding the festivals-server is the [issues](https://github.com/festivals-app/festivals-server/issues/) section. More general information and a good starting point if you want to get involved is the [festival-documentation](https://github.com/Festivals-App/festivals-documentation) repository.
+I welcome every contribution, whether it is a pull request or a fixed typo. The best place to discuss questions and suggestions regarding the festivals-server is the [issues](https://github.com/festivals-app/festivals-server/issues/) section. 
+More general information and a good starting point if you want to get involved is the [festival-documentation](https://github.com/Festivals-App/festivals-documentation) repository.
 
 The following channels are available for discussions, feedback, and support requests:
 
 | Type                     | Channel                                                |
 | ------------------------ | ------------------------------------------------------ |
 | **General Discussion**   | <a href="https://github.com/festivals-app/festivals-documentation/issues/new/choose" title="General Discussion"><img src="https://img.shields.io/github/issues/festivals-app/festivals-documentation/question.svg?style=flat-square"></a> </a>   |
-| **Other Requests**    | <a href="mailto:simon.cay.gaus@gmail.com" title="Email me"><img src="https://img.shields.io/badge/email-Simon-green?logo=mail.ru&style=flat-square&logoColor=white"></a>   |
+| **Other Requests**    | <a href="mailto:simon@festivalsapp.org" title="Email me"><img src="https://img.shields.io/badge/email-Simon-green?logo=mail.ru&style=flat-square&logoColor=white"></a>   |
 
 ### Licensing
 
