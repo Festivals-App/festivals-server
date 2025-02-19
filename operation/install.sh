@@ -66,7 +66,7 @@ sleep 1
 file_url="https://github.com/Festivals-App/festivals-server/releases/latest/download/festivals-server-$os-$arch.tar.gz"
 
 echo -e "\n📥  Downloading latest FestivalsApp Server binary..."
-curl --progress-bar -L "$file_url" -o festivals-servere.tar.gz
+curl --progress-bar -L "$file_url" -o festivals-server.tar.gz
 
 echo -e "\n📦  Extracting binary..."
 tar -xf festivals-server.tar.gz
