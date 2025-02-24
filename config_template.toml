@@ -2,10 +2,9 @@
 # TOML 1.0.0-rc.2+
 
 [service]
-bind-address = "localhost"
 bind-host = "localhost"
 port = 10439
-key = "TEST_API_KEY_001"
+key = "TEST_SERVICE_KEY_001"
 read-only = false
 
 [tls]
