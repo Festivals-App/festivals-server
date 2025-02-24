@@ -34,9 +34,11 @@ The config file is located at:
 
 You also need to provide certificates in the right format and location:
 
-  > Root CA certificate     `/usr/local/festivals-server/ca.crt`  
-  > Server certificate is   `/usr/local/festivals-server/server.crt`  
-  > Server key is           `/usr/local/festivals-server/server.key`  
+  > Root CA certificate                 `/usr/local/festivals-server/ca.crt`  
+  > Server certificate is               `/usr/local/festivals-server/server.crt`  
+  > Server key is                       `/usr/local/festivals-server/server.key`  
+  > Database client certificate is      `/usr/local/festivals-server/database-client.crt`  
+  > Database client key is              `/usr/local/festivals-server/database-client.key`  
 
 Where the root CA certificate is required to validate incoming requests and the server certificate and key is requires to make outgoing connections.
 For instructions on how to manage and create the certificates see the [festivals-pki](https://github.com/Festivals-App/festivals-pki) repository.
