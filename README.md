@@ -38,46 +38,8 @@ To find out more about the architecture and technical information see the [ARCHI
 
 ## Deployment
 
-The Go binaries are able to run without system dependencies so there are not many requirements for the system to run the festivals-server binary.
-
-  > The config file is placed at `/etc/festivals-server.conf`.
-
-You must ensure that the certificates for the festivals-server are in the correct format and placed in the appropriate location:
-
-  > Root CA certificate           `/usr/local/festivals-server/ca.crt`  
-  > Server certificate            `/usr/local/festivals-server/server.crt`  
-  > Server key                    `/usr/local/festivals-server/server.key`  
-  > Database client certificate   `/usr/local/festivals-server/database-client.crt`  
-  > Database client key           `/usr/local/festivals-server/database-client.key`  
-
-Where the root CA certificate is required to validate incoming requests, the server certificate and key is required to make outgoing connections
-and the database client certificate and key is required to make connections to the [festivals-database](https://github.com/Festivals-App/festivals-database) service.
-For instructions on how to manage and create the certificates see the [festivals-pki](https://github.com/Festivals-App/festivals-pki) repository.
-
-### VM
-
-The install and update scripts should work with any system that uses *systemd* and *ufw*.
-Additionally the scripts will somewhat work under macOS but won't configure the firewall or launch service.
-
-```bash
-#Installing
-curl -o install.sh https://raw.githubusercontent.com/Festivals-App/festivals-server/main/operation/install.sh
-chmod +x install.sh
-sudo ./install.sh
-
-#Updating
-curl -o update.sh https://raw.githubusercontent.com/Festivals-App/festivals-server/main/operation/update.sh
-chmod +x update.sh
-sudo ./update.sh
-```
-
-#### Build and run using make
-
-```bash
-make build
-make run
-# Default API Endpoint : http://localhost:10439
-```
+The Go binaries are able to run without system dependencies so there are not many requirements for the system to run the festivals-server binary,
+just follow the [**deployment guide**](./operation/DEPLOYMENT.md).
 
 ## Engage
 
@@ -91,6 +53,6 @@ The following channels are available for discussions, feedback, and support requ
 | **General Discussion**   | <a href="https://github.com/festivals-app/festivals-documentation/issues/new/choose" title="General Discussion"><img src="https://img.shields.io/github/issues/festivals-app/festivals-documentation/question.svg?style=flat-square"></a> </a>   |
 | **Other Requests**    | <a href="mailto:simon@festivalsapp.org" title="Email me"><img src="https://img.shields.io/badge/email-Simon-green?logo=mail.ru&style=flat-square&logoColor=white"></a>   |
 
-### Licensing
+## Licensing
 
 Copyright (c) 2017-2025 Simon Gaus. Licensed under the [**GNU Lesser General Public License v3.0**](./LICENSE)
