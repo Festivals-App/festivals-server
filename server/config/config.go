@@ -10,18 +10,17 @@ import (
 )
 
 type Config struct {
-	ServiceBindAddress string
-	ServiceBindHost    string
-	ServicePort        int
-	ServiceKey         string
-	TLSRootCert        string
-	TLSCert            string
-	TLSKey             string
-	LoversEar          string
-	Interval           int
-	IdentityEndpoint   string
-	DB                 *DBConfig
-	ReadOnly           bool
+	ServiceBindHost  string
+	ServicePort      int
+	ServiceKey       string
+	TLSRootCert      string
+	TLSCert          string
+	TLSKey           string
+	LoversEar        string
+	Interval         int
+	IdentityEndpoint string
+	DB               *DBConfig
+	ReadOnly         bool
 }
 
 type DBConfig struct {
@@ -64,7 +63,6 @@ func ParseConfig(cfgFile string) *Config {
 		log.Fatal().Err(err).Msg("server initialize: could not read config file at '" + cfgFile + "'")
 	}
 
-	serviceBindAdress := content.Get("service.bind-address").(string)
 	serviceBindHost := content.Get("service.bind-host").(string)
 	servicePort := content.Get("service.port").(int64)
 	serviceKey := content.Get("service.key").(string)
@@ -88,16 +86,15 @@ func ParseConfig(cfgFile string) *Config {
 	readonly := content.Get("service.read-only").(bool)
 
 	return &Config{
-		ServiceBindAddress: serviceBindAdress,
-		ServiceBindHost:    serviceBindHost,
-		ServicePort:        int(servicePort),
-		ServiceKey:         serviceKey,
-		TLSRootCert:        tlsrootcert,
-		TLSCert:            tlscert,
-		TLSKey:             tlskey,
-		LoversEar:          loversear,
-		Interval:           int(interval),
-		IdentityEndpoint:   identity,
+		ServiceBindHost:  serviceBindHost,
+		ServicePort:      int(servicePort),
+		ServiceKey:       serviceKey,
+		TLSRootCert:      tlsrootcert,
+		TLSCert:          tlscert,
+		TLSKey:           tlskey,
+		LoversEar:        loversear,
+		Interval:         int(interval),
+		IdentityEndpoint: identity,
 		DB: &DBConfig{
 			Dialect:    "mysql",
 			Host:       dbHost,
