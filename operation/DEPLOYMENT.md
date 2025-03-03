@@ -79,7 +79,6 @@ sudo chmod 600 /usr/local/festivals-server/server.key
 Copy the database client certificates from your development machine to the VM:
 
 ```bash
-scp /opt/homebrew/etc/pki/ca.crt <user>@<ip-address>:.
 scp /opt/homebrew/etc/pki/issued/database-client.crt <user>@<ip-address>:.
 scp /opt/homebrew/etc/pki/private/database-client.key <user>@<ip-address>:.
 ```
