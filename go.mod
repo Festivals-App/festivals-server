@@ -1,11 +1,11 @@
 module github.com/Festivals-App/festivals-server
 
-go 1.23.5
+go 1.24.1
 
 require (
 	github.com/Festivals-App/festivals-identity-server v0.7.11
 	github.com/Festivals-App/festivals-pki v0.0.4
-	github.com/Festivals-App/festivals-server-tools v0.0.5
+	github.com/Festivals-App/festivals-server-tools v0.0.7
 	github.com/go-chi/chi/v5 v5.2.1
 	github.com/go-sql-driver/mysql v1.9.1
 	github.com/google/uuid v1.6.0
