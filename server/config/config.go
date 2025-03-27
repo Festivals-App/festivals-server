@@ -1,7 +1,7 @@
 package config
 
 import (
-	"os"
+	"fmt"
 
 	servertools "github.com/Festivals-App/festivals-server-tools"
 	"github.com/pelletier/go-toml"
@@ -21,6 +21,8 @@ type Config struct {
 	IdentityEndpoint string
 	DB               *DBConfig
 	ReadOnly         bool
+	InfoLog          string
+	TraceLog         string
 }
 
 type DBConfig struct {
@@ -36,36 +38,18 @@ type DBConfig struct {
 	Charset    string
 }
 
-func DefaultConfig() *Config {
-
-	// first we try to parse the config at the global configuration path
-	if servertools.FileExists("/etc/festivals-server.conf") {
-		config := ParseConfig("/etc/festivals-server.conf")
-		if config != nil {
-			return config
-		}
-	}
-
-	// if there is no global configuration check the current folder for the template config file
-	// this is mostly so the application will run in development environment
-	path, err := os.Getwd()
-	if err != nil {
-		log.Fatal().Msg("server initialize: could not read default config file with error:" + err.Error())
-	}
-	path = path + "/config_template.toml"
-	return ParseConfig(path)
-}
-
 func ParseConfig(cfgFile string) *Config {
 
 	content, err := toml.LoadFile(cfgFile)
 	if err != nil {
-		log.Fatal().Err(err).Msg("server initialize: could not read config file at '" + cfgFile + "'")
+		log.Fatal().Err(err).Msg("server initialize: could not read config file at '" + cfgFile + "'. Error: " + err.Error())
 	}
 
 	serviceBindHost := content.Get("service.bind-host").(string)
 	servicePort := content.Get("service.port").(int64)
 	serviceKey := content.Get("service.key").(string)
+
+	log.Info().Msg("Did load conf file." + fmt.Sprintf("%#v", content.Get("tls")))
 
 	tlsrootcert := content.Get("tls.festivalsapp-root-ca").(string)
 	tlscert := content.Get("tls.cert").(string)
@@ -84,6 +68,18 @@ func ParseConfig(cfgFile string) *Config {
 	dbClientCert := content.Get("database.cert").(string)
 	dbClientKey := content.Get("database.key").(string)
 	readonly := content.Get("service.read-only").(bool)
+
+	infoLogPath := content.Get("log.info").(string)
+	traceLogPath := content.Get("log.trace").(string)
+
+	tlsrootcert = servertools.ExpandTilde(tlsrootcert)
+	tlscert = servertools.ExpandTilde(tlscert)
+	tlskey = servertools.ExpandTilde(tlskey)
+	dbClientCA = servertools.ExpandTilde(dbClientCA)
+	dbClientCert = servertools.ExpandTilde(dbClientCert)
+	dbClientKey = servertools.ExpandTilde(dbClientKey)
+	infoLogPath = servertools.ExpandTilde(infoLogPath)
+	traceLogPath = servertools.ExpandTilde(traceLogPath)
 
 	return &Config{
 		ServiceBindHost:  serviceBindHost,
@@ -108,5 +104,7 @@ func ParseConfig(cfgFile string) *Config {
 			Charset:    "utf8",
 		},
 		ReadOnly: readonly,
+		InfoLog:  infoLogPath,
+		TraceLog: traceLogPath,
 	}
 }

@@ -1,0 +1,33 @@
+# festivals-server configuration file v1.0
+# TOML 1.0.0-rc.2+
+
+[service]
+bind-host = "festivals-0.festivalsapp.dev"
+port = 10439
+key = "TEST_SERVICE_KEY_001"
+read-only = false
+
+[tls]
+festivalsapp-root-ca = "~/Library/Containers/org.festivalsapp.project/usr/local/festivals-server/ca.crt"
+cert = "~/Library/Containers/org.festivalsapp.project/usr/local/festivals-server/server.crt"
+key = "~/Library/Containers/org.festivalsapp.project/usr/local/festivals-server/server.key"
+
+[database]
+host = "database-0.festivalsapp.dev"
+port = 3306
+username = "festivals.api.writer"
+password = "we4711"
+festivalsapp-root-ca = "~/Library/Containers/org.festivalsapp.project/usr/local/festivals-server/ca.crt"
+cert = "~/Library/Containers/org.festivalsapp.project/usr/local/festivals-server/database-client.crt"
+key = "~/Library/Containers/org.festivalsapp.project/usr/local/festivals-server/database-client.key"
+
+[heartbeat]
+endpoint = "https://discovery.festivalsapp.dev:8443/loversear"
+interval = 6
+
+[authentication] 
+endpoint = "https://identity.festivalsapp.dev:22580"
+
+[log]
+info = "~/Library/Containers/org.festivalsapp.project/var/log/festivals-server/info.log"
+trace = "~/Library/Containers/org.festivalsapp.project/var/log/festivals-server/trace.log"
