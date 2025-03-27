@@ -1,8 +1,6 @@
 package config
 
 import (
-	"fmt"
-
 	servertools "github.com/Festivals-App/festivals-server-tools"
 	"github.com/pelletier/go-toml"
 
@@ -48,8 +46,6 @@ func ParseConfig(cfgFile string) *Config {
 	serviceBindHost := content.Get("service.bind-host").(string)
 	servicePort := content.Get("service.port").(int64)
 	serviceKey := content.Get("service.key").(string)
-
-	log.Info().Msg("Did load conf file." + fmt.Sprintf("%#v", content.Get("tls")))
 
 	tlsrootcert := content.Get("tls.festivalsapp-root-ca").(string)
 	tlscert := content.Get("tls.cert").(string)
