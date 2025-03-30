@@ -55,7 +55,7 @@ func (s *Server) setIdentityService() {
 
 	val := token.NewValidationService(config.IdentityEndpoint, config.TLSCert, config.TLSKey, config.TLSRootCert, config.ServiceKey, false)
 	if val == nil {
-		log.Fatal().Msg("Failed to create validator.")
+		log.Fatal().Msg("failed to create validator")
 	}
 	s.Validator = val
 }
@@ -68,12 +68,12 @@ func (s *Server) setDatabase() {
 
 	rootCertPool, err := festivalspki.LoadCertificatePool(config.DB.ClientCA)
 	if err != nil {
-		log.Fatal().Err(err).Msg("Faile to create pool with root CA file.")
+		log.Fatal().Err(err).Msg("failed to create pool with root CA file")
 	}
 
 	certs, err := tls.LoadX509KeyPair(config.DB.ClientCert, config.DB.ClientKey)
 	if err != nil {
-		log.Fatal().Err(err).Msg("Faile to load database client certificate.")
+		log.Fatal().Err(err).Msg("failed to load database client certificate")
 	}
 
 	tlsConfig := &tls.Config{
@@ -95,12 +95,12 @@ func (s *Server) setDatabase() {
 	db, err := sql.Open(config.DB.Dialect, dbURI)
 
 	if err != nil {
-		log.Fatal().Err(err).Msg("Failed to open database handle.")
+		log.Fatal().Err(err).Msg("failed to open database handle")
 	}
 
 	err = db.Ping()
 	if err != nil {
-		log.Fatal().Err(err).Msg("Failed to connect to database.")
+		log.Fatal().Err(err).Msg("failed to connect to database")
 	}
 
 	db.SetConnMaxIdleTime(time.Minute * 1)
