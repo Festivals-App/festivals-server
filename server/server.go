@@ -46,14 +46,14 @@ func (s *Server) initialize(config *config.Config) {
 	s.setDatabase()
 	s.setTLSHandling()
 	s.setMiddleware()
-	s.setRoutes(config)
+	s.setRoutes()
 }
 
 func (s *Server) setIdentityService() {
 
 	config := s.Config
 
-	val := token.NewValidationService(config.IdentityEndpoint, config.TLSCert, config.TLSKey, config.ServiceKey, false)
+	val := token.NewValidationService(config.IdentityEndpoint, config.TLSCert, config.TLSKey, config.TLSRootCert, config.ServiceKey, false)
 	if val == nil {
 		log.Fatal().Msg("Failed to create validator.")
 	}
@@ -112,9 +112,9 @@ func (s *Server) setDatabase() {
 }
 
 func (s *Server) setTLSHandling() {
-	tlsConfig := &tls.Config{
-		ClientAuth:     tls.RequireAndVerifyClientCert,
-		GetCertificate: festivalspki.LoadServerCertificateHandler(s.Config.TLSCert, s.Config.TLSKey, s.Config.TLSRootCert),
+	tlsConfig, err := festivalspki.NewServerTLSConfig(s.Config.TLSCert, s.Config.TLSKey, s.Config.TLSRootCert)
+	if err != nil {
+		log.Fatal().Err(err).Msg("failed to set TLS handling")
 	}
 	s.TLSConfig = tlsConfig
 }
@@ -125,13 +125,13 @@ func (s *Server) setMiddleware() {
 	s.Router.Use(
 		// used to log the request to the console
 		servertools.Middleware(servertools.TraceLogger(s.Config.TraceLog)),
-		// tries to recover after panics (?)
+		// tries to recover after panics
 		middleware.Recoverer,
 	)
 }
 
 // setRouters sets the all required routers
-func (s *Server) setRoutes(config *config.Config) {
+func (s *Server) setRoutes() {
 
 	s.Router.Get("/version", s.handleRequest(handler.GetVersion))
 	s.Router.Get("/info", s.handleRequest(handler.GetInfo))
@@ -181,7 +181,7 @@ func (s *Server) setRoutes(config *config.Config) {
 	s.Router.Get("/tags/{objectID}", s.handleAPIRequest(handler.GetTag))
 	s.Router.Get("/tags/{objectID}/festivals", s.handleAPIRequest(handler.GetTagFestivals))
 
-	if !config.ReadOnly {
+	if !s.Config.ReadOnly {
 
 		s.Router.Post("/festivals", s.handleRequest(handler.CreateFestival))
 		s.Router.Patch("/festivals/{objectID}", s.handleRequest(handler.UpdateFestival))
