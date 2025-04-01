@@ -27,7 +27,7 @@ A lightweight service providing a RESTful API, called **FestivalsAPI**. The Fest
 
 The developement of the FestivalsAPI [(see documentation)](./DOCUMENTATION.md) and the festivals-server is heavily dependend on the [festivals-api-ios](https://github.com/Festivals-App/festivals-api-ios) and the [festivals-database](https://github.com/Festivals-App/festivals-database) which provides the persistent storage to the FestivalsAPI. In my regular development workflow i first mock the needed behaviour in the API client library and then start implementing the changes in the festivals-server and after that in the festivals-database. To test whether the festivals-server is working correctly i'm currently relying on downstream tests of the festivals-api-ios framework.
 
-To find out more about the architecture and technical information see the [ARCHITECTURE](./ARCHITECTURE.md) document. The general documentation for the Festivals App is in the [festivals-documentation](https://github.com/festivals-app/festivals-documentation) repository. The documentation repository contains architecture information, general deployment documentation, templates and other helpful documents.
+The general documentation for the Festivals App is in the [festivals-documentation](https://github.com/festivals-app/festivals-documentation) repository. The documentation repository contains architecture information, general deployment documentation, templates and other helpful documents.
 
 ### Requirements
 
@@ -39,11 +39,12 @@ To find out more about the architecture and technical information see the [ARCHI
 ## Deployment
 
 The Go binaries are able to run without system dependencies so there are not many requirements for the system to run the festivals-server binary,
-just follow the [**deployment guide**](./operation/DEPLOYMENT.md).
+just follow the [**deployment guide**](./operation/DEPLOYMENT.md) for deploying it inside a virtual machine or the [**local deployment guide**](./operation/local/README.md)
+for running it on your macOS developer machine.
 
 ## Engage
 
-I welcome every contribution, whether it is a pull request or a fixed typo. The best place to discuss questions and suggestions regarding the festivals-server is the [issues](https://github.com/festivals-app/festivals-server/issues/) section. 
+I welcome every contribution, whether it is a pull request or a fixed typo. The best place to discuss questions and suggestions regarding the festivals-server is the [issues](https://github.com/festivals-app/festivals-server/issues/) section.
 More general information and a good starting point if you want to get involved is the [festival-documentation](https://github.com/Festivals-App/festivals-documentation) repository.
 
 The following channels are available for discussions, feedback, and support requests:
