@@ -69,3 +69,4 @@ Use this to make authorized calls to the website node:
 
 ```bash
 curl -H "Authorization: Bearer <JWT>" --cert /opt/homebrew/etc/pki/issued/client.crt --key /opt/homebrew/etc/pki/private/client.key --cacert /opt/homebrew/etc/pki/ca.crt https://festivals-0.festivalsapp.dev:10439/info
+```
