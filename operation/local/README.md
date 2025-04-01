@@ -47,7 +47,7 @@ make stop-env
 
 ## Testing
 
-The festivals server is now reachable on your machine under via
+The festivals server is now reachable on your machine at
 
 ```text
 https://festivals-0.festivalsapp.dev:10439
