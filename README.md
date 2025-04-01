@@ -31,8 +31,8 @@ To find out more about the architecture and technical information see the [ARCHI
 
 ### Requirements
 
-- [Golang](https://go.dev/) Version 1.23.5+
-- [Visual Studio Code](https://code.visualstudio.com/download) 1.97.1+
+- [Golang](https://go.dev/) Version 1.24.1+
+- [Visual Studio Code](https://code.visualstudio.com/download) 1.98.2+
   - Plugin recommendations are managed via [workspace recommendations](https://code.visualstudio.com/docs/editor/extension-marketplace#_recommended-extensions).
 - [Bash script](https://en.wikipedia.org/wiki/Bash_(Unix_shell)) friendly environment
 
