@@ -24,7 +24,6 @@ fi
 # ─────────────────────────────────────────────────────────────────────────────
 WORK_DIR="/usr/local/festivals-server/install"
 mkdir -p "$WORK_DIR" && cd "$WORK_DIR" || { echo -e "\n\033[1;31m❌  ERROR: Failed to create/access working directory!\033[0m\n"; exit 1; }
-
 echo -e "\n📂  Working directory set to \e[1;34m$WORK_DIR\e[0m"
 sleep 1
 
