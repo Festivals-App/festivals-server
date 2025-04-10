@@ -65,9 +65,9 @@ Set the correct permissions:
 
 ```bash
 # Change owner to web user
-sudo chown www-data /usr/local/festivals-server/ca.crt
-sudo chown www-data /usr/local/festivals-server/server.crt
-sudo chown www-data /usr/local/festivals-server/server.key
+sudo chown www-data:www-data /usr/local/festivals-server/ca.crt
+sudo chown www-data:www-data /usr/local/festivals-server/server.crt
+sudo chown www-data:www-data /usr/local/festivals-server/server.key
 # Set secure permissions
 sudo chmod 640 /usr/local/festivals-server/ca.crt
 sudo chmod 640 /usr/local/festivals-server/server.crt
@@ -94,8 +94,8 @@ Set the correct permissions:
 
 ```bash
 # Change owner to web user
-sudo chown www-data /usr/local/festivals-server/database-client.crt
-sudo chown www-data /usr/local/festivals-server/database-client.key
+sudo chown www-data:www-data /usr/local/festivals-server/database-client.crt
+sudo chown www-data:www-data /usr/local/festivals-server/database-client.key
 # Set secure permissions
 sudo chmod 640 /usr/local/festivals-server/database-client.crt
 sudo chmod 600 /usr/local/festivals-server/database-client.key
