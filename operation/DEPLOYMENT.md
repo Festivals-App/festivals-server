@@ -43,7 +43,7 @@ You also need to provide certificates in the right format and location:
 Where the root CA certificate is required to validate incoming requests and the server certificate and key is requires to make outgoing connections.
 For instructions on how to manage and create the certificates see the [festivals-pki](https://github.com/Festivals-App/festivals-pki) repository.
 
-## 2. Copying mTLS Certificates to the VM
+## 2. Copying mTLS and Database Client Certificates to the VM
 
 Copy the server mTLS certificates from your development machine to the VM:
 
@@ -51,6 +51,8 @@ Copy the server mTLS certificates from your development machine to the VM:
 scp /opt/homebrew/etc/pki/ca.crt <user>@<ip-address>:.
 scp /opt/homebrew/etc/pki/issued/server.crt <user>@<ip-address>:.
 scp /opt/homebrew/etc/pki/private/server.key <user>@<ip-address>:.
+scp /opt/homebrew/etc/pki/issued/database-client.crt <user>@<ip-address>:.
+scp /opt/homebrew/etc/pki/private/database-client.key <user>@<ip-address>:.
 ```
 
 Once copied, SSH into the VM and move them to the correct location:
@@ -59,6 +61,8 @@ Once copied, SSH into the VM and move them to the correct location:
 sudo mv ca.crt /usr/local/festivals-server/ca.crt
 sudo mv server.crt /usr/local/festivals-server/server.crt
 sudo mv server.key /usr/local/festivals-server/server.key
+sudo mv database-client.crt /usr/local/festivals-server/database-client.crt
+sudo mv database-client.key /usr/local/festivals-server/database-client.key
 ```
 
 Set the correct permissions:
@@ -68,40 +72,17 @@ Set the correct permissions:
 sudo chown www-data:www-data /usr/local/festivals-server/ca.crt
 sudo chown www-data:www-data /usr/local/festivals-server/server.crt
 sudo chown www-data:www-data /usr/local/festivals-server/server.key
+sudo chown www-data:www-data /usr/local/festivals-server/database-client.crt
+sudo chown www-data:www-data /usr/local/festivals-server/database-client.key
 # Set secure permissions
 sudo chmod 640 /usr/local/festivals-server/ca.crt
 sudo chmod 640 /usr/local/festivals-server/server.crt
 sudo chmod 600 /usr/local/festivals-server/server.key
-```
-
-## 3. Copying Database Client Certificates to the VM
-
-Copy the database client certificates from your development machine to the VM:
-
-```bash
-scp /opt/homebrew/etc/pki/issued/database-client.crt <user>@<ip-address>:.
-scp /opt/homebrew/etc/pki/private/database-client.key <user>@<ip-address>:.
-```
-
-Once copied, SSH into the VM and move them to the correct location:
-
-```bash
-sudo mv database-client.crt /usr/local/festivals-server/database-client.crt
-sudo mv database-client.key /usr/local/festivals-server/database-client.key
-```
-
-Set the correct permissions:
-
-```bash
-# Change owner to web user
-sudo chown www-data:www-data /usr/local/festivals-server/database-client.crt
-sudo chown www-data:www-data /usr/local/festivals-server/database-client.key
-# Set secure permissions
 sudo chmod 640 /usr/local/festivals-server/database-client.crt
 sudo chmod 600 /usr/local/festivals-server/database-client.key
 ```
 
-## 4. Configuring the FestivalsApp Server
+## 3. Configuring the FestivalsApp Server
 
 Open the configuration file:
 
@@ -181,8 +162,8 @@ This should return a JWT Token `<Header.<Payload>.<Signatur>`
   > eyJVc2VySUQiOiIxIiwiVXNlclJvbGUiOjQyLCJVc2VyRmVzdGl2YWxzIjpbXSwiVXNlckFydGlzdHMiOltdLCJVc2VyTG9jYXRpb25zIjpbXSwiVXNlckV2ZW50cyI6W10sIlVzZXJMaW5rcyI6W10sIlVzZXJQbGFjZXMiOltdLCJVc2VySW1hZ2VzIjpbXSwiVXNlclRhZ3MiOltdLCJpc3MiOiJpZGVudGl0eS0wLmZlc3RpdmFsc2FwcC5ob21lIiwiZXhwIjoxNzQwMjMxMTQ4fQ.
   > geBq1pxEvqwjnKA5YTHQ8IjJc9mwkpsQIRy1kGc63oNXzyAhPrPJsepICXxr2yVmB0E8oDECXLn4Cy5V_p4UAduWXnc0r8S05ijV8NCfmsEcJg-RRO8POkGykiC2mrn-XR8Nf8OF0fLp7Mhsb0_aqBoTOLdtB9V7IV49-JjWwX5gHl3HuXGOOhe4n_epumc8w8yDxYakWeaBFtEtaRmhFXK_yttexYOLP6Z1BBTL005hBGhO58qVW0cfgf_t5VWBpUnz3zqdC-GFegItqJQbKZ2pmfmXNz_AoJf2JmPtCzpJ4lG6QeSslvdFuwaCdYpDQPOvnMSIORwrAq_FL2m7qw
 
-Use this to make authorized calls to the Gateway:
+Use this to make authorized calls to the festivals server:
 
 ```bash
-curl -H "Api-Key: TEST_API_KEY_001" -H "Authorization: Bearer <JWT>" --cert /opt/homebrew/etc/pki/issued/api-client.crt --key /opt/homebrew/etc/pki/private/api-client.key --cacert /opt/homebrew/etc/pki/ca.crt https://server-0.festivalsapp.home/info
+curl -H "Api-Key: TEST_API_KEY_001" -H "Authorization: Bearer <JWT>" --cert /opt/homebrew/etc/pki/issued/api-client.crt --key /opt/homebrew/etc/pki/private/api-client.key --cacert /opt/homebrew/etc/pki/ca.crt https://server-0.festivalsapp.home:10439/info
 ```
