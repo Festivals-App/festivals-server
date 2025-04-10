@@ -101,16 +101,7 @@ sudo chmod 640 /usr/local/festivals-server/database-client.crt
 sudo chmod 600 /usr/local/festivals-server/database-client.key
 ```
 
-## 4. Configuring the Root CA
-
-Lets add the Festivals Development Root CA certificate to the system CA's.
-
-```bash
-sudo cp /usr/local/festivals-server/ca.crt /usr/local/share/ca-certificates/festivals-dev-ca.crt
-sudo update-ca-certificates
-```
-
-## 5. Configuring the FestivalsApp Server
+## 4. Configuring the FestivalsApp Server
 
 Open the configuration file:
 
