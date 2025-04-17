@@ -493,8 +493,6 @@ This route uses an `artist` object describing an artist in the FestivalsApp.
 
 **`artist`** object
 
-A simple object that represents an artist.
-
 ```json
 {
     "artist_id":            "int",
