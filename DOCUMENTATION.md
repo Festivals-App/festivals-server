@@ -59,9 +59,9 @@ Except for the info endopoint, if the request returns any objects they will be i
 ```json
 {
     "data": [
-        {OBJECT},
-        {OBJECT},
-        {OBJECT}
+        {"OBJECT"},
+        {"OBJECT"},
+        {"OBJECT"}
     ]
 }
 ```
@@ -80,16 +80,16 @@ If the request specified to include relationships the objects are contained in t
 ```json
 {
     "data": [
-        {OBJECT}
+        {"OBJECT"}
     ],
     "included": {
         "relationship-1": [
-            {OBJECT},
-            {OBJECT},    
-            {OBJECT}
+            {"OBJECT"},
+            {"OBJECT"},    
+            {"OBJECT"}
         ],
         "relationship-2": [
-            {OBJECT}
+            {"OBJECT"}
         ]     
     }
 }
