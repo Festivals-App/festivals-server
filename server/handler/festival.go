@@ -330,5 +330,5 @@ func DeleteFestival(validator *token.ValidationService, claims *token.UserClaims
 		servertools.RespondError(w, http.StatusBadRequest, "failed to delete festival")
 		return
 	}
-	servertools.RespondCode(w, http.StatusOK)
+	servertools.RespondCode(w, http.StatusNoContent)
 }
