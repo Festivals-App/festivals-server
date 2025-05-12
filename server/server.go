@@ -257,8 +257,6 @@ func (s *Server) Run(conf *config.Config) {
 		TLSConfig: s.TLSConfig,
 	}
 
-	//server.SetKeepAlivesEnabled(false)
-
 	if err := server.ListenAndServeTLS("", ""); err != nil {
 		log.Fatal().Err(err).Str("type", "server").Msg("Failed to run server")
 	}
