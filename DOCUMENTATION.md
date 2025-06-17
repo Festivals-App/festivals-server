@@ -74,24 +74,25 @@ otherwise, an empty array is returned.
 }
 ```
 
-If the request specified to include relationships the objects are contained in the `included` field.  
+If the request specified to include relationships, the related objects are contained in the `include` field.  
 **Included relationships will only work if the request returns only one object.**
 
 ```json
 {
     "data": [
-        {"OBJECT"}
-    ],
-    "included": {
-        "relationship-1": [
-            {"OBJECT"},
-            {"OBJECT"},    
-            {"OBJECT"}
-        ],
-        "relationship-2": [
-            {"OBJECT"}
-        ]     
-    }
+        {
+          "OBJECT",
+          "include": {
+            "relationship-1": [
+              {"OBJECT"},
+              {"OBJECT"},    
+              {"OBJECT"}
+            ],
+            "relationship-2": [
+              {"OBJECT"}
+            ]     
+      }}
+    ]
 }
 ```
 
