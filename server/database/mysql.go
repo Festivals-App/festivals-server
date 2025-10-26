@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"regexp"
 	"strconv"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -38,11 +39,7 @@ func Search(db *sql.DB, table string, name string) (*sql.Rows, error) {
 func Resource(db *sql.DB, object string, objectID int, resource string) (*sql.Rows, error) {
 
 	var query string
-	if object == "tag" || resource == "festival" {
-		query = "SELECT * FROM " + resource + "s WHERE " + resource + "_id IN (SELECT `associated_" + resource + "` FROM `map_" + resource + "_" + object + "` WHERE `associated_" + object + "`=?);"
-	} else {
-		query = "SELECT * FROM " + resource + "s WHERE " + resource + "_id IN (SELECT `associated_" + resource + "` FROM `map_" + object + "_" + resource + "` WHERE `associated_" + object + "`=?);"
-	}
+	query = MakeSelectStatement(object, resource)
 	vars := []interface{}{objectID}
 
 	rows, err := ExecuteRowQuery(db, query, vars)
@@ -50,6 +47,35 @@ func Resource(db *sql.DB, object string, objectID int, resource string) (*sql.Ro
 		err = errors.New("failed to fetch `" + resource + "` for `" + object + "` with error: " + err.Error())
 	}
 	return rows, err
+}
+
+func MakeSelectStatement(object string, resource string) (query string) {
+	order := []string{"festival", "event", "artist", "image", "link", "location", "place", "tag"}
+	i1 := -1
+	i2 := -1
+	for i := 0; i < len(order); i++ {
+		if matched, _ := regexp.MatchString("^"+order[i], object); matched {
+			i1 = i
+			object = order[i]
+		}
+		if matched, _ := regexp.MatchString("^"+order[i], resource); matched {
+			i2 = i
+			resource = order[i]
+		}
+	}
+	var mapTable string
+	if i1 < i2 {
+		mapTable = fmt.Sprintf("map_%s_%s", object, resource)
+	} else {
+		mapTable = fmt.Sprintf("map_%s_%s", resource, object)
+	}
+	selectStr := fmt.Sprintf("SELECT * FROM %ss", resource)
+	where := fmt.Sprintf("\n        WHERE %s_id IN", resource)
+	subSelect := fmt.Sprintf("\n        (SELECT `associated_%s` FROM `%s`", resource, mapTable)
+	subWhere := fmt.Sprintf("\n			WHERE `associated_%s`=?);", object)
+	query = selectStr + where + subSelect + subWhere
+
+	return query
 }
 
 func SetResource(db *sql.DB, object string, objectID int, resource string, resourceID int) error {
