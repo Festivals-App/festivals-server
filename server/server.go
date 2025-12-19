@@ -151,6 +151,7 @@ func (s *Server) setRoutes() {
 
 	s.Router.Get("/artists", s.handleAPIRequest(handler.GetArtists))
 	s.Router.Get("/artists/{objectID}", s.handleAPIRequest(handler.GetArtist))
+	s.Router.Get("/artists/{objectID}/events", s.handleAPIRequest(handler.GetArtistEvents))
 	s.Router.Get("/artists/{objectID}/image", s.handleAPIRequest(handler.GetArtistImage))
 	s.Router.Get("/artists/{objectID}/links", s.handleAPIRequest(handler.GetArtistLinks))
 	s.Router.Get("/artists/{objectID}/tags", s.handleAPIRequest(handler.GetArtistTags))
