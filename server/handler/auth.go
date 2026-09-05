@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"slices"
 
-	token "github.com/Festivals-App/festivals-identity-server/jwt"
+	token "github.com/Festivals-App/festivals-identity-server/auth"
 	"github.com/google/uuid"
 )
 
