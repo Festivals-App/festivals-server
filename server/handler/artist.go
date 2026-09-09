@@ -47,6 +47,17 @@ func GetArtistImage(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	servertools.RespondJSON(w, http.StatusOK, images)
 }
 
+func GetArtistEvents(db *sql.DB, w http.ResponseWriter, r *http.Request) {
+
+	links, err := GetAssociation(db, r, "artist", "event")
+	if err != nil {
+		log.Error().Err(err).Msg("failed to fetch artist events")
+		servertools.RespondError(w, http.StatusInternalServerError, "failed to fetch artist events")
+		return
+	}
+	servertools.RespondJSON(w, http.StatusOK, links)
+}
+
 func GetArtistLinks(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 
 	links, err := GetAssociation(db, r, "artist", "link")
